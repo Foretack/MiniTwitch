@@ -295,8 +295,8 @@ public sealed class IrcMembershipClient : IAsyncDisposable
 
     #region Utils
     private void LogEventException(Exception ex) => LogException(ex, "🚨 Exception caught in an event:");
-    private void Log(LogLevel level, string template, params object[] properties) => _options.Log?.Log(level, $"{LOG_HEADER} " + template, properties);
-    private void LogException(Exception ex, string template, params object[] properties) => _options.Log?.LogError(ex, $"{LOG_HEADER} " + template, properties);
+    private void Log(LogLevel level, string template, params object[] properties) => _options.Logger?.Log(level, $"{LOG_HEADER} " + template, properties);
+    private void LogException(Exception ex, string template, params object[] properties) => _options.Logger?.LogError(ex, $"{LOG_HEADER} " + template, properties);
     #endregion
 
     /// <inheritdoc/>

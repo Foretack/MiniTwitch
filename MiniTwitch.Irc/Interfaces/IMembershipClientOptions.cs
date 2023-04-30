@@ -17,7 +17,5 @@ public interface IMembershipClientOptions
     /// Logging destination
     /// <para>Adding a logger is not required, but highly recommended</para>
     /// </summary>
-    public ILoggerFactory? Logger { get; set; }
-
-    internal ILogger? Log => this.Logger?.CreateLogger<IrcMembershipClient>();
+    public ILogger? Logger { get; set; }
 }

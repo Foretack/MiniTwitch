@@ -662,9 +662,9 @@ public sealed class IrcClient : IAsyncDisposable
     #region Utils
     private void LogEventException(Exception ex) => LogException(ex, "🚨 Exception caught in an event:");
 
-    private void Log(LogLevel level, string template, params object[] properties) => this.Options.Log?.Log(level, $"{_loggingHeader} " + template, properties);
+    private void Log(LogLevel level, string template, params object[] properties) => this.Options.Logger?.Log(level, $"{_loggingHeader} " + template, properties);
 
-    private void LogException(Exception ex, string template, params object[] properties) => this.Options.Log?.LogError(ex, $"{_loggingHeader} " + template, properties);
+    private void LogException(Exception ex, string template, params object[] properties) => this.Options.Logger?.LogError(ex, $"{_loggingHeader} " + template, properties);
     #endregion
 
     /// <inheritdoc/>
