@@ -6,7 +6,7 @@ MiniTwitch is a Twitch library for .NET6+ that is focused on performance and mem
 MiniTwitch currently supports IRC, with plans of supporting Helix, PubSub and hopefully EventSub in the future as well.
 
 
-## Quick start
+## Features & Getting started
 
 ### MiniTwitch.Irc
 The IRC component is responsible for connection and communication with chat.
