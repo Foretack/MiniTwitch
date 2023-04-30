@@ -11,46 +11,66 @@ MiniTwitch currently supports IRC, with plans of supporting Helix, PubSub and ho
 ### MiniTwitch.Irc
 The IRC component is responsible for connection and communication with chat.
 
-Below is an example usage of the `IrcClient` class, which exposes methods and events for received data from Twitch.
-
 The client is completely asynchronous and will handle reconnections & "keep-alive-ping"s for you!
+
 
 Events for the following are exposed through `IrcClient`:
  - Receive connection information:
+ 
  `IrcClient.OnConnect`
+
  `IrcClient.OnReconnect`
+
  `IrcClient.OnDisconnect`
  - Receive chat messages:
+
  `IrcClient.OnMessage` 
  - Receive ban/timeout information:
+
  `IrcClient.OnUserTimeout`
+
  `IrcClient.OnUserBan`
  - Receive subscription information:
  `IrcClient.OnSubscriptionNotice`
  `IrcClient.OnGiftedSubNotice`
  `IrcClient.OnGiftedSubNoticeIntro`
 	 - Also includes information about users extending/upgrading their subscriptions:
+
+
 	 `IrcClient.OnPaidUpgradeNotice` 
+
+
 	 `IrcClient.OnPrimeUpgradeNotice`
 - Receive raid information:
+
 `IrcClient.OnRaidNotice`
 - Receive announcements:
+
 `IrcClient.OnAnnouncement`
 - Receive chat/message clear information:
+
 `IrcClient.OnMessageDelete`
+
 `IrcClient.OnChatClear`
 - Receive channel information:
 `IrcClient.OnChannelJoin`
 `IrcClient.OnChannelPart`
 	- Also includes Roomstate information:
+
 	`IrcClient.OnEmoteOnlyModified`
+
 	`IrcClient.OnFollowerModeModified`
+
 	`IrcClient.OnUniqueModeModified`
+
 	`IrcClient.OnSlowModeModified`
+
 	`IrcClient.OnSubOnlyModified`
 - Receive whispers:
+
 `IrcClient.OnWhisper`
 - Receive Userstate information:
+
 `IrcClient.OnUserstate`
 - Receive notices:
 `IrcClient.OnNotice`
@@ -88,6 +108,7 @@ Events for the following are exposed through `IrcClient`:
 		- Bad_auth
 		- Invalid_parent
 
+The following is an example implementation of the `IrcClient` class:
 ```csharp
 using Microsoft.Extensions.Logging;
 using MiniTwitch.Irc;
