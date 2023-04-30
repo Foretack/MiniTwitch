@@ -275,11 +275,6 @@ public sealed class IrcClient : IAsyncDisposable
             Log(LogLevel.Error, "Failed to send raw message {message}: Not connected.", message);
             return;
         }
-        else if (this.Options.Anonymous)
-        {
-            Log(LogLevel.Error, "Failed to send raw message {message}: Cannot send message with anonymous account.", message);
-            return;
-        }
 
         await _ws.SendAsync(message);
     }
