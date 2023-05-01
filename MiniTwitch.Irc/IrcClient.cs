@@ -310,8 +310,8 @@ public sealed class IrcClient : IAsyncDisposable
             await Task.Delay(2500);
             await SendMessage(channel, message, action, nonce);
             Log(LogLevel.Debug, "Cannot send message to #{channel}: Rate limit of {count} hit. Retrying in {delay}ms", channel, this.Options.ModMessageRateLimit, 2500);
-            Log(LogLevel.Warning, "Uh oh! Looks like you are hitting the messaging rate limit (normal: {normal}/30s, mod: {mod}/30s) for channel #{channel}. Consider slowing down",
-                this.Options.MessageRateLimit, this.Options.ModMessageRateLimit, channel);
+            Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
+                channel, this.Options.MessageRateLimit, this.Options.ModMessageRateLimit);
             return;
         }
 
@@ -344,8 +344,8 @@ public sealed class IrcClient : IAsyncDisposable
             await Task.Delay(2500);
             await ReplyTo(parentMessage, message, action);
             Log(LogLevel.Debug, "Cannot send message to #{channel}: Rate limit of {count} hit. Retrying in {delay}ms", channel, this.Options.ModMessageRateLimit, 2500);
-            Log(LogLevel.Warning, "Uh oh! Looks like you are hitting the messaging rate limit (normal: {normal}/30s, mod: {mod}/30s) for channel #{channel}. Consider slowing down",
-                this.Options.MessageRateLimit, this.Options.ModMessageRateLimit, channel);
+            Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
+                channel, this.Options.MessageRateLimit, this.Options.ModMessageRateLimit);
             return;
         }
 
@@ -382,8 +382,8 @@ public sealed class IrcClient : IAsyncDisposable
             await Task.Delay(2500);
             await ReplyTo(messageId, channel, reply, action);
             Log(LogLevel.Debug, "Cannot send message to #{channel}: Rate limit of {count} hit. Retrying in {delay}ms", channel, this.Options.ModMessageRateLimit, 2500);
-            Log(LogLevel.Warning, "Uh oh! Looks like you are hitting the messaging rate limit (normal: {normal}/30s, mod: {mod}/30s) for channel #{channel}. Consider slowing down",
-                this.Options.MessageRateLimit, this.Options.ModMessageRateLimit, channel);
+            Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
+                channel, this.Options.MessageRateLimit, this.Options.ModMessageRateLimit);
             return;
         }
 
@@ -409,19 +409,18 @@ public sealed class IrcClient : IAsyncDisposable
     {
         if (!_ws.IsConnected)
         {
-            Log(LogLevel.Error, "Failed to join channel {channel}:  Not connected.", channel);
+            Log(LogLevel.Error, "Failed to join channel #{channel}:  Not connected.", channel);
             return false;
         }
 
         if (!_manager.CanJoin())
         {
             await Task.Delay(1000);
-            Log(LogLevel.Warning, "Uh oh! Looks like you are hitting the join rate limit of {rate}/10s. Consider slowing down", this.Options.JoinRateLimit);
+            Log(LogLevel.Warning, "Waiting to join #{channel}: Configured ratelimit of {rate} joins/10s is hit", channel, this.Options.JoinRateLimit);
             return await JoinChannel(channel);
         }
 
         await _ws.SendAsync($"JOIN #{channel}");
-
         return await _joinChannelWaiter.WaitAsync(TimeSpan.FromSeconds(10));
     }
 
@@ -434,7 +433,7 @@ public sealed class IrcClient : IAsyncDisposable
     {
         if (!_ws.IsConnected)
         {
-            Log(LogLevel.Error, "Failed to join channels {channel}:  Not connected.", string.Join(',', channels));
+            Log(LogLevel.Error, "Failed to join channels {channels}:  Not connected.", string.Join(',', channels));
             return false;
         }
 
@@ -593,7 +592,7 @@ public sealed class IrcClient : IAsyncDisposable
                     {
                         this.JoinedChannels.Add(ircChannel);
                         Log(LogLevel.Information, "Joined #{channel}", ircChannel.Name);
-                        Log(LogLevel.Debug, "Added {channel} to joined channels list.", ircChannel.Name);
+                        Log(LogLevel.Debug, "Added #{channel} to joined channels list.", ircChannel.Name);
                     }
 
                     OnChannelJoin?.Invoke(ircChannel).StepOver(this.ExceptionHandler);
@@ -628,7 +627,7 @@ public sealed class IrcClient : IAsyncDisposable
             case IrcCommand.PART:
                 IrcChannel channel = new(data);
                 if (this.JoinedChannels.Remove(channel))
-                    Log(LogLevel.Debug, "Removed {channel} from joined channels list.", channel.Name);
+                    Log(LogLevel.Debug, "Removed #{channel} from joined channels list.", channel.Name);
 
                 OnChannelPart?.Invoke(channel).StepOver(this.ExceptionHandler);
                 break;
