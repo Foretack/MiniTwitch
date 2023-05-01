@@ -171,7 +171,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
         if (!_manager.CanJoin())
         {
             await Task.Delay(2500);
-            Log(LogLevel.Warning, "Uh oh! Looks like you are hitting the join rate limit of {rate}/10s. Consider slowing down", _options.JoinRateLimit);
+            Log(LogLevel.Warning, "Waiting to join #{channel}: Configured ratelimit of {rate} joins/10s is hit", channel, _options.JoinRateLimit);
             await JoinChannel(channel);
             return;
         }
@@ -189,7 +189,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     {
         if (!_ws.IsConnected)
         {
-            Log(LogLevel.Error, "Failed to join channels {channel}:  Not connected.", string.Join(',', channels));
+            Log(LogLevel.Error, "Failed to join channels {channels}:  Not connected.", string.Join(',', channels));
             return;
         }
 
@@ -212,7 +212,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
         }
 
         if (_joinedChannels.Remove(channel))
-            Log(LogLevel.Debug, "Removed {channel} from joined channels list.", channel);
+            Log(LogLevel.Debug, "Removed #{channel} from joined channels list.", channel);
 
         return _ws.SendAsync($"PART #{channel}").AsTask();
     }
@@ -295,8 +295,8 @@ public sealed class IrcMembershipClient : IAsyncDisposable
 
     #region Utils
     private void LogEventException(Exception ex) => LogException(ex, "🚨 Exception caught in an event:");
-    private void Log(LogLevel level, string template, params object[] properties) => _options.Log?.Log(level, $"{LOG_HEADER} " + template, properties);
-    private void LogException(Exception ex, string template, params object[] properties) => _options.Log?.LogError(ex, $"{LOG_HEADER} " + template, properties);
+    private void Log(LogLevel level, string template, params object[] properties) => _options.Logger?.Log(level, $"{LOG_HEADER} " + template, properties);
+    private void LogException(Exception ex, string template, params object[] properties) => _options.Logger?.LogError(ex, $"{LOG_HEADER} " + template, properties);
     #endregion
 
     /// <inheritdoc/>

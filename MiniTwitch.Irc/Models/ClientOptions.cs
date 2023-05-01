@@ -40,7 +40,7 @@ public sealed class ClientOptions : IMembershipClientOptions
     /// Logging destination
     /// <para>Adding a logger is not required, but it's highly recommended</para>
     /// </summary>
-    public ILoggerFactory? Logger { get; set; }
+    public ILogger? Logger { get; set; }
     /// <summary>
     /// The amount of outgoing JOINs allowed in a 10 second time period
     /// <para>Default value is <see langword="20"/></para>
@@ -60,6 +60,4 @@ public sealed class ClientOptions : IMembershipClientOptions
     /// <para>Note: Adding <see cref="IgnoreCommand.USERSTATE"/> to <see cref="IgnoreCommands"/> makes this obsolete</para>
     /// </summary>
     public int ModMessageRateLimit { get; set; } = 100;
-
-    internal ILogger? Log => this.Logger?.CreateLogger<IrcClient>();
 }

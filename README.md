@@ -141,7 +141,7 @@ public class Bot
             options.Username = username;
             options.OAuth = oauth;
             // Optional
-            options.Logger = new LoggerFactory().AddSerilog(Log.Logger);
+            options.Logger = new LoggerFactory().AddSerilog(Log.Logger).CreateLogger<Bot>();
         });
 
         Client.OnMessage += OnMessage_AsyncExample;
