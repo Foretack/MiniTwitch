@@ -41,7 +41,7 @@ internal sealed class RateLimitManager
             return true;
         }
 
-        int sent = _messages[channel].Count(x => time - x < MessagePeriod);
+        int sent = _messages[channel].Count(x => time - x < this.MessagePeriod);
         int old = _messages[channel].Count - sent;
 
         for (int i = 0; i < old; i++)
@@ -91,7 +91,7 @@ internal sealed class RateLimitManager
         }
 
         long time = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-        int attempts = _joins.Count(x => time - x < JoinPeriod);
+        int attempts = _joins.Count(x => time - x < this.JoinPeriod);
         int old = _joins.Count - attempts;
 
         for (int i = 0; i < old; i++)
@@ -112,5 +112,5 @@ internal sealed class RateLimitManager
 
     private void RegisterJoin() => _joins.Enqueue(DateTimeOffset.Now.ToUnixTimeMilliseconds());
 
-    private int CalcGlobalMessages(long time) => _messages.SelectMany(x => x.Value).Count(x => time - x < MessagePeriod);
+    private int CalcGlobalMessages(long time) => _messages.SelectMany(x => x.Value).Count(x => time - x < this.MessagePeriod);
 }
