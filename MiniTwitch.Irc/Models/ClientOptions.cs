@@ -60,4 +60,10 @@ public sealed class ClientOptions : IMembershipClientOptions
     /// <para>Note: Adding <see cref="IgnoreCommand.USERSTATE"/> to <see cref="IgnoreCommands"/> makes this obsolete</para>
     /// </summary>
     public int ModMessageRateLimit { get; set; } = 100;
+    /// <summary>
+    /// When <see langword="true"/>, <see cref="MessageRateLimit"/> and <see cref="ModMessageRateLimit"/> will be applied globally instead of per channel
+    /// <para>Relevant issue: <see href="https://git.kotmisia.pl/Mm2PL/docs/issues/12"/></para>
+    /// <para>Default value is <see langword="false"/></para>
+    /// </summary>
+    public bool UseGlobalRateLimit { get; set; } = false;
 }
