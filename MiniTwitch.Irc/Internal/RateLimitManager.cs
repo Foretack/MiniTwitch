@@ -109,8 +109,5 @@ internal sealed class RateLimitManager
 
     private void RegisterJoin() => _joins.Enqueue(DateTimeOffset.Now.ToUnixTimeMilliseconds());
 
-    private int CalcGlobalMessages(long time)
-    {
-        return _messages.SelectMany(x => x.Value).Count(x => time - x < 30000);
-    }
+    private int CalcGlobalMessages(long time) => _messages.SelectMany(x => x.Value).Count(x => time - x < 30000);
 }
