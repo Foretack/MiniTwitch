@@ -4,6 +4,9 @@ namespace MiniTwitch.Irc.Internal;
 
 internal sealed class RateLimitManager
 {
+    public int MessagePeriod { get; init; } = 30000;
+    public int JoinPeriod { get; init; } = 10000;
+
     private readonly Dictionary<string, Queue<long>> _messages = new();
     private readonly Queue<long> _joins = new();
     private readonly int _joinLimit;
@@ -38,7 +41,7 @@ internal sealed class RateLimitManager
             return true;
         }
 
-        int sent = _messages[channel].Count(x => time - x < 30000);
+        int sent = _messages[channel].Count(x => time - x < MessagePeriod);
         int old = _messages[channel].Count - sent;
 
         for (int i = 0; i < old; i++)
@@ -87,8 +90,8 @@ internal sealed class RateLimitManager
             return true;
         }
 
-        long unix = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-        int attempts = _joins.Count(x => unix - x < 10000);
+        long time = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        int attempts = _joins.Count(x => time - x < JoinPeriod);
         int old = _joins.Count - attempts;
 
         for (int i = 0; i < old; i++)
@@ -109,5 +112,5 @@ internal sealed class RateLimitManager
 
     private void RegisterJoin() => _joins.Enqueue(DateTimeOffset.Now.ToUnixTimeMilliseconds());
 
-    private int CalcGlobalMessages(long time) => _messages.SelectMany(x => x.Value).Count(x => time - x < 30000);
+    private int CalcGlobalMessages(long time) => _messages.SelectMany(x => x.Value).Count(x => time - x < MessagePeriod);
 }
