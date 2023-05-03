@@ -8,13 +8,14 @@ public class RateLimitManagerTests
     [Fact]
     public async Task Spam_RateLimited()
     {
-        RateLimitManager manager = new(new() { MessageRateLimit = 30 }) { MessagePeriod = 5000 };
+        RateLimitManager manager = new(new() { MessageRateLimit = 30, UseGlobalRateLimit = false }) { MessagePeriod = 5000 };
         for (int i = 0; i < 30; i++)
         {
             Assert.True(manager.CanSend("foo", false));
         }
 
         Assert.False(manager.CanSend("foo", false));
+        Assert.True(manager.CanSend("foo2", false));
         await Task.Delay(manager.MessagePeriod + 100);
         Assert.True(manager.CanSend("foo", false));
     }
@@ -22,13 +23,14 @@ public class RateLimitManagerTests
     [Fact]
     public void ModSpam_RateLimited()
     {
-        RateLimitManager manager = new(new() { ModMessageRateLimit = 100 }) { MessagePeriod = 5000 };
+        RateLimitManager manager = new(new() { ModMessageRateLimit = 100, UseGlobalRateLimit = false }) { MessagePeriod = 5000 };
         for (int i = 0; i < 100; i++)
         {
             Assert.True(manager.CanSend("bar", true));
         }
 
         Assert.False(manager.CanSend("bar", true));
+        Assert.True(manager.CanSend("foo2", true));
         Thread.Sleep(manager.MessagePeriod + 100);
         Assert.True(manager.CanSend("bar", true));
     }
