@@ -50,7 +50,7 @@ public class RateLimitManagerTests
     [Fact]
     public async Task Global_Spam_RateLimited()
     {
-        RateLimitManager manager = new(new() { MessageRateLimit = 30, UseGlobalRateLimit = true }) { MessagePeriod = 5000 };
+        RateLimitManager manager = new(new() { MessageRateLimit = 30 }) { MessagePeriod = 5000 };
         for (int i = 0; i < 30; i++)
         {
             Assert.True(manager.CanSend($"foo{i}", false));
@@ -64,7 +64,7 @@ public class RateLimitManagerTests
     [Fact]
     public async Task Global_ModSpam_RateLimited()
     {
-        RateLimitManager manager = new(new() { ModMessageRateLimit = 100, UseGlobalRateLimit = true }) { MessagePeriod = 5000 };
+        RateLimitManager manager = new(new() { ModMessageRateLimit = 100 }) { MessagePeriod = 5000 };
         for (int i = 0; i < 100; i++)
         {
             Assert.True(manager.CanSend($"foo{i}", true));
@@ -78,7 +78,7 @@ public class RateLimitManagerTests
     [Fact]
     public async Task Global_SpamTransition_RateLimited()
     {
-        RateLimitManager manager = new(new() { MessageRateLimit = 30, ModMessageRateLimit = 100, UseGlobalRateLimit = true }) { MessagePeriod = 5000 };
+        RateLimitManager manager = new(new() { MessageRateLimit = 30, ModMessageRateLimit = 100 }) { MessagePeriod = 5000 };
         // mod to normal
         for (int i = 0; i < 20; i++)
         {
@@ -95,7 +95,7 @@ public class RateLimitManagerTests
         Assert.True(manager.CanSend("foo", true));
         Assert.True(manager.CanSend("foo", false));
 
-        manager = new(new() { MessageRateLimit = 30, ModMessageRateLimit = 100, UseGlobalRateLimit = true }) { MessagePeriod = 5000 };
+        manager = new(new() { MessageRateLimit = 30, ModMessageRateLimit = 100 }) { MessagePeriod = 5000 };
         // normal to mod
         for (int i = 0; i < 29; i++)
         {
