@@ -339,7 +339,7 @@ public sealed class IrcClient : IAsyncDisposable
         }
 
         string channel = parentMessage.Channel.Name;
-        if (_manager.CanSend(channel, _moderated.Contains(channel)))
+        if (!_manager.CanSend(channel, _moderated.Contains(channel)))
         {
             await Task.Delay(2500);
             await ReplyTo(parentMessage, message, action);
@@ -377,7 +377,7 @@ public sealed class IrcClient : IAsyncDisposable
             return;
         }
 
-        if (_manager.CanSend(channel, _moderated.Contains(channel)))
+        if (!_manager.CanSend(channel, _moderated.Contains(channel)))
         {
             await Task.Delay(2500);
             await ReplyTo(messageId, channel, reply, action);
