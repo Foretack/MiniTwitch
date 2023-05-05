@@ -17,11 +17,7 @@ public sealed class IrcClient : IAsyncDisposable
 {
     #region Properties
     /// <summary>
-    /// 
-    /// </summary>
-    public const string Version = "1.0.0";
-    /// <summary>
-    /// 
+    /// The action to invoke when an exception is caught within an event
     /// </summary>
     public Action<Exception> ExceptionHandler { get; set; } = default!;
     /// <summary>
