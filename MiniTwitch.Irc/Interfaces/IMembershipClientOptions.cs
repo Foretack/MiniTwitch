@@ -12,7 +12,7 @@ public interface IMembershipClientOptions
     /// <para>Default value is 20</para>
     /// <para>Twitch docs: <see href="https://dev.twitch.tv/docs/irc/#rate-limits"/></para>
     /// </summary>
-    int JoinRateLimit { get; }
+    int JoinRateLimit { get; set; }
     /// <summary>
     /// Logging destination
     /// <para>Adding a logger is not required, but highly recommended</para>
