@@ -192,7 +192,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
 
                 //badge-info
                 case 972:
-                    badgeInfo = TagHelper.GetString(tagValue, true);
+                    badgeInfo = TagHelper.GetString(tagValue, true, true);
                     break;
 
                 //subscriber

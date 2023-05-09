@@ -92,7 +92,7 @@ public readonly struct Userstate
 
                 //badge-info
                 case 972:
-                    badgeInfo = TagHelper.GetString(tagValue, true);
+                    badgeInfo = TagHelper.GetString(tagValue, true, true);
                     break;
 
                 //emote-sets

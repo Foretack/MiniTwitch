@@ -179,7 +179,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
 
                 //badge-info
                 case 972:
-                    badgeInfo = TagHelper.GetString(tagValue, true);
+                    badgeInfo = TagHelper.GetString(tagValue, true, true);
                     break;
 
                 //system-msg
