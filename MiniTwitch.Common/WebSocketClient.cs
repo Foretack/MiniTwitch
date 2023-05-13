@@ -1,4 +1,4 @@
-using System.Net.WebSockets;
+﻿using System.Net.WebSockets;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using MiniTwitch.Common.Internal.Models;
@@ -20,7 +20,6 @@ public sealed class WebSocketClient : IAsyncDisposable
     #endregion
 
     #region Fields
-    private readonly CancellationToken _ct = CancellationToken.None;
     private readonly SemaphoreSlim _sendLock = new(1);
     private readonly SemaphoreSlim _reconnectionLock = new(0);
     private readonly TimeSpan _reconnectDelay;
