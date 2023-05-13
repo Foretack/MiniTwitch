@@ -1,4 +1,4 @@
-﻿using System.Net.WebSockets;
+using System.Net.WebSockets;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using MiniTwitch.Common.Internal.Models;
@@ -40,7 +40,7 @@ public sealed class WebSocketClient : IAsyncDisposable
     #endregion
 
     #region Controls
-    public async Task Start(Uri uri)
+    public async Task Start(Uri uri, CancellationToken cancellationToken = default)
     {
         // The ClientWebSocket cannot be reused once it is aborted
         if (_client.State == WebSocketState.Aborted)
@@ -51,9 +51,9 @@ public sealed class WebSocketClient : IAsyncDisposable
 
         _uri = uri;
         Log(LogLevel.Trace, "Connecting to {uri} ...", uri);
-        await _client.ConnectAsync(uri, _ct);
+        await _client.ConnectAsync(uri, cancellationToken);
         _receiveTask = Receive();
-        await Task.Delay(500);
+        await Task.Delay(500, cancellationToken);
         if (this.IsConnected)
         {
             if (!_reconnecting)
@@ -63,13 +63,15 @@ public sealed class WebSocketClient : IAsyncDisposable
         }
     }
 
-    private Task Stop() => _client.CloseOutputAsync(_client.CloseStatus ?? WebSocketCloseStatus.NormalClosure, _client.CloseStatusDescription, _ct).WaitAsync(_ct);
+    private Task Stop(CancellationToken cancellationToken = default) =>
+        _client.CloseOutputAsync(_client.CloseStatus ?? WebSocketCloseStatus.NormalClosure, _client.CloseStatusDescription, cancellationToken)
+            .WaitAsync(cancellationToken);
 
-    public async Task Disconnect()
+    public async Task Disconnect(CancellationToken cancellationToken = default)
     {
         // Need to be connected to do this
         if (this.IsConnected)
-            await Stop();
+            await Stop(cancellationToken);
 
         _client.Dispose();
         await OnDisconnect.Invoke();
@@ -77,7 +79,7 @@ public sealed class WebSocketClient : IAsyncDisposable
             _receiveTask.Dispose();
     }
 
-    public async Task Restart(TimeSpan delay)
+    public async Task Restart(TimeSpan delay, CancellationToken cancellationToken = default)
     {
         // Sometimes the method gets invoked twice in a short span of time
         // The whole purpose of this _reconnecting field is to stop that
@@ -86,18 +88,18 @@ public sealed class WebSocketClient : IAsyncDisposable
 
         Log(LogLevel.Critical, "The WebSocket client is restarting in {delay}", delay);
         _reconnecting = true;
-        await Disconnect();
+        await Disconnect(cancellationToken);
         _client = new ClientWebSocket();
-        await Task.Delay(delay);
+        await Task.Delay(delay, cancellationToken);
         Log(LogLevel.Debug, "Finished waiting for reconnection delay");
-        await Start(_uri);
+        await Start(_uri, cancellationToken);
         Log(LogLevel.Trace, "If the WebSocket doesn't reconnect in 10 seconds you will see a warning");
         // Keep trying until you reconnect
-        if (!await _reconnectionLock.WaitAsync(TimeSpan.FromSeconds(10)))
+        if (!await _reconnectionLock.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken))
         {
             Log(LogLevel.Warning, "WebSocket reconnect failed. Retrying...");
             _reconnecting = false; // Set to false otherwise the method returns early
-            await Restart(delay);
+            await Restart(delay, cancellationToken);
             return;
         }
 
@@ -119,7 +121,9 @@ public sealed class WebSocketClient : IAsyncDisposable
 
                 try
                 {
-                    bool shouldDrain = await _bucket.FillFrom(_client, _ct);
+                    // TODO: move this to a Thread instead of a Task - then you don't have to deal with long-lived CancellationTokens
+                    // + you're not hogging the Task pool
+                    bool shouldDrain = await _bucket.FillFrom(_client, CancellationToken.None);
                     if (!shouldDrain)
                         continue;
 
@@ -146,10 +150,10 @@ public sealed class WebSocketClient : IAsyncDisposable
         });
     }
 
-    public async ValueTask SendAsync(string data, bool sensitive = false)
+    public async ValueTask SendAsync(string data, bool sensitive = false, CancellationToken cancellationToken = default)
     {
         ReadOnlyMemory<byte> bytes = Encoding.UTF8.GetBytes(data);
-        if (!await _sendLock.WaitAsync(TimeSpan.FromSeconds(10)).ConfigureAwait(false))
+        if (!await _sendLock.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken).ConfigureAwait(false))
         {
             Log(LogLevel.Warning, "{method} timed out after 10 seconds.", nameof(SendAsync));
             return;
@@ -164,7 +168,7 @@ public sealed class WebSocketClient : IAsyncDisposable
 
         try
         {
-            await _client!.SendAsync(bytes, WebSocketMessageType.Text, true, _ct);
+            await _client!.SendAsync(bytes, WebSocketMessageType.Text, true, cancellationToken);
         }
         catch (Exception ex)
         {
