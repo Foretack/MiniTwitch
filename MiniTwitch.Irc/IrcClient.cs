@@ -215,11 +215,12 @@ public sealed class IrcClient : IAsyncDisposable
     /// Connects to TMI
     /// </summary>
     /// <returns><see langword="true"/> if the connection is successful; Otherwise, after 15 seconds: <see langword="false"/></returns>
-    public async Task<bool> ConnectAsync(string url = "wss://irc-ws.chat.twitch.tv:443")
+    public async Task<bool> ConnectAsync(string url = "wss://irc-ws.chat.twitch.tv:443",
+        CancellationToken cancellationToken = default)
     {
         _targetUrl = new(url);
         await _ws.Start(_targetUrl);
-        if (await _connectionWaiter.WaitAsync(TimeSpan.FromSeconds(15)).ConfigureAwait(false))
+        if (await _connectionWaiter.WaitAsync(TimeSpan.FromSeconds(15), cancellationToken).ConfigureAwait(false))
             return true;
 
         Log(LogLevel.Critical, "Connection timed out.");
@@ -234,12 +235,12 @@ public sealed class IrcClient : IAsyncDisposable
     /// <summary>
     /// Disconnects from TMI
     /// </summary>
-    public Task DisconnectAsync() => _ws.Disconnect();
+    public Task DisconnectAsync(CancellationToken cancellationToken = default) => _ws.Disconnect(cancellationToken);
 
     /// <summary>
     /// Disconnects then reconnects to TMI
     /// </summary>
-    public Task ReconnectAsync() => _ws.Restart(this.ReconnectionDelay);
+    public Task ReconnectAsync(CancellationToken cancellationToken = default) => _ws.Restart(this.ReconnectionDelay, cancellationToken);
 
     private async Task OnWsReconnect()
     {
@@ -264,7 +265,8 @@ public sealed class IrcClient : IAsyncDisposable
     /// Send a raw message to TMI
     /// </summary>
     /// <param name="message">The message to send</param>
-    public async ValueTask SendRaw(string message)
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    public async ValueTask SendRaw(string message, CancellationToken cancellationToken = default)
     {
         if (!_ws.IsConnected)
         {
@@ -272,7 +274,7 @@ public sealed class IrcClient : IAsyncDisposable
             return;
         }
 
-        await _ws.SendAsync(message);
+        await _ws.SendAsync(message, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -282,7 +284,8 @@ public sealed class IrcClient : IAsyncDisposable
     /// <param name="message">The message to send</param>
     /// <param name="action">Whether to prepend .me to the message</param>
     /// <param name="nonce">Custom nonce to send with the message. Value can't contain spaces</param>
-    public async ValueTask SendMessage(string channel, string message, bool action = false, string? nonce = null)
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    public async ValueTask SendMessage(string channel, string message, bool action = false, string? nonce = null, CancellationToken cancellationToken = default)
     {
         if (!_ws.IsConnected)
         {
@@ -303,8 +306,8 @@ public sealed class IrcClient : IAsyncDisposable
 
         if (!_manager.CanSend(channel, _moderated.Contains(channel)))
         {
-            await Task.Delay(2500);
-            await SendMessage(channel, message, action, nonce);
+            await Task.Delay(2500, cancellationToken);
+            await SendMessage(channel, message, action, nonce, cancellationToken);
             Log(LogLevel.Debug, "Cannot send message to #{channel}: Rate limit of {count} hit. Retrying in {delay}ms", channel, this.Options.ModMessageRateLimit, 2500);
             Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
                 channel, this.Options.MessageRateLimit, this.Options.ModMessageRateLimit);
@@ -313,7 +316,7 @@ public sealed class IrcClient : IAsyncDisposable
 
         string outMsg = $"{(nonce is null ? string.Empty : $"@client-nonce={nonce}")} PRIVMSG #{channel} :{(action ? $".me {message}" : message)}";
 
-        await _ws.SendAsync(outMsg);
+        await _ws.SendAsync(outMsg, cancellationToken: cancellationToken);
     }
     /// <summary>
     /// Replies to a chat message
@@ -321,7 +324,8 @@ public sealed class IrcClient : IAsyncDisposable
     /// <param name="parentMessage">The message to reply to</param>
     /// <param name="message">The message to reply with</param>
     /// <param name="action">Prepend .me to the message</param>
-    public async ValueTask ReplyTo(Privmsg parentMessage, string message, bool action = false)
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    public async ValueTask ReplyTo(Privmsg parentMessage, string message, bool action = false, CancellationToken cancellationToken = default)
     {
         if (!_ws.IsConnected)
         {
@@ -337,8 +341,8 @@ public sealed class IrcClient : IAsyncDisposable
         string channel = parentMessage.Channel.Name;
         if (!_manager.CanSend(channel, _moderated.Contains(channel)))
         {
-            await Task.Delay(2500);
-            await ReplyTo(parentMessage, message, action);
+            await Task.Delay(2500, cancellationToken);
+            await ReplyTo(parentMessage, message, action, cancellationToken);
             Log(LogLevel.Debug, "Cannot send message to #{channel}: Rate limit of {count} hit. Retrying in {delay}ms", channel, this.Options.ModMessageRateLimit, 2500);
             Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
                 channel, this.Options.MessageRateLimit, this.Options.ModMessageRateLimit);
@@ -347,7 +351,7 @@ public sealed class IrcClient : IAsyncDisposable
 
         string outMsg = $"@reply-parent-msg-id={parentMessage.Id} PRIVMSG #{channel} :{(action ? $".me {message}" : message)}";
 
-        await _ws.SendAsync(outMsg);
+        await _ws.SendAsync(outMsg, cancellationToken: cancellationToken);
     }
     /// <summary>
     /// Replies to a chat message
@@ -356,8 +360,9 @@ public sealed class IrcClient : IAsyncDisposable
     /// <param name="channel">the channel in which that message was sent</param>
     /// <param name="reply">The message to reply with</param>
     /// <param name="action">Prepend .me to the message</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
     /// <returns></returns>
-    public async ValueTask ReplyTo(string messageId, string channel, string reply, bool action = false)
+    public async ValueTask ReplyTo(string messageId, string channel, string reply, bool action = false, CancellationToken cancellationToken = default)
     {
         const string privmsg = "PRIVMSG #";
         const string replyTag = "@reply-parent-msg-id=";
@@ -375,8 +380,8 @@ public sealed class IrcClient : IAsyncDisposable
 
         if (!_manager.CanSend(channel, _moderated.Contains(channel)))
         {
-            await Task.Delay(2500);
-            await ReplyTo(messageId, channel, reply, action);
+            await Task.Delay(2500, cancellationToken);
+            await ReplyTo(messageId, channel, reply, action, cancellationToken);
             Log(LogLevel.Debug, "Cannot send message to #{channel}: Rate limit of {count} hit. Retrying in {delay}ms", channel, this.Options.ModMessageRateLimit, 2500);
             Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
                 channel, this.Options.MessageRateLimit, this.Options.ModMessageRateLimit);
@@ -385,7 +390,7 @@ public sealed class IrcClient : IAsyncDisposable
 
         string outMsg = $"{replyTag}{messageId} {privmsg}{channel} :{(action ? $"{act} {reply}" : reply)}";
 
-        await _ws.SendAsync(outMsg);
+        await _ws.SendAsync(outMsg, cancellationToken: cancellationToken);
     }
 
     private async ValueTask Ping()
@@ -400,8 +405,9 @@ public sealed class IrcClient : IAsyncDisposable
     /// Used for joining a channel
     /// </summary>
     /// <param name="channel">Username of the channel to join</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
     /// <returns><see langword="true"/> if the join is successful; Otherwise, after 10 seconds: <see langword="false"/></returns>
-    public async Task<bool> JoinChannel(string channel)
+    public async Task<bool> JoinChannel(string channel, CancellationToken cancellationToken = default)
     {
         if (!_ws.IsConnected)
         {
@@ -411,13 +417,13 @@ public sealed class IrcClient : IAsyncDisposable
 
         if (!_manager.CanJoin())
         {
-            await Task.Delay(1000);
+            await Task.Delay(1000, cancellationToken);
             Log(LogLevel.Warning, "Waiting to join #{channel}: Configured ratelimit of {rate} joins/10s is hit", channel, this.Options.JoinRateLimit);
-            return await JoinChannel(channel);
+            return await JoinChannel(channel, cancellationToken);
         }
 
-        await _ws.SendAsync($"JOIN #{channel}");
-        return await _joinChannelWaiter.WaitAsync(TimeSpan.FromSeconds(10));
+        await _ws.SendAsync($"JOIN #{channel}", cancellationToken: cancellationToken);
+        return await _joinChannelWaiter.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken);
     }
 
     /// <summary>
@@ -427,6 +433,8 @@ public sealed class IrcClient : IAsyncDisposable
     /// <returns><see langword="true"/> if all joins are successful; Otherwise, <see langword="false"/></returns>
     public async Task<bool> JoinChannels(params string[] channels)
     {
+        // TODO: add a non-params JoinChannels method to support CancellationToken passing
+        // params isn't ideal when you're potentially receiving a list from an external store - not hardcoding
         if (!_ws.IsConnected)
         {
             Log(LogLevel.Error, "Failed to join channels {channels}:  Not connected.", string.Join(',', channels));
@@ -447,7 +455,8 @@ public sealed class IrcClient : IAsyncDisposable
     /// Used for leaving/parting a joined channel
     /// </summary>
     /// <param name="channel">name of the channel to part</param>
-    public Task PartChannel(string channel)
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    public Task PartChannel(string channel, CancellationToken cancellationToken = default)
     {
         if (!_ws.IsConnected)
         {
@@ -455,7 +464,7 @@ public sealed class IrcClient : IAsyncDisposable
             return Task.CompletedTask;
         }
 
-        return _ws.SendAsync($"PART #{channel}").AsTask();
+        return _ws.SendAsync($"PART #{channel}", cancellationToken: cancellationToken).AsTask();
     }
     #endregion
 
