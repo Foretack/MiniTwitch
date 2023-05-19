@@ -207,7 +207,7 @@ public sealed class IrcClient : IAsyncDisposable
     }
 
     /// <summary>
-    /// Attempts connection to TMI like <see cref="ConnectAsync(string)"/>, but connects in a "fire and forget" style
+    /// Attempts connection to TMI like <see cref="ConnectAsync(string, CancellationToken)"/>, but connects in a "fire and forget" style
     /// </summary>
     public void Connect(string url = "wss://irc-ws.chat.twitch.tv:443") => ConnectAsync(url).StepOver();
 
@@ -219,7 +219,7 @@ public sealed class IrcClient : IAsyncDisposable
         CancellationToken cancellationToken = default)
     {
         _targetUrl = new(url);
-        await _ws.Start(_targetUrl);
+        await _ws.Start(_targetUrl, cancellationToken);
         if (await _connectionWaiter.WaitAsync(TimeSpan.FromSeconds(15), cancellationToken).ConfigureAwait(false))
             return true;
 
