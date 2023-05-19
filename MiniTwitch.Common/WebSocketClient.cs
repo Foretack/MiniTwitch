@@ -51,7 +51,7 @@ public sealed class WebSocketClient : IAsyncDisposable
         _uri = uri;
         Log(LogLevel.Trace, "Connecting to {uri} ...", uri);
         await _client.ConnectAsync(uri, cancellationToken);
-        _receiveTask = Receive();
+        _receiveTask = Task.Factory.StartNew(Receive, TaskCreationOptions.LongRunning);
         await Task.Delay(500, cancellationToken);
         if (this.IsConnected)
         {
