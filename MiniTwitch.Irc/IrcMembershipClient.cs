@@ -159,8 +159,9 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     /// Used for joining a channel
     /// </summary>
     /// <param name="channel">Username of the channel to join</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
     /// <returns><see langword="true"/> if the join is successful; Otherwise, after 10 seconds: <see langword="false"/></returns>
-    public async Task JoinChannel(string channel)
+    public async Task JoinChannel(string channel, CancellationToken cancellationToken = default)
     {
         if (!_ws.IsConnected)
         {
@@ -172,11 +173,11 @@ public sealed class IrcMembershipClient : IAsyncDisposable
         {
             await Task.Delay(2500);
             Log(LogLevel.Warning, "Waiting to join #{channel}: Configured ratelimit of {rate} joins/10s is hit", channel, _options.JoinRateLimit);
-            await JoinChannel(channel);
+            await JoinChannel(channel, cancellationToken);
             return;
         }
 
-        await _ws.SendAsync($"JOIN #{channel}");
+        await _ws.SendAsync($"JOIN #{channel}", cancellationToken: cancellationToken);
         _joinedChannels.Add(channel);
     }
 
@@ -184,8 +185,9 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     /// Used for joining multiple channels
     /// </summary>
     /// <param name="channels">Usernames of channels to join</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
     /// <returns><see langword="true"/> if all joins are successful; Otherwise, <see langword="false"/></returns>
-    public async Task JoinChannels(params string[] channels)
+    public async Task JoinChannels(IEnumerable<string> channels, CancellationToken cancellationToken = default)
     {
         if (!_ws.IsConnected)
         {
@@ -195,7 +197,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
 
         foreach (string channel in channels)
         {
-            await JoinChannel(channel);
+            await JoinChannel(channel, cancellationToken);
         }
     }
 
@@ -203,7 +205,8 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     /// Used for leaving/parting a joined channel
     /// </summary>
     /// <param name="channel">name of the channel to part</param>
-    public Task PartChannel(string channel)
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    public Task PartChannel(string channel, CancellationToken cancellationToken = default)
     {
         if (!_ws.IsConnected)
         {
@@ -214,7 +217,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
         if (_joinedChannels.Remove(channel))
             Log(LogLevel.Debug, "Removed #{channel} from joined channels list.", channel);
 
-        return _ws.SendAsync($"PART #{channel}").AsTask();
+        return _ws.SendAsync($"PART #{channel}", cancellationToken: cancellationToken).AsTask();
     }
     #endregion
 
