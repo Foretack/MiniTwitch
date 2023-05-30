@@ -4,7 +4,7 @@
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
       <PackageId>MiniTwitch.Common</PackageId>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-      <PackageVersion>1.0.1</PackageVersion>
+      <PackageVersion>1.0.2</PackageVersion>
       <ImplicitUsings>enable</ImplicitUsings>
       <Nullable>enable</Nullable>
       <Title>MiniTwitch.Common</Title>
@@ -13,9 +13,9 @@
       <RepositoryUrl>https://github.com/Foretack/MiniTwitch</RepositoryUrl>
       <RepositoryType>git</RepositoryType>
       <PackageTags>WebSocket;Client;Events</PackageTags>
-      <PackageReleaseNotes>Tiny improvements</PackageReleaseNotes>
+      <PackageReleaseNotes>Tiny improvements for long running tasks</PackageReleaseNotes>
       <license>MIT</license>
-      <Version>1.0.1</Version>
+      <Version>1.0.2</Version>
       <PackageLicenseFile>LICENSE</PackageLicenseFile>
       <PackageIconUrl>https://media.occluder.space/f/common.png</PackageIconUrl>
   </PropertyGroup>
