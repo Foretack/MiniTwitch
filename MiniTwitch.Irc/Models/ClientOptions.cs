@@ -43,21 +43,21 @@ public sealed class ClientOptions : IMembershipClientOptions
     public ILogger? Logger { get; set; }
     /// <summary>
     /// The amount of outgoing JOINs allowed in a 10 second time period
-    /// <para>Default value is <see langword="20"/></para>
     /// <para>Twitch docs: <see href="https://dev.twitch.tv/docs/irc/#rate-limits"/></para>
+    /// <para>Default value is <see langword="20"/></para>
     /// </summary>
     public int JoinRateLimit { get; set; } = 20;
     /// <summary>
     /// The amount of outgoing PRIVMSGs allowed in a 30 second period
-    /// <para>Default value is <see langword="20"/></para>
     /// <para>Twitch docs: <see href="https://dev.twitch.tv/docs/irc/#rate-limits"/></para>
+    /// <para>Default value is <see langword="20"/></para>
     /// </summary>
     public int MessageRateLimit { get; set; } = 20;
     /// <summary>
     /// The amount of outgoing PRIVMSGs in moderated channels allowed in a 30 second period
-    /// <para>Default value is <see langword="100"/></para>
     /// <para>Twitch docs: <see href="https://dev.twitch.tv/docs/irc/#rate-limits"/></para>
     /// <para>Note: Adding <see cref="IgnoreCommand.USERSTATE"/> to <see cref="IgnoreCommands"/> makes this obsolete</para>
+    /// <para>Default value is <see langword="100"/></para>
     /// </summary>
     public int ModMessageRateLimit { get; set; } = 100;
     /// <summary>
