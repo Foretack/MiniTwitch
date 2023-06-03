@@ -21,7 +21,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
 
     #region Properties
     /// <summary>
-    /// 
+    /// The action to invoke when an exception is caught within an event
     /// </summary>
     public Action<Exception> ExceptionHandler { get; set; } = default!;
     #endregion
@@ -56,7 +56,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     private readonly SemaphoreSlim _connectionWaiter = new(0);
     private readonly SemaphoreSlim _joinChannelWaiter = new(0);
     private readonly IMembershipClientOptions _options;
-    private readonly WebSocketClient _ws = new(TimeSpan.FromSeconds(30), 8192);
+    private readonly WebSocketClient _ws;
     private readonly List<string> _joinedChannels = new();
     private readonly RateLimitManager _manager;
     private bool _connectInvoked;
@@ -71,6 +71,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
         var clientOptions = new ClientOptions();
         options(clientOptions);
         _options = clientOptions;
+        _ws = new(_options.ReconnectionDelay, 8192);
         _manager = new(clientOptions);
 
         InternalInt();
