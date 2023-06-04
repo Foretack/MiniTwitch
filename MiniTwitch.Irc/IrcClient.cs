@@ -242,7 +242,7 @@ public sealed class IrcClient : IAsyncDisposable
     /// <summary>
     /// Disconnects then reconnects to TMI
     /// </summary>
-    public Task ReconnectAsync(CancellationToken cancellationToken = default) => _ws.Restart(this.ReconnectionDelay, cancellationToken);
+    public Task ReconnectAsync(CancellationToken cancellationToken = default) => _ws.Restart(this.Options.ReconnectionDelay, cancellationToken);
 
     private async Task OnWsReconnect()
     {
@@ -530,7 +530,7 @@ public sealed class IrcClient : IAsyncDisposable
 
             case IrcCommand.RECONNECT:
                 Log(LogLevel.Information, "Twitch servers requested a reconnection. Reconnecting ...");
-                _ws.Restart(this.ReconnectionDelay).StepOver();
+                _ws.Restart(this.Options.ReconnectionDelay).StepOver();
                 OnReconnect?.Invoke().StepOver(this.ExceptionHandler);
                 break;
 
