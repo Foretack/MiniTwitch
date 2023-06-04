@@ -66,4 +66,9 @@ public sealed class ClientOptions : IMembershipClientOptions
     /// <para>Default value is <see langword="true"/></para>
     /// </summary>
     public bool UseGlobalRateLimit { get; set; } = true;
+    /// <summary>
+    /// The time to wait before trying to reconnect
+    /// <para>Default value is <see langword="30"/> seconds</para>
+    /// </summary>
+    public TimeSpan ReconnectionDelay { get; set; } = TimeSpan.FromSeconds(30);
 }

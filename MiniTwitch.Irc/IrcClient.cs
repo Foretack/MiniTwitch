@@ -27,7 +27,9 @@ public sealed class IrcClient : IAsyncDisposable
     public List<IBasicChannel> JoinedChannels { get; } = new();
     /// <summary>
     /// Time to wait before attempting to reconnect to TMI upon disconnection
+    /// <para>Do not use this property to change the reconnection delay. Change <see cref="ClientOptions.ReconnectionDelay"/> in the constructor instead</para>
     /// </summary>
+    [Obsolete("Changing this value does nothing; It will be removed in the future")]
     public TimeSpan ReconnectionDelay { get; init; } = TimeSpan.FromSeconds(30);
 
     internal ClientOptions Options { get; init; }
@@ -161,10 +163,10 @@ public sealed class IrcClient : IAsyncDisposable
     /// </summary>
     public IrcClient(Action<ClientOptions> options)
     {
-        _ws = new WebSocketClient(this.ReconnectionDelay, 2048);
         ClientOptions clientOptions = new();
         options.Invoke(clientOptions);
         this.Options = clientOptions;
+        _ws = new WebSocketClient(this.Options.ReconnectionDelay, 2048);
         _manager = new(clientOptions);
 
         InternalInit();
@@ -240,7 +242,7 @@ public sealed class IrcClient : IAsyncDisposable
     /// <summary>
     /// Disconnects then reconnects to TMI
     /// </summary>
-    public Task ReconnectAsync(CancellationToken cancellationToken = default) => _ws.Restart(this.ReconnectionDelay, cancellationToken);
+    public Task ReconnectAsync(CancellationToken cancellationToken = default) => _ws.Restart(this.Options.ReconnectionDelay, cancellationToken);
 
     private async Task OnWsReconnect()
     {
@@ -528,7 +530,7 @@ public sealed class IrcClient : IAsyncDisposable
 
             case IrcCommand.RECONNECT:
                 Log(LogLevel.Information, "Twitch servers requested a reconnection. Reconnecting ...");
-                _ws.Restart(this.ReconnectionDelay).StepOver();
+                _ws.Restart(this.Options.ReconnectionDelay).StepOver();
                 OnReconnect?.Invoke().StepOver(this.ExceptionHandler);
                 break;
 
