@@ -99,7 +99,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     }
 
     /// <summary>
-    /// Attempts connection to TMI like <see cref="ConnectAsync()"/>, but connects in a "fire and forget" style
+    /// Attempts connection to TMI like <see cref="ConnectAsync(CancellationToken)"/>, but connects in a "fire and forget" style
     /// </summary>
     public void Connect() => ConnectAsync().StepOver();
 
@@ -107,13 +107,13 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     /// Connects to TMI
     /// </summary>
     /// <returns><see langword="true"/> if the connection is successful; Otherwise, after 15 seconds: <see langword="false"/></returns>
-    public async Task<bool> ConnectAsync()
+    public async Task<bool> ConnectAsync(CancellationToken cancellationToken = default)
     {
         Uri uri = new(CONN_URL);
 
-        await _ws.Start(uri);
+        await _ws.Start(uri, cancellationToken);
 
-        if (await _connectionWaiter.WaitAsync(TimeSpan.FromSeconds(15)).ConfigureAwait(false))
+        if (await _connectionWaiter.WaitAsync(TimeSpan.FromSeconds(15), cancellationToken).ConfigureAwait(false))
             return true;
 
         Log(LogLevel.Critical, "Connection timed out.");
@@ -128,7 +128,12 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     /// <summary>
     /// Disconnects from TMI
     /// </summary>
-    public Task DisconnectAsync() => _ws.Disconnect();
+    public Task DisconnectAsync(CancellationToken cancellationToken = default) => _ws.Disconnect(cancellationToken);
+
+    /// <summary>
+    /// Disconnects then reconnects to TMI
+    /// </summary>
+    public Task ReconnectAsync(CancellationToken cancellationToken = default) => _ws.Restart(_options.ReconnectionDelay, cancellationToken);
 
     private async Task OnWsReconnect()
     {
@@ -256,7 +261,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
 
             case IrcCommand.RECONNECT:
                 Log(LogLevel.Information, "Twitch servers requested a reconnection. Reconnecting ...");
-                _ws.Restart(TimeSpan.FromSeconds(30)).StepOver();
+                _ws.Restart(_options.ReconnectionDelay).StepOver();
                 OnReconnect?.Invoke().StepOver(this.ExceptionHandler);
                 break;
 
