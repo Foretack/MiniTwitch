@@ -247,11 +247,15 @@ public sealed class IrcClient : IAsyncDisposable
     private async Task OnWsReconnect()
     {
         await Login();
+        TimeSpan joinInterval = this.JoinedChannels.Count >= this.Options.JoinRateLimit 
+            ? TimeSpan.FromSeconds(this.JoinedChannels.Count * (10 / this.Options.JoinRateLimit)) 
+            : TimeSpan.Zero;
+
         foreach (string channel in this.JoinedChannels.Select(c => c.Name))
         {
             bool res = await JoinChannel(channel);
             Log(LogLevel.Information, $"{(res ? "Rejoined" : "Failed to rejoin")} channel: {{channel}}", channel);
-            await Task.Delay(1000);
+            await Task.Delay(joinInterval);
         }
     }
 
@@ -308,7 +312,7 @@ public sealed class IrcClient : IAsyncDisposable
 
         if (!_manager.CanSend(channel, _moderated.Contains(channel)))
         {
-            await Task.Delay(2500, cancellationToken);
+            await Task.Delay(TimeSpan.FromSeconds(90 / this.Options.MessageRateLimit), cancellationToken);
             await SendMessage(channel, message, action, nonce, cancellationToken);
             Log(LogLevel.Debug, "Cannot send message to #{channel}: Rate limit of {count} hit. Retrying in {delay}ms", channel, this.Options.ModMessageRateLimit, 2500);
             Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
@@ -343,7 +347,7 @@ public sealed class IrcClient : IAsyncDisposable
         string channel = parentMessage.Channel.Name;
         if (!_manager.CanSend(channel, _moderated.Contains(channel)))
         {
-            await Task.Delay(2500, cancellationToken);
+            await Task.Delay(TimeSpan.FromSeconds(90 / this.Options.MessageRateLimit), cancellationToken);
             await ReplyTo(parentMessage, message, action, cancellationToken);
             Log(LogLevel.Debug, "Cannot send message to #{channel}: Rate limit of {count} hit. Retrying in {delay}ms", channel, this.Options.ModMessageRateLimit, 2500);
             Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
@@ -382,7 +386,7 @@ public sealed class IrcClient : IAsyncDisposable
 
         if (!_manager.CanSend(channel, _moderated.Contains(channel)))
         {
-            await Task.Delay(2500, cancellationToken);
+            await Task.Delay(TimeSpan.FromSeconds(90 / this.Options.MessageRateLimit), cancellationToken);
             await ReplyTo(messageId, channel, reply, action, cancellationToken);
             Log(LogLevel.Debug, "Cannot send message to #{channel}: Rate limit of {count} hit. Retrying in {delay}ms", channel, this.Options.ModMessageRateLimit, 2500);
             Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
@@ -419,7 +423,7 @@ public sealed class IrcClient : IAsyncDisposable
 
         if (!_manager.CanJoin())
         {
-            await Task.Delay(1000, cancellationToken);
+            await Task.Delay(TimeSpan.FromSeconds(30 / this.Options.JoinRateLimit), cancellationToken);
             Log(LogLevel.Warning, "Waiting to join #{channel}: Configured ratelimit of {rate} joins/10s is hit", channel, this.Options.JoinRateLimit);
             return await JoinChannel(channel, cancellationToken);
         }
