@@ -181,8 +181,8 @@ public sealed class IrcMembershipClient : IAsyncDisposable
 
         if (!_manager.CanJoin())
         {
-            await Task.Delay(TimeSpan.FromSeconds(30 / _options.JoinRateLimit), cancellationToken);
             Log(LogLevel.Warning, "Waiting to join #{channel}: Configured ratelimit of {rate} joins/10s is hit", channel, _options.JoinRateLimit);
+            await Task.Delay(TimeSpan.FromSeconds(30 / _options.JoinRateLimit), cancellationToken);
             await JoinChannel(channel, cancellationToken);
             return;
         }
