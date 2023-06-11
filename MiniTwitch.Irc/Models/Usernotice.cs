@@ -109,7 +109,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
         int viewerCount = 0;
         bool shouldShareStreak = false;
 
-        using IrcTags tags = IrcParsing.ParseTags(memory);
+        using IrcTags tags = IrcParsing.ParseTags(ref memory);
         foreach (IrcTag tag in tags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
@@ -119,32 +119,32 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
             {
                 //id
                 case 205:
-                    id = TagHelper.GetString(tagValue);
+                    id = TagHelper.GetString(ref tagValue);
                     break;
 
                 //mod
                 case 320:
-                    isMod = TagHelper.GetBool(tagValue);
+                    isMod = TagHelper.GetBool(ref tagValue);
                     break;
 
                 //flags
                 case 525:
-                    flags = TagHelper.GetString(tagValue);
+                    flags = TagHelper.GetString(ref tagValue);
                     break;
 
                 //login
                 case 537:
-                    username = TagHelper.GetString(tagValue);
+                    username = TagHelper.GetString(ref tagValue);
                     break;
 
                 //color
                 case 543:
-                    colorCode = TagHelper.GetString(tagValue, true);
+                    colorCode = TagHelper.GetString(ref tagValue, true);
                     break;
 
                 //turbo 
                 case 556:
-                    isTurbo = TagHelper.GetBool(tagValue);
+                    isTurbo = TagHelper.GetBool(ref tagValue);
                     break;
 
                 //msg-id
@@ -154,22 +154,22 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
 
                 //badges
                 case 614:
-                    badges = TagHelper.GetString(tagValue, true);
+                    badges = TagHelper.GetString(ref tagValue, true);
                     break;
 
                 //emotes
                 case 653:
-                    emotes = TagHelper.GetString(tagValue);
+                    emotes = TagHelper.GetString(ref tagValue);
                     break;
 
                 //room-id
                 case 695:
-                    channelId = TagHelper.GetLong(tagValue);
+                    channelId = TagHelper.GetLong(ref tagValue);
                     break;
 
                 //user-id
                 case 697:
-                    userId = TagHelper.GetLong(tagValue);
+                    userId = TagHelper.GetLong(ref tagValue);
                     break;
 
                 //user-type
@@ -179,27 +179,27 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
 
                 //badge-info
                 case 972:
-                    badgeInfo = TagHelper.GetString(tagValue, true, true);
+                    badgeInfo = TagHelper.GetString(ref tagValue, true, true);
                     break;
 
                 //system-msg
                 case 1049:
-                    systemMessage = TagHelper.GetString(tagValue, unescape: true);
+                    systemMessage = TagHelper.GetString(ref tagValue, unescape: true);
                     break;
 
                 //subscriber
                 case 1076:
-                    isSubscriber = TagHelper.GetBool(tagValue);
+                    isSubscriber = TagHelper.GetBool(ref tagValue);
                     break;
 
                 //tmi-sent-ts
                 case 1093:
-                    this.TmiSentTs = TagHelper.GetLong(tagValue);
+                    this.TmiSentTs = TagHelper.GetLong(ref tagValue);
                     break;
 
                 //display-name
                 case 1220:
-                    displayName = TagHelper.GetString(tagValue);
+                    displayName = TagHelper.GetString(ref tagValue);
                     break;
 
                 //msg-param-color
@@ -209,7 +209,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
 
                 //msg-param-months
                 case 1611:
-                    months = TagHelper.GetInt(tagValue);
+                    months = TagHelper.GetInt(ref tagValue);
                     break;
 
                 //msg-param-sub-plan
@@ -219,67 +219,67 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
 
                 //msg-param-sender-name
                 case 2049:
-                    gifterDisplayName = TagHelper.GetString(tagValue);
+                    gifterDisplayName = TagHelper.GetString(ref tagValue);
                     break;
 
                 //msg-param-gift-months
                 case 2082:
-                    giftedMonths = TagHelper.GetInt(tagValue);
+                    giftedMonths = TagHelper.GetInt(ref tagValue);
                     break;
 
                 //msg-param-viewerCount
                 case 2125:
-                    viewerCount = TagHelper.GetInt(tagValue);
+                    viewerCount = TagHelper.GetInt(ref tagValue);
                     break;
 
                 //msg-param-recipient-id
                 case 2159:
-                    recipientId = TagHelper.GetLong(tagValue);
+                    recipientId = TagHelper.GetLong(ref tagValue);
                     break;
 
                 //msg-param-sender-login
                 case 2169:
-                    gifterUsername = TagHelper.GetString(tagValue);
+                    gifterUsername = TagHelper.GetString(ref tagValue);
                     break;
 
                 //msg-param-sender-count
                 case 2185:
-                    totalGiftCount = TagHelper.GetInt(tagValue);
+                    totalGiftCount = TagHelper.GetInt(ref tagValue);
                     break;
 
                 //msg-param-sub-plan-name
                 case 2210:
-                    subPlanName = TagHelper.GetString(tagValue, true, true);
+                    subPlanName = TagHelper.GetString(ref tagValue, true, true);
                     break;
 
                 //msg-param-streak-months
                 case 2306:
-                    monthStreak = TagHelper.GetInt(tagValue);
+                    monthStreak = TagHelper.GetInt(ref tagValue);
                     break;
 
                 //msg-param-mass-gift-count
                 case 2451:
-                    giftCount = TagHelper.GetInt(tagValue);
+                    giftCount = TagHelper.GetInt(ref tagValue);
                     break;
 
                 //msg-param-cumulative-months
                 case 2743:
-                    cumulativeMonths = TagHelper.GetInt(tagValue);
+                    cumulativeMonths = TagHelper.GetInt(ref tagValue);
                     break;
 
                 //msg-param-recipient-user-name
                 case 2863:
-                    recipientUsername = TagHelper.GetString(tagValue);
+                    recipientUsername = TagHelper.GetString(ref tagValue);
                     break;
 
                 //msg-param-should-share-streak
                 case 2872:
-                    shouldShareStreak = TagHelper.GetBool(tagValue);
+                    shouldShareStreak = TagHelper.GetBool(ref tagValue);
                     break;
 
                 //msg-param-recipient-display-name
                 case 3174:
-                    recipientDisplayName = TagHelper.GetString(tagValue);
+                    recipientDisplayName = TagHelper.GetString(ref tagValue);
                     break;
             }
         }

@@ -12,7 +12,7 @@ public class TagHelperTests
     {
         string raw = "forsenforsen123";
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        string result = TagHelper.GetString(span);
+        string result = TagHelper.GetString(ref span);
         Assert.Equal(raw, result);
     }
 
@@ -21,7 +21,7 @@ public class TagHelperTests
     {
         string raw = "LUL!";
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        string result = TagHelper.GetString(span, true);
+        string result = TagHelper.GetString(ref span, true);
         Assert.Equal(raw, result);
         Assert.True(string.IsInterned(result) is not null);
     }
@@ -31,12 +31,12 @@ public class TagHelperTests
     {
         string raw = "i\\slolled\\sxD";
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        string result = TagHelper.GetString(span, unescape: true);
+        string result = TagHelper.GetString(ref span, unescape: true);
         Assert.Equal(raw.Unescape(), result);
 
         string raw2 = "i\\slolled\\:xD";
         ReadOnlySpan<byte> span2 = Encoding.UTF8.GetBytes(raw2).AsSpan();
-        string result2 = TagHelper.GetString(span2, unescape: true);
+        string result2 = TagHelper.GetString(ref span2, unescape: true);
         Assert.Equal(raw2.Unescape(), result2);
     }
 
@@ -45,7 +45,7 @@ public class TagHelperTests
     {
         string raw = "1";
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        bool result = TagHelper.GetBool(span);
+        bool result = TagHelper.GetBool(ref span);
         Assert.True(result);
     }
 
@@ -54,7 +54,7 @@ public class TagHelperTests
     {
         string raw = "true";
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        bool result = TagHelper.GetBool(span, nonBinary: true);
+        bool result = TagHelper.GetBool(ref span, nonBinary: true);
         Assert.True(result);
     }
 
@@ -63,7 +63,7 @@ public class TagHelperTests
     {
         string raw = "12345678";
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        int result = TagHelper.GetInt(span);
+        int result = TagHelper.GetInt(ref span);
         Assert.Equal(int.Parse(raw), result);
     }
 
@@ -72,7 +72,7 @@ public class TagHelperTests
     {
         string raw = "-12345678";
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        int result = TagHelper.GetInt(span);
+        int result = TagHelper.GetInt(ref span);
         Assert.Equal(int.Parse(raw), result);
     }
 
@@ -81,7 +81,7 @@ public class TagHelperTests
     {
         string raw = "12345678901234567";
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        long result = TagHelper.GetLong(span);
+        long result = TagHelper.GetLong(ref span);
         Assert.Equal(long.Parse(raw), result);
     }
 
@@ -90,7 +90,7 @@ public class TagHelperTests
     {
         string raw = "-12345678901234567";
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        long result = TagHelper.GetLong(span);
+        long result = TagHelper.GetLong(ref span);
         Assert.Equal(long.Parse(raw), result);
     }
 
@@ -99,7 +99,7 @@ public class TagHelperTests
     {
         string raw = "admin";
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        UserType result = TagHelper.GetEnum<UserType>(span);
+        UserType result = TagHelper.GetEnum<UserType>(ref span);
         Assert.Equal(UserType.Admin, result);
     }
 
@@ -108,7 +108,7 @@ public class TagHelperTests
     {
         string raw = "xDlolrandomthing";
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        UserType result = TagHelper.GetEnum<UserType>(span);
+        UserType result = TagHelper.GetEnum<UserType>(ref span);
         Assert.Equal(UserType.None, result);
     }
 }

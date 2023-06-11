@@ -38,7 +38,7 @@ public readonly struct Clearchat : IUserTimeout, IUserBan, IChatClear
 
         long tmiSentTs = 0;
 
-        using IrcTags tags = IrcParsing.ParseTags(memory);
+        using IrcTags tags = IrcParsing.ParseTags(ref memory);
         foreach (IrcTag tag in tags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
@@ -48,22 +48,22 @@ public readonly struct Clearchat : IUserTimeout, IUserBan, IChatClear
             {
                 //room-id
                 case 695:
-                    channelId = TagHelper.GetLong(tagValue);
+                    channelId = TagHelper.GetLong(ref tagValue);
                     break;
 
                 //tmi-sent-ts
                 case 1093:
-                    tmiSentTs = TagHelper.GetLong(tagValue);
+                    tmiSentTs = TagHelper.GetLong(ref tagValue);
                     break;
 
                 //ban-duration
                 case 1220:
-                    duration = TagHelper.GetInt(tagValue);
+                    duration = TagHelper.GetInt(ref tagValue);
                     break;
 
                 //target-user-id
                 case 1389:
-                    targetId = TagHelper.GetLong(tagValue);
+                    targetId = TagHelper.GetLong(ref tagValue);
                     break;
             }
         }

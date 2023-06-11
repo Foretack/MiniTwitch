@@ -47,14 +47,9 @@ public readonly struct Userstate
         string channel = memory.Span.FindChannel(true);
         string emoteSets = string.Empty;
 
-        using IrcTags tags = IrcParsing.ParseTags(memory);
+        using IrcTags tags = IrcParsing.ParseTags(ref memory);
         foreach (IrcTag tag in tags)
         {
-            if (tag.Key.Length == 0)
-            {
-                continue;
-            }
-
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
             ReadOnlySpan<byte> tagValue = tag.Value.Span;
             switch (tagKey.Sum())
@@ -62,27 +57,27 @@ public readonly struct Userstate
 
                 //mod
                 case 320:
-                    mod = TagHelper.GetBool(tagValue);
+                    mod = TagHelper.GetBool(ref tagValue);
                     break;
 
                 //vip
                 case 335:
-                    vip = TagHelper.GetBool(tagValue);
+                    vip = TagHelper.GetBool(ref tagValue);
                     break;
 
                 //color
                 case 543:
-                    color = TagHelper.GetString(tagValue, true);
+                    color = TagHelper.GetString(ref tagValue, true);
                     break;
 
                 //turbo
                 case 556:
-                    turbo = TagHelper.GetBool(tagValue);
+                    turbo = TagHelper.GetBool(ref tagValue);
                     break;
 
                 //badges
                 case 614:
-                    badges = TagHelper.GetString(tagValue, true);
+                    badges = TagHelper.GetString(ref tagValue, true);
                     break;
 
                 //user-type
@@ -92,22 +87,22 @@ public readonly struct Userstate
 
                 //badge-info
                 case 972:
-                    badgeInfo = TagHelper.GetString(tagValue, true, true);
+                    badgeInfo = TagHelper.GetString(ref tagValue, true, true);
                     break;
 
                 //emote-sets
                 case 1030:
-                    emoteSets = TagHelper.GetString(tagValue, true);
+                    emoteSets = TagHelper.GetString(ref tagValue, true);
                     break;
 
                 //subscriber
                 case 1076:
-                    subscriber = TagHelper.GetBool(tagValue);
+                    subscriber = TagHelper.GetBool(ref tagValue);
                     break;
 
                 //display-name
                 case 1220:
-                    displayName = TagHelper.GetString(tagValue);
+                    displayName = TagHelper.GetString(ref tagValue);
                     break;
             }
         }

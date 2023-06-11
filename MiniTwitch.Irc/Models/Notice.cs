@@ -28,7 +28,7 @@ public readonly struct Notice : IEquatable<Notice>
     internal Notice(ReadOnlyMemory<byte> memory)
     {
         this.SystemMessage = memory.Span.FindContent().Content;
-        using IrcTags ircTags = IrcParsing.ParseTags(memory);
+        using IrcTags ircTags = IrcParsing.ParseTags(ref memory);
         foreach (IrcTag tag in ircTags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
@@ -40,7 +40,7 @@ public readonly struct Notice : IEquatable<Notice>
                 //msg-id
                 case 577:
                     // I do not like this. But because some of its values would have the same sum, I'm forced to do this
-                    this.Type = TagHelper.GetEnum<NoticeType>(tagValue);
+                    this.Type = TagHelper.GetEnum<NoticeType>(ref tagValue);
                     break;
             }
         }

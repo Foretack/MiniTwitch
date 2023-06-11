@@ -117,7 +117,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
         bool firstMsg = false;
         bool returningChatter = false;
 
-        using IrcTags tags = IrcParsing.ParseTags(memory);
+        using IrcTags tags = IrcParsing.ParseTags(ref memory);
         foreach (IrcTag tag in tags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
@@ -127,62 +127,62 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
             {
                 //id
                 case 205:
-                    id = TagHelper.GetString(tagValue);
+                    id = TagHelper.GetString(ref tagValue);
                     break;
 
                 //mod
                 case 320:
-                    mod = TagHelper.GetBool(tagValue);
+                    mod = TagHelper.GetBool(ref tagValue);
                     break;
 
                 //vip
                 case 335:
-                    vip = TagHelper.GetBool(tagValue);
+                    vip = TagHelper.GetBool(ref tagValue);
                     break;
 
                 //bits
                 case 434:
-                    bits = TagHelper.GetInt(tagValue);
+                    bits = TagHelper.GetInt(ref tagValue);
                     break;
 
                 //flags
                 case 525:
-                    flags = TagHelper.GetString(tagValue);
+                    flags = TagHelper.GetString(ref tagValue);
                     break;
 
                 //color
                 case 543:
-                    color = TagHelper.GetString(tagValue, true);
+                    color = TagHelper.GetString(ref tagValue, true);
                     break;
 
                 //turbo
                 case 556:
-                    turbo = TagHelper.GetBool(tagValue);
+                    turbo = TagHelper.GetBool(ref tagValue);
                     break;
 
                 //badges
                 case 614:
-                    badges = TagHelper.GetString(tagValue, true);
+                    badges = TagHelper.GetString(ref tagValue, true);
                     break;
 
                 //emotes
                 case 653:
-                    emotes = TagHelper.GetString(tagValue);
+                    emotes = TagHelper.GetString(ref tagValue);
                     break;
 
                 //room-id
                 case 695:
-                    channelId = TagHelper.GetLong(tagValue);
+                    channelId = TagHelper.GetLong(ref tagValue);
                     break;
 
                 //user-id
                 case 697:
-                    uid = TagHelper.GetLong(tagValue);
+                    uid = TagHelper.GetLong(ref tagValue);
                     break;
 
                 //first-msg
                 case 924:
-                    firstMsg = TagHelper.GetBool(tagValue);
+                    firstMsg = TagHelper.GetBool(ref tagValue);
                     break;
 
                 //user-type
@@ -192,58 +192,58 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
 
                 //badge-info
                 case 972:
-                    badgeInfo = TagHelper.GetString(tagValue, true, true);
+                    badgeInfo = TagHelper.GetString(ref tagValue, true, true);
                     break;
 
                 //subscriber
                 case 1076:
-                    sub = TagHelper.GetBool(tagValue);
+                    sub = TagHelper.GetBool(ref tagValue);
                     break;
 
                 //tmi-sent-ts
                 case 1093:
-                    tmiSentTs = TagHelper.GetLong(tagValue);
+                    tmiSentTs = TagHelper.GetLong(ref tagValue);
                     break;
 
                 //client-nonce
                 case 1215:
-                    nonce = TagHelper.GetString(tagValue);
+                    nonce = TagHelper.GetString(ref tagValue);
                     break;
 
                 //display-name
                 case 1220:
-                    displayName = TagHelper.GetString(tagValue);
+                    displayName = TagHelper.GetString(ref tagValue);
                     break;
 
                 //returning-chatter
                 case 1782:
-                    returningChatter = TagHelper.GetBool(tagValue);
+                    returningChatter = TagHelper.GetBool(ref tagValue);
                     break;
 
                 //reply-parent-msg-id
                 case 1873:
-                    replyMessageId = TagHelper.GetString(tagValue);
+                    replyMessageId = TagHelper.GetString(ref tagValue);
                     hasReply = true;
                     break;
 
                 //reply-parent-user-id
                 case 1993:
-                    replyUserId = TagHelper.GetLong(tagValue);
+                    replyUserId = TagHelper.GetLong(ref tagValue);
                     break;
 
                 //reply-parent-msg-body
                 case 2098:
-                    replyMessageBody = TagHelper.GetString(tagValue, unescape: true);
+                    replyMessageBody = TagHelper.GetString(ref tagValue, unescape: true);
                     break;
 
                 //reply-parent-user-login
                 case 2325:
-                    replyUsername = TagHelper.GetString(tagValue);
+                    replyUsername = TagHelper.GetString(ref tagValue);
                     break;
 
                 //reply-parent-display-name
                 case 2516:
-                    replyDisplayName = TagHelper.GetString(tagValue);
+                    replyDisplayName = TagHelper.GetString(ref tagValue);
                     break;
             }
         }

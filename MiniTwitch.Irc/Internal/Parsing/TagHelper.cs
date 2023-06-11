@@ -4,7 +4,7 @@ namespace MiniTwitch.Irc.Internal.Parsing;
 
 internal static class TagHelper
 {
-    public static string GetString(ReadOnlySpan<byte> span, bool intern = false, bool unescape = false)
+    public static string GetString(ref ReadOnlySpan<byte> span, bool intern = false, bool unescape = false)
     {
         string value;
 
@@ -27,7 +27,7 @@ internal static class TagHelper
         return value;
     }
 
-    public static bool GetBool(ReadOnlySpan<byte> span, bool nonBinary = false)
+    public static bool GetBool(ref ReadOnlySpan<byte> span, bool nonBinary = false)
     {
         const byte zero = (byte)'0';
         if (nonBinary)
@@ -41,19 +41,19 @@ internal static class TagHelper
         return span[0] != zero;
     }
 
-    public static int GetInt(ReadOnlySpan<byte> span)
+    public static int GetInt(ref ReadOnlySpan<byte> span)
     {
         const byte dash = (byte)'-';
         return span[0] == dash ? -1 * ParseInt(span[1..]) : ParseInt(span);
     }
 
-    public static long GetLong(ReadOnlySpan<byte> span)
+    public static long GetLong(ref ReadOnlySpan<byte> span)
     {
         const byte dash = (byte)'-';
         return span[0] == dash ? -1 * ParseLong(span[1..]) : ParseLong(span);
     }
 
-    public static TEnum GetEnum<TEnum>(ReadOnlySpan<byte> span, bool useTry = true)
+    public static TEnum GetEnum<TEnum>(ref ReadOnlySpan<byte> span, bool useTry = true)
     where TEnum : struct
     {
         string value = Encoding.UTF8.GetString(span);

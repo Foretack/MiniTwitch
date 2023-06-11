@@ -51,7 +51,7 @@ public readonly struct IrcChannel : IGazatuChannel, IPartedChannel, IBasicChanne
         bool followerModeModified = false;
         bool slowModeModified = false;
 
-        using IrcTags tags = IrcParsing.ParseTags(memory);
+        using IrcTags tags = IrcParsing.ParseTags(ref memory);
         foreach (IrcTag tag in tags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
@@ -60,36 +60,36 @@ public readonly struct IrcChannel : IGazatuChannel, IPartedChannel, IBasicChanne
             {
                 //r9k
                 case 278:
-                    this.UniqueModeEnabled = TagHelper.GetBool(tagValue);
+                    this.UniqueModeEnabled = TagHelper.GetBool(ref tagValue);
                     uniqueModeModified = true;
                     break;
 
                 //slow
                 case 453:
-                    slowModeDuration = TagHelper.GetInt(tagValue);
+                    slowModeDuration = TagHelper.GetInt(ref tagValue);
                     slowModeModified = true;
                     break;
 
                 //room-id
                 case 695:
-                    id = TagHelper.GetLong(tagValue);
+                    id = TagHelper.GetLong(ref tagValue);
                     break;
 
                 //subs-only
                 case 940:
-                    this.SubOnlyEnabled = TagHelper.GetBool(tagValue);
+                    this.SubOnlyEnabled = TagHelper.GetBool(ref tagValue);
                     subModeModified = true;
                     break;
 
                 //emote-only
                 case 1033:
-                    this.EmoteOnlyEnabled = TagHelper.GetBool(tagValue);
+                    this.EmoteOnlyEnabled = TagHelper.GetBool(ref tagValue);
                     emoteOnlyModified = true;
                     break;
 
                 //followers-only
                 case 1484:
-                    followerModeDuration = TagHelper.GetInt(tagValue);
+                    followerModeDuration = TagHelper.GetInt(ref tagValue);
                     followerModeModified = true;
                     break;
             }

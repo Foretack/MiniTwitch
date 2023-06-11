@@ -38,7 +38,7 @@ public readonly struct Clearmsg : IUnixTimestamped
         string messageId = string.Empty;
         long tmiSentTs = 0;
 
-        using IrcTags tags = IrcParsing.ParseTags(memory);
+        using IrcTags tags = IrcParsing.ParseTags(ref memory);
         foreach (IrcTag tag in tags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
@@ -48,17 +48,17 @@ public readonly struct Clearmsg : IUnixTimestamped
             {
                 //login
                 case 537:
-                    targetUsername = TagHelper.GetString(tagValue);
+                    targetUsername = TagHelper.GetString(ref tagValue);
                     break;
 
                 //tmi-sent-ts
                 case 1093:
-                    tmiSentTs = TagHelper.GetLong(tagValue);
+                    tmiSentTs = TagHelper.GetLong(ref tagValue);
                     break;
 
                 //target-msg-id
                 case 1269:
-                    messageId = TagHelper.GetString(tagValue);
+                    messageId = TagHelper.GetString(ref tagValue);
                     break;
 
             }

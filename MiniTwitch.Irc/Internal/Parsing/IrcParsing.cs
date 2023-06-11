@@ -39,7 +39,7 @@ internal static class IrcParsing
         {
             throw new ArgumentException($"Failed to find channel from {symbolIndex + 1} to {nextSpace} in\n{Encoding.UTF8.GetString(span)}");
         }
-        return TagHelper.GetString(newSpan, true);
+        return TagHelper.GetString(ref newSpan, true);
     }
 
     internal static (string Content, bool Action) FindContent(this ReadOnlySpan<byte> span, bool maybeEmpty = false, bool maybeAction = false)
@@ -57,7 +57,7 @@ internal static class IrcParsing
             return (string.Empty, false);
 
         ReadOnlySpan<byte> newSpan = span[secondSeparatorIndex..];
-        string content = TagHelper.GetString(newSpan);
+        string content = TagHelper.GetString(ref newSpan);
         if (maybeAction && content.Length > 9 && content[0] == '\u0001' && content[^1] == '\u0001')
             return (content[8..^1], true);
 
@@ -97,10 +97,10 @@ internal static class IrcParsing
         {
             throw new ArgumentException($"Failed to find channel from {separator + 1} to {exclamationIndex} in\n{Encoding.UTF8.GetString(span)}");
         }
-        return TagHelper.GetString(newSpan);
+        return TagHelper.GetString(ref newSpan);
     }
 
-    internal static IrcTags ParseTags(ReadOnlyMemory<byte> memory)
+    internal static IrcTags ParseTags(ref ReadOnlyMemory<byte> memory)
     {
         ReadOnlySpan<byte> span = memory.Span;
 

@@ -48,7 +48,7 @@ public readonly struct Whisper
         string threadId = string.Empty;
         (string content, bool action) = memory.Span.FindContent(maybeAction: true);
 
-        using IrcTags tags = IrcParsing.ParseTags(memory);
+        using IrcTags tags = IrcParsing.ParseTags(ref memory);
         foreach (IrcTag tag in tags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
@@ -57,32 +57,32 @@ public readonly struct Whisper
             {
                 //color
                 case 543:
-                    color = TagHelper.GetString(tagValue, true);
+                    color = TagHelper.GetString(ref tagValue, true);
                     break;
 
                 //turbo
                 case 556:
-                    turbo = TagHelper.GetBool(tagValue);
+                    turbo = TagHelper.GetBool(ref tagValue);
                     break;
 
                 //badges
                 case 614:
-                    badges = TagHelper.GetString(tagValue, true);
+                    badges = TagHelper.GetString(ref tagValue, true);
                     break;
 
                 //emotes
                 case 653:
-                    emotes = TagHelper.GetString(tagValue);
+                    emotes = TagHelper.GetString(ref tagValue);
                     break;
 
                 //user-id
                 case 697:
-                    uid = TagHelper.GetLong(tagValue);
+                    uid = TagHelper.GetLong(ref tagValue);
                     break;
 
                 //thread-id
                 case 882:
-                    threadId = TagHelper.GetString(tagValue, true);
+                    threadId = TagHelper.GetString(ref tagValue, true);
                     break;
 
                 //user-type
@@ -92,12 +92,12 @@ public readonly struct Whisper
 
                 //message-id
                 case 991:
-                    id = TagHelper.GetInt(tagValue);
+                    id = TagHelper.GetInt(ref tagValue);
                     break;
 
                 //display-name
                 case 1220:
-                    displayName = TagHelper.GetString(tagValue);
+                    displayName = TagHelper.GetString(ref tagValue);
                     break;
             }
         }
