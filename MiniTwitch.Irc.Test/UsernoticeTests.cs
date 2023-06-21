@@ -56,8 +56,8 @@ public class UsernoticeTests
         Assert.Equal(0, sub.MonthStreak);
         Assert.Equal(1678860387524, sub.TmiSentTs);
         Assert.Equal(string.Empty, sub.Message);
-        Assert.Equal($"Channel\\sSubscription\\s(mandeow)".Unescape(), sub.SubPlanName);
-        Assert.Equal($"SleepyHeadszZ\\ssubscribed\\sat\\sTier\\s1.".Unescape(), sub.SystemMessage);
+        Assert.Equal($"Channel Subscription (mandeow)", sub.SubPlanName);
+        Assert.Equal($"SleepyHeadszZ subscribed at Tier 1.", sub.SystemMessage);
         Assert.False(sub.ShouldShareStreak);
     }
 
@@ -77,8 +77,8 @@ public class UsernoticeTests
         Assert.Equal(4, sub.MonthStreak);
         Assert.Equal(1678873100296, sub.TmiSentTs);
         Assert.Equal(string.Empty, sub.Message);
-        Assert.Equal($"Channel\\sSubscription\\s(mandeow)".Unescape(), sub.SubPlanName);
-        Assert.Equal($"Syn993\\ssubscribed\\sat\\sTier\\s1.\\sThey've\\ssubscribed\\sfor\\s5\\smonths,\\scurrently\\son\\sa\\s4\\smonth\\sstreak!".Unescape(), sub.SystemMessage);
+        Assert.Equal($"Channel Subscription (mandeow)", sub.SubPlanName);
+        Assert.Equal($"Syn993 subscribed at Tier 1. They've subscribed for 5 months, currently on a 4 month streak!", sub.SystemMessage);
         Assert.True(sub.ShouldShareStreak);
     }
 
@@ -98,8 +98,8 @@ public class UsernoticeTests
         Assert.Equal(0, sub.MonthStreak);
         Assert.Equal(1678873250647, sub.TmiSentTs);
         Assert.Equal("obama: good day mande and chat, I hope everyone has a banger day. (silence) witch: Aint no way lil bro (bong)", sub.Message);
-        Assert.Equal($"Channel\\sSubscription\\s(mandeow)".Unescape(), sub.SubPlanName);
-        Assert.Equal($"LordGrox\\ssubscribed\\sat\\sTier\\s1.\\sThey've\\ssubscribed\\sfor\\s14\\smonths!".Unescape(), sub.SystemMessage);
+        Assert.Equal($"Channel Subscription (mandeow)", sub.SubPlanName);
+        Assert.Equal($"LordGrox subscribed at Tier 1. They've subscribed for 14 months!", sub.SystemMessage);
         Assert.False(sub.ShouldShareStreak);
     }
 
@@ -120,8 +120,8 @@ public class UsernoticeTests
         Assert.Equal("zackpanjang", gift.Recipient.Name);
         Assert.Equal(412581855, gift.Recipient.Id);
         Assert.Equal(11, gift.TotalGiftCount);
-        Assert.Equal($"Channel\\sSubscription\\s(mandeow)".Unescape(), gift.SubPlanName);
-        Assert.Equal($"Goop_456789\\sgifted\\sa\\sTier\\s1\\ssub\\sto\\sZackpanjang!\\sThey\\shave\\sgiven\\s11\\sGift\\sSubs\\sin\\sthe\\schannel!".Unescape(), gift.SystemMessage);
+        Assert.Equal($"Channel Subscription (mandeow)", gift.SubPlanName);
+        Assert.Equal($"Goop_456789 gifted a Tier 1 sub to Zackpanjang! They have given 11 Gift Subs in the channel!", gift.SystemMessage);
     }
 
     [Fact]
@@ -137,7 +137,7 @@ public class UsernoticeTests
         Assert.Equal(6, intro.TotalGiftCount);
         Assert.Equal(1, intro.GiftCount);
         Assert.Equal(SubPlan.Tier1, intro.SubPlan);
-        Assert.Equal($"xHypnoticPowerx\\sis\\sgifting\\s1\\sTier\\s1\\sSubs\\sto\\sMande's\\scommunity!\\sThey've\\sgifted\\sa\\stotal\\sof\\s6\\sin\\sthe\\schannel!".Unescape(), intro.SystemMessage);
+        Assert.Equal($"xHypnoticPowerx is gifting 1 Tier 1 Subs to Mande's community! They've gifted a total of 6 in the channel!", intro.SystemMessage);
     }
 
     [Fact]
@@ -150,7 +150,7 @@ public class UsernoticeTests
         IPrimeUpgradeNotice upgrade = usernotice;
         Assert.Equal("8e88f9b5-840d-4ca4-9dc3-88c4fed21f42", upgrade.Id);
         Assert.Equal(SubPlan.Tier1, upgrade.SubPlan);
-        Assert.Equal("DrDisRespexs\\sconverted\\sfrom\\sa\\sPrime\\ssub\\sto\\sa\\sTier\\s1\\ssub!".Unescape(), upgrade.SystemMessage);
+        Assert.Equal("DrDisRespexs converted from a Prime sub to a Tier 1 sub!", upgrade.SystemMessage);
         Assert.Equal(1677696547747, upgrade.TmiSentTs);
     }
 
@@ -163,7 +163,7 @@ public class UsernoticeTests
 
         IPaidUpgradeNotice upgrade = usernotice;
         Assert.Equal("f9284d35-b50e-48b8-886b-65bb448b5da7", upgrade.Id);
-        Assert.Equal($"NaMTheWeebs\\sis\\scontinuing\\sthe\\sGift\\sSub\\sthey\\sgot\\sfrom\\san\\sanonymous\\suser!".Unescape(), upgrade.SystemMessage);
+        Assert.Equal($"NaMTheWeebs is continuing the Gift Sub they got from an anonymous user!", upgrade.SystemMessage);
         Assert.Equal(string.Empty, upgrade.GifterUsername);
         Assert.Equal(string.Empty, upgrade.GifterDisplayName);
         Assert.Equal(1675748995095, upgrade.TmiSentTs);
@@ -178,7 +178,7 @@ public class UsernoticeTests
 
         IPaidUpgradeNotice upgrade = usernotice;
         Assert.Equal("cde7a201-41e1-4cd3-afda-17520ed7289d", upgrade.Id);
-        Assert.Equal($"special_forces_of_russia\\sis\\scontinuing\\sthe\\sGift\\sSub\\sthey\\sgot\\sfrom\\spotnayakatka64!".Unescape(), upgrade.SystemMessage);
+        Assert.Equal($"special_forces_of_russia is continuing the Gift Sub they got from potnayakatka64!", upgrade.SystemMessage);
         Assert.Equal("potnayakatka64", upgrade.GifterUsername);
         Assert.Equal("potnayakatka64", upgrade.GifterDisplayName);
         Assert.Equal(1677361938937, upgrade.TmiSentTs);
@@ -194,7 +194,7 @@ public class UsernoticeTests
         IRaidNotice raid = usernotice;
         Assert.Equal("8b1984d1-9e2a-4a72-86be-8f4c11adc3dd", raid.Id);
         Assert.Equal(1, raid.ViewerCount);
-        Assert.Equal("1\\sraiders\\sfrom\\soccluder\\shave\\sjoined!".Unescape(), raid.SystemMessage);
+        Assert.Equal("1 raiders from occluder have joined!", raid.SystemMessage);
         Assert.Equal(1676557512027, raid.TmiSentTs);
     }
 }
