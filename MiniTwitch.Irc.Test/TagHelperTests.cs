@@ -29,15 +29,15 @@ public class TagHelperTests
     [Fact]
     public void GetString_Escaped()
     {
-        string raw = "i\\slolled\\sxD";
+        string raw = @"i\slolled\sxD";
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
         string result = TagHelper.GetString(span, unescape: true);
-        Assert.Equal(raw.Unescape(), result);
+        Assert.Equal(@"i lolled xD", result);
 
-        string raw2 = "i\\slolled\\:xD";
+        string raw2 = @"i\slolled\:xD";
         ReadOnlySpan<byte> span2 = Encoding.UTF8.GetBytes(raw2).AsSpan();
         string result2 = TagHelper.GetString(span2, unescape: true);
-        Assert.Equal(raw2.Unescape(), result2);
+        Assert.Equal(@"i lolled;xD", result2);
     }
 
     [Fact]

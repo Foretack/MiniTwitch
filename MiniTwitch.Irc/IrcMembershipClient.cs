@@ -138,10 +138,14 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     private async Task OnWsReconnect()
     {
         await Login();
+        TimeSpan joinInterval = _joinedChannels.Count >= _options.JoinRateLimit
+            ? TimeSpan.FromSeconds(_joinedChannels.Count * (10 / _options.JoinRateLimit))
+            : TimeSpan.Zero;
+
         foreach (string channel in _joinedChannels)
         {
             await JoinChannel(channel);
-            await Task.Delay(1000);
+            await Task.Delay(joinInterval);
         }
     }
 
@@ -177,8 +181,8 @@ public sealed class IrcMembershipClient : IAsyncDisposable
 
         if (!_manager.CanJoin())
         {
-            await Task.Delay(2500);
             Log(LogLevel.Warning, "Waiting to join #{channel}: Configured ratelimit of {rate} joins/10s is hit", channel, _options.JoinRateLimit);
+            await Task.Delay(TimeSpan.FromSeconds(30 / _options.JoinRateLimit), cancellationToken);
             await JoinChannel(channel, cancellationToken);
             return;
         }

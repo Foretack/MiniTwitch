@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using MiniTwitch.Common.Extensions;
 
 namespace MiniTwitch.Irc.Internal.Parsing;
 
@@ -11,8 +12,8 @@ internal static class TagHelper
         if (unescape)
         {
             Span<byte> unescaped = stackalloc byte[span.Length];
-            Unescape(span, unescaped);
-            value = Encoding.UTF8.GetString(unescaped);
+            int end = span.CopyUnescaped(unescaped);
+            value = Encoding.UTF8.GetString(unescaped[..end]);
         }
         else
         {
@@ -70,44 +71,6 @@ internal static class TagHelper
         }
 
         return Enum.Parse<TEnum>(interned, true);
-    }
-
-    private static void Unescape(ReadOnlySpan<byte> source, Span<byte> destination)
-    {
-        const byte backSlash = (byte)'\\';
-
-        const byte s = (byte)'s';
-        const byte colon = (byte)':';
-        const byte r = (byte)'r';
-        const byte n = (byte)'n';
-
-        const byte space = (byte)' ';
-        const byte semicolon = (byte)';';
-        const byte cr = (byte)'\r';
-        const byte lf = (byte)'\n';
-
-        source.CopyTo(destination);
-        if (source.IndexOf(backSlash) == -1)
-        {
-            return;
-        }
-
-        int atIndex = 0;
-        int slashIndex;
-        while ((slashIndex = source[atIndex..].IndexOf(backSlash)) != -1)
-        {
-            destination[atIndex + slashIndex] = source[atIndex + slashIndex + 1] switch
-            {
-                s => space,
-                colon => semicolon,
-                r => cr,
-                n => lf,
-                _ => backSlash
-            };
-            destination[atIndex + slashIndex + 1] = 0;
-
-            atIndex += slashIndex + 2;
-        }
     }
 
     private static int ParseInt(ReadOnlySpan<byte> span)
