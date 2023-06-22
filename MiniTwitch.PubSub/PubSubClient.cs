@@ -29,6 +29,14 @@ public class PubSubClient
     public event Func<IBanData, ValueTask> OnBanned = default!;
     public event Func<IUntimeOutData, ValueTask> OnUnbanned = default!;
     public event Func<IAliasRestrictedUpdate, ValueTask> OnAliasRestrictionUpdate = default!;
+    public event Func<BitsEventsPayload, ValueTask> OnBitsEvent = default!;
+    public event Func<BitsBadgeUnlockPayload, ValueTask> OnBitsBadgeUnlock = default!;
+    public event Func<ChannelPointsPayload, ValueTask> OnChannelPointsRedemption = default!;
+    public event Func<ISubEvent, ValueTask> OnSub = default!;
+    public event Func<ISubGiftEvent, ValueTask> OnSubGift = default!;
+    public event Func<IAnonSubGiftEvent, ValueTask> OnAnonSubGift = default!;
+    public event Func<AutoModQueuePayload, ValueTask> OnAutoModMessageCaught = default!;
+    public event Func<LowTrustUserPayload, ValueTask> OnLowTrustUserTreatment = default!;
 
     private readonly JsonSerializerOptions _sOptions = new()
     {
@@ -36,8 +44,7 @@ public class PubSubClient
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
         ReadCommentHandling = JsonCommentHandling.Skip
     };
-    private readonly SemaphoreSlim _connectionWaiter = new(0);
-    private readonly SemaphoreSlim _topicWaiter = new(0);
+    private readonly AsyncEventCoordinator<WaitableEvents> _coordinator = new();
     private readonly string _loggingHeader = "[MiniTwitch:PubSub:]";
     private readonly MessageGenerator _messageGenerator;
     private readonly string _loggerType;
@@ -45,7 +52,6 @@ public class PubSubClient
     private readonly ILogger? _logger;
     private Task _pinger = default!;
     private Uri _targetUrl = default!;
-    private ListenResponse _response = default;
 
     public PubSubClient(string authToken, ILogger? logger = null)
     {
@@ -84,7 +90,7 @@ public class PubSubClient
         if (await _topicWaiter.WaitAsync(TimeSpan.FromSeconds(5), cancellationToken))
             return _response;
 
-        return new() { Error = ResponseError.Unknown, TopicString = string.Empty };
+        return new() { Error = ResponseError.Unknown, TopicKey = string.Empty };
     }
 
     public void Connect(string url = "wss://pubsub-edge.twitch.tv") => ConnectAsync(url).StepOver();
@@ -125,6 +131,7 @@ public class PubSubClient
     }
 
     #region Utils
+    private Action<Exception> GetExceptionHandler() => this.ExceptionHandler ??= LogEventException;
     private void LogEventException(Exception ex) => LogException(ex, "🚨 Exception caught in an event:");
 
     private void Log(LogLevel level, string template, params object[] properties) => _logger?.Log(level, $"{_loggingHeader} " + template, properties);
@@ -146,6 +153,9 @@ public class PubSubClient
                 Console.WriteLine("PONG received");
                 break;
 
+            case MessageType.RECONNECT:
+                break;
+
             case MessageType.MESSAGE:
                 MessageTopic topic = PubSubParsing.ParseTopic(data.Span);
                 if (topic != MessageTopic.ChannelPredictions)
@@ -156,71 +166,109 @@ public class PubSubClient
                 switch (topic)
                 {
                     case MessageTopic.ChannelPredictions:
-                        var prediction = data.Span.ReadJsonMessage<ChannelPredictionsPayload>(_sOptions);
+                        var prediction = data.Span.ReadJsonMessage<ChannelPredictionsPayload>(options: _sOptions);
                         if (prediction.Type == "event-created")
                         {
-                            OnPredictionStarted?.Invoke(prediction.Data.Event).StepOver();
+                            OnPredictionStarted?.Invoke(prediction.Data.Event).StepOver(GetExceptionHandler());
                             return;
                         }
 
                         switch (prediction.Data.Event.Status)
                         {
                             case "ACTIVE":
-                                OnTopPredictorsChanged?.Invoke(prediction.Data.Event).StepOver();
+                                OnTopPredictorsChanged?.Invoke(prediction.Data.Event).StepOver(GetExceptionHandler());
                                 break;
 
                             case "LOCKED":
-                                if (prediction.Data.Event.LockedBy == default)
+                                if (!prediction.Data.Event.LockedBy.HasValue)
                                 {
-                                    OnPredictionWindowClosed?.Invoke(prediction.Data.Event).StepOver();
+                                    OnPredictionWindowClosed?.Invoke(prediction.Data.Event).StepOver(GetExceptionHandler());
                                     return;
                                 }
 
-                                OnPredictionLocked?.Invoke(prediction.Data.Event).StepOver();
+                                OnPredictionLocked?.Invoke(prediction.Data.Event).StepOver(GetExceptionHandler());
                                 break;
 
                             case "RESOLVE_PENDING" when prediction.Data.Event.Outcomes[0].TopPredictors.Any(x => x.Result?.PointsWon is > 0):
-                                OnPredictionEnded?.Invoke(prediction.Data.Event).StepOver();
+                                OnPredictionEnded?.Invoke(prediction.Data.Event).StepOver(GetExceptionHandler());
                                 break;
 
                             case "CANCELED":
-                                OnPredictionCancelled?.Invoke(prediction.Data.Event).StepOver();
+                                OnPredictionCancelled?.Invoke(prediction.Data.Event).StepOver(GetExceptionHandler());
                                 break;
                         }
 
                         break;
 
                     case MessageTopic.ChatroomsUser:
-                        var chatrooms = data.Span.ReadJsonMessage<ChatroomsUserPayload>(_sOptions);
+                        var chatrooms = data.Span.ReadJsonMessage<ChatroomsUserPayload>(options: _sOptions);
                         switch (chatrooms.Type)
                         {
                             case "user_moderation_action":
                                 switch (chatrooms.Data.Action)
                                 {
                                     case "timeout":
-                                        OnTimedOut?.Invoke(chatrooms.Data).StepOver();
+                                        OnTimedOut?.Invoke(chatrooms.Data).StepOver(GetExceptionHandler());
                                         break;
 
                                     case "untimeout":
-                                        OnUntimedOut?.Invoke(chatrooms.Data).StepOver();
+                                        OnUntimedOut?.Invoke(chatrooms.Data).StepOver(GetExceptionHandler());
                                         break;
 
                                     case "ban":
-                                        OnBanned?.Invoke(chatrooms.Data).StepOver();
+                                        OnBanned?.Invoke(chatrooms.Data).StepOver(GetExceptionHandler());
                                         break;
 
                                     case "unban":
-                                        OnUnbanned?.Invoke(chatrooms.Data).StepOver();
+                                        OnUnbanned?.Invoke(chatrooms.Data).StepOver(GetExceptionHandler());
                                         break;
                                 }
 
                                 break;
 
                             case "channel_banned_alias_restriction_update":
-                                OnAliasRestrictionUpdate?.Invoke(chatrooms.Data).StepOver();
+                                OnAliasRestrictionUpdate?.Invoke(chatrooms.Data).StepOver(GetExceptionHandler());
                                 break;
                         }
 
+                        break;
+
+                    case MessageTopic.BitsEventsV1 or MessageTopic.BitsEventsV2:
+                        var bits = data.Span.ReadJsonMessage<BitsEventsPayload>(options: _sOptions);
+                        OnBitsEvent?.Invoke(bits).StepOver(GetExceptionHandler());
+                        break;
+
+                    case MessageTopic.BitsBadgeUnlock:
+                        var bitBadgeUnlock = data.Span.ReadJsonMessage<BitsBadgeUnlockPayload>(options: _sOptions);
+                        OnBitsBadgeUnlock?.Invoke(bitBadgeUnlock).StepOver(GetExceptionHandler());
+                        break;
+
+                    case MessageTopic.ChannelPoints:
+                        var channelPoints = data.Span.ReadJsonMessage<ChannelPointsPayload>(options: _sOptions);
+                        OnChannelPointsRedemption?.Invoke(channelPoints).StepOver(GetExceptionHandler());
+                        break;
+
+                    case MessageTopic.SubscribeEvents:
+                        var subEvent = data.Span.ReadJsonMessage<SubscribeEventsPayload>(options: _sOptions);
+                        switch (subEvent.Context)
+                        {
+                            case "sub" or "resub":
+                                OnSub?.Invoke(subEvent).StepOver(GetExceptionHandler());
+                                break;
+
+                            case "subgift":
+                                OnSubGift?.Invoke(subEvent).StepOver(GetExceptionHandler());
+                                break;
+
+                            case "anonsubgift":
+                                OnAnonSubGift?.Invoke(subEvent).StepOver(GetExceptionHandler());
+                                break;
+                        }
+                        break;
+
+                    case MessageTopic.AutomodQueue:
+                        var automod = data.Span.ReadJsonMessage<AutoModQueuePayload>(options: _sOptions);
+                        OnAutoModMessageCaught?.Invoke(automod).StepOver(GetExceptionHandler());
                         break;
                 }
 
@@ -232,7 +280,5 @@ public class PubSubClient
                     _ = _topicWaiter.Release();
                 break;
         }
-
-        Console.WriteLine(type);
     }
 }

@@ -27,8 +27,6 @@ public static class Topics
 
     public static Topic AutomodQueue(long moderatorId, long channelId) => new($"automod-queue.{moderatorId}.{channelId}");
 
-    public static Topic ModeratorActions(long userId, long channelId) => new($"chat_moderator_actions.{userId}.{channelId}");
-
     public static Topic LowTrustUsers(long channelId, long suspiciousUserId) => new($"low-trust-users.{channelId}.{suspiciousUserId}");
 
     public static Topic ModerationNotifications(long currentUserId, long channelId) => new($"user-moderation-notifications.{currentUserId}.{channelId}");
