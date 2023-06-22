@@ -1,12 +1,39 @@
-﻿namespace MiniTwitch.Common.Extensions;
+﻿using System.Runtime.Intrinsics.X86;
+using System.Runtime.Intrinsics;
+
+namespace MiniTwitch.Common.Extensions;
 public static class SpanExtensions
 {
     public static int Sum(this ReadOnlySpan<byte> source)
     {
         int sum = 0;
-        foreach (byte b in source)
+        if (Avx2.IsSupported && source.Length > Vector256<byte>.Count)
         {
-            sum += b;
+            var vecResult = Vector256<byte>.Zero;
+            int inc = Vector256<byte>.Count;
+            unsafe
+            {
+                fixed (byte* bRef = source)
+                {
+                    for (int i = 0; i < source.Length; i += inc)
+                    {
+                        Vector256<byte> vec = Avx.LoadVector256(bRef + i);
+                        vecResult = Avx2.Add(vecResult, vec);
+                    }
+                }
+            }
+
+            for (int i = 0; i < inc; i++)
+            {
+                sum += vecResult.GetElement(i);
+            }
+        }
+        else
+        {
+            foreach (byte b in source)
+            {
+                sum += b;
+            }
         }
 
         return sum;

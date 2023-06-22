@@ -17,6 +17,7 @@
       <Version>1.0.3</Version>
       <PackageLicenseFile>LICENSE</PackageLicenseFile>
       <PackageIconUrl>https://media.occluder.space/f/common.png</PackageIconUrl>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
