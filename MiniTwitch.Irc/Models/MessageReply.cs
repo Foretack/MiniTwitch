@@ -26,6 +26,16 @@ public readonly struct MessageReply
     /// </summary>
     public long ParentUserId { get; init; }
     /// <summary>
+    /// ID of the first message in the thread of the replied-to message
+    /// <para>This value is equal to <see cref="ParentMessageId"/> if the replied-to message is not in a thread</para>
+    /// </summary>
+    public string ParentThreadMessageId { get; init; }
+    /// <summary>
+    /// Username of the first message's author in the thread of the replied-to message
+    /// <para>This value is equal to <see cref="ParentUsername"/> if the replied-to message is not in a thread</para>
+    /// </summary>
+    public string ParentThreadUsername { get; init; }
+    /// <summary>
     /// Whether there are reply contents in this message
     /// </summary>
     public bool HasContent { get; init; }

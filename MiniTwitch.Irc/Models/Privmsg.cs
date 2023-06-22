@@ -101,6 +101,8 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
         string replyMessageBody = string.Empty;
         string replyUsername = string.Empty;
         string replyDisplayName = string.Empty;
+        string threadParentMessageid = string.Empty;
+        string threadParentUsername = string.Empty;
 
         // IBasicChannel
         string channelName = memory.Span.FindChannel();
@@ -245,6 +247,16 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
                 case 2516:
                     replyDisplayName = TagHelper.GetString(tagValue);
                     break;
+
+                //reply-thread-parent-msg-id
+                case 2550:
+                    threadParentMessageid = TagHelper.GetString(tagValue);
+                    break;
+
+                //reply-thread-parent-user-login
+                case 3002:
+                    threadParentUsername = TagHelper.GetString(tagValue);
+                    break;
             }
         }
 
@@ -269,6 +281,8 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
             ParentMessage = replyMessageBody,
             ParentUserId = replyUserId,
             ParentUsername = replyUsername,
+            ParentThreadMessageId = threadParentMessageid,
+            ParentThreadUsername = threadParentUsername,
             HasContent = hasReply
         };
         this.Channel = new IrcChannel()
