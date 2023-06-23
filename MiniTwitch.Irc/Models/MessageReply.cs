@@ -6,25 +6,35 @@
 public readonly struct MessageReply
 {
     /// <summary>
-    /// Display name of the original message's author
+    /// Display name of the replied-to message's author
     /// </summary>
     public string ParentDisplayName { get; init; }
     /// <summary>
-    /// Content of the original message
+    /// Content of the replied-to message
     /// </summary>
     public string ParentMessage { get; init; }
     /// <summary>
-    /// Unique ID to identify the original message
+    /// Unique ID to identify the replied-to message
     /// </summary>
     public string ParentMessageId { get; init; }
     /// <summary>
-    /// Name of the original message's author
+    /// Name of the replied-to message's author
     /// </summary>
     public string ParentUsername { get; init; }
     /// <summary>
-    /// ID of the original message's author
+    /// ID of the replied-to message's author
     /// </summary>
     public long ParentUserId { get; init; }
+    /// <summary>
+    /// ID of the first message in the thread of the replied-to message
+    /// <para>This value is equal to <see cref="ParentMessageId"/> if the replied-to message is not in a thread</para>
+    /// </summary>
+    public string ParentThreadMessageId { get; init; }
+    /// <summary>
+    /// Username of the first message's author in the thread of the replied-to message
+    /// <para>This value is equal to <see cref="ParentUsername"/> if the replied-to message is not in a thread</para>
+    /// </summary>
+    public string ParentThreadUsername { get; init; }
     /// <summary>
     /// Whether there are reply contents in this message
     /// </summary>
