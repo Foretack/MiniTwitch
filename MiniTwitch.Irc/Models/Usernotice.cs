@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Drawing;
+using System.Text;
 using MiniTwitch.Common.Extensions;
 using MiniTwitch.Irc.Enums;
 using MiniTwitch.Irc.Interfaces;
@@ -71,7 +72,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
     {
         // Author
         bool isMod = false;
-        string colorCode = string.Empty;
+        Color colorCode = default;
         string badges = string.Empty;
         long userId = 0;
         UserType userType = UserType.None;
@@ -139,7 +140,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
 
                 //color
                 case 543:
-                    colorCode = TagHelper.GetString(tagValue, true);
+                    colorCode = TagHelper.GetColor(tagValue);
                     break;
 
                 //turbo 
@@ -293,7 +294,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
         {
             BadgeInfo = badgeInfo,
             Badges = badges,
-            ColorCode = colorCode,
+            ChatColor = colorCode,
             DisplayName = displayName,
             Id = userId,
             IsMod = isMod,

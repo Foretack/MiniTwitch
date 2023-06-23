@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Drawing;
+using System.Text;
 using MiniTwitch.Common.Extensions;
 using MiniTwitch.Irc.Enums;
 using MiniTwitch.Irc.Interfaces;
@@ -37,7 +38,7 @@ public readonly struct Userstate
 
         string badgeInfo = string.Empty;
         string badges = string.Empty;
-        string color = string.Empty;
+        Color color = default;
         string displayName = string.Empty;
         bool mod = false;
         bool vip = false;
@@ -72,7 +73,7 @@ public readonly struct Userstate
 
                 //color
                 case 543:
-                    color = TagHelper.GetString(tagValue, true);
+                    color = TagHelper.GetColor(tagValue);
                     break;
 
                 //turbo
@@ -115,7 +116,7 @@ public readonly struct Userstate
         this.Self = new MessageAuthor()
         {
             BadgeInfo = badgeInfo,
-            ColorCode = color,
+            ChatColor = color,
             Badges = badges,
             Name = this.Source?.Options.Username ?? displayName.ToLower(),
             DisplayName = displayName,

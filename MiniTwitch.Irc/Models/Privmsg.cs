@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.Text;
 using MiniTwitch.Common.Extensions;
 using MiniTwitch.Irc.Enums;
@@ -84,7 +85,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
         // MessageAuthor
         string badges = string.Empty;
         string badgeInfo = string.Empty;
-        string color = string.Empty;
+        Color color = default;
         string displayName = string.Empty;
         string username = memory.Span.FindUsername();
         long uid = 0;
@@ -154,7 +155,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
 
                 //color
                 case 543:
-                    color = TagHelper.GetString(tagValue, true);
+                    color = TagHelper.GetColor(tagValue);
                     break;
 
                 //turbo
@@ -264,7 +265,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
         {
             BadgeInfo = badgeInfo,
             Badges = badges,
-            ColorCode = color,
+            ChatColor = color,
             DisplayName = displayName,
             Id = uid,
             IsMod = mod,

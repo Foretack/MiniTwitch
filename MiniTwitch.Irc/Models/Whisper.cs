@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Drawing;
+using System.Text;
 using MiniTwitch.Common.Extensions;
 using MiniTwitch.Irc.Enums;
 using MiniTwitch.Irc.Interfaces;
@@ -36,7 +37,7 @@ public readonly struct Whisper
     internal Whisper(ReadOnlyMemory<byte> memory)
     {
         string badges = string.Empty;
-        string color = string.Empty;
+        Color color = default;
         string displayName = string.Empty;
         string username = memory.Span.FindUsername();
         long uid = 0;
@@ -57,7 +58,7 @@ public readonly struct Whisper
             {
                 //color
                 case 543:
-                    color = TagHelper.GetString(tagValue, true);
+                    color = TagHelper.GetColor(tagValue);
                     break;
 
                 //turbo
@@ -105,7 +106,7 @@ public readonly struct Whisper
         this.Author = new MessageAuthor()
         {
             Badges = badges,
-            ColorCode = color,
+            ChatColor = color,
             DisplayName = displayName,
             Name = username,
             Id = uid,

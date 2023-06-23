@@ -1,4 +1,5 @@
-﻿using MiniTwitch.Irc.Enums;
+﻿using System.Drawing;
+using MiniTwitch.Irc.Enums;
 using MiniTwitch.Irc.Interfaces;
 
 namespace MiniTwitch.Irc.Models;
@@ -29,10 +30,16 @@ public readonly struct MessageAuthor : IBanTarget, IDeletedMessageAuthor, IWhisp
     /// </summary>
     public string Badges { get; init; }
     /// <summary>
-    /// The color of the user’s name in the chat room. This is a hexadecimal RGB color code in the form, #RGB
-    /// <para>Note: May be empty if it is never set</para>
+    /// The color of the user’s name in the chat room
+    /// <para>This property is deprecated and will be removed in a future version</para>
+    /// <para>Use <see cref="ChatColor"/> instead</para>
     /// </summary>
-    public string ColorCode { get; init; }
+    [Obsolete("Use the 'ChatColor' property instead. This property will be removed in a future version")]
+    public string ColorCode => ChatColor.Name;
+    /// <summary>
+    /// The color of the user’s name in the chat room
+    /// </summary>
+    public Color ChatColor { get; init; }
     /// <summary>
     /// The user’s display name, escaped as described in the <see href="https://ircv3.net/specs/core/message-tags-3.2.html">IRCv3</see> spec
     /// <para>Note: Can contain characters outside [a-zA-Z0-9_]</para>
