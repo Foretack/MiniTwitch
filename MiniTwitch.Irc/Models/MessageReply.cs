@@ -6,23 +6,23 @@
 public readonly struct MessageReply
 {
     /// <summary>
-    /// Display name of the original message's author
+    /// Display name of the replied-to message's author
     /// </summary>
     public string ParentDisplayName { get; init; }
     /// <summary>
-    /// Content of the original message
+    /// Content of the replied-to message
     /// </summary>
     public string ParentMessage { get; init; }
     /// <summary>
-    /// Unique ID to identify the original message
+    /// Unique ID to identify the replied-to message
     /// </summary>
     public string ParentMessageId { get; init; }
     /// <summary>
-    /// Name of the original message's author
+    /// Name of the replied-to message's author
     /// </summary>
     public string ParentUsername { get; init; }
     /// <summary>
-    /// ID of the original message's author
+    /// ID of the replied-to message's author
     /// </summary>
     public long ParentUserId { get; init; }
     /// <summary>
