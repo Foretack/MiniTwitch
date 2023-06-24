@@ -1,4 +1,5 @@
-﻿using MiniTwitch.Irc.Enums;
+﻿using System.Drawing;
+using MiniTwitch.Irc.Enums;
 using MiniTwitch.Irc.Models;
 
 namespace MiniTwitch.Irc.Interfaces;
@@ -13,7 +14,10 @@ public interface IUserstateSelf
     /// <inheritdoc cref="MessageAuthor.Badges"/>
     string Badges { get; }
     /// <inheritdoc cref="MessageAuthor.ColorCode"/>
+    [Obsolete("Use the 'ChatColor' property instead. This property will be removed in a future version")]
     string ColorCode { get; }
+    /// <inheritdoc cref="MessageAuthor.ChatColor"/>
+    Color ChatColor { get; }
     /// <summary>
     /// Your username
     /// </summary>
