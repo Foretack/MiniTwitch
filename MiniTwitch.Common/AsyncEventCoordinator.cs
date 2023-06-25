@@ -24,6 +24,29 @@ public class AsyncEventCoordinator<T> : IDisposable
         return _locks[key].WaitAsync(timeout, cancellationToken);
     }
 
+    public async Task<T?> WaitForAny(IEnumerable<T> values, TimeSpan timeout, CancellationToken cancellationToken = default)
+    {
+        T[] valuesArr = values.ToArray();
+        Task<bool>[] tasks = valuesArr.Select(x => WaitFor(x, timeout, cancellationToken)).ToArray();
+        Task<bool> completed;
+        try
+        {
+            completed = await Task.WhenAny(tasks).WaitAsync(timeout, cancellationToken);
+        }
+        catch (TimeoutException)
+        {
+            return default;
+        }
+
+        for (int i = 0; i < tasks.Length; i++)
+        {
+            if (ReferenceEquals(tasks[i], completed))
+                return valuesArr[i];
+        }
+
+        return default;
+    }
+
     public bool IsClosed(T value)
     {
         int key = (int)(object)value;
