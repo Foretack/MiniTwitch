@@ -77,15 +77,14 @@ public class AsyncEventCoordinator<TEnum> : IDisposable
     public async Task<bool> WaitForAll(IEnumerable<TEnum> values, TimeSpan timeout, CancellationToken cancellationToken = default)
     {
         TEnum[] valuesArr = values.ToArray();
-        Task[] tasks = valuesArr.Select(x => WaitFor(x, timeout, cancellationToken)).ToArray();
-        try
+        var tasks = new Task<bool>[valuesArr.Length];
+        for (int i = 0; i < valuesArr.Length; i++)
         {
-            await Task.WhenAll(tasks).WaitAsync(timeout, cancellationToken);
+            tasks[i] = WaitFor(valuesArr[i], timeout, cancellationToken);
         }
-        catch (TimeoutException)
-        {
+
+        if ((await Task.WhenAll(tasks)).Contains(false))
             return false;
-        }
 
         return true;
     }
