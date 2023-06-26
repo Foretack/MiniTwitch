@@ -2,7 +2,6 @@
 
 internal enum WaitableEvents
 {
-    TimeOut,
     Connected,
     JoinedChannel,
 }
