@@ -46,7 +46,8 @@ public class AsyncEventCoordinator<TEnum> : IDisposable
     /// <param name="values">The values to wait on</param>
     /// <param name="timeout">The wait timeout, after which <see langword="default"/> is returned</param>
     /// <param name="cancellationToken">The cancellation token</param>
-    /// <returns>The <see cref="TEnum"/> value that was released, or <see langword="default"/> if the task timed out</returns>
+    /// <returns>The <see cref="TEnum"/> value that was released, otherwise <see cref="TimeoutException"/> is thrown</returns>
+    /// <exception cref="TimeoutException"></exception>
     public async Task<TEnum> WaitForAny(IEnumerable<TEnum> values, TimeSpan timeout, CancellationToken cancellationToken = default)
     {
         TEnum[] valuesArr = values.ToArray();
@@ -56,23 +57,14 @@ public class AsyncEventCoordinator<TEnum> : IDisposable
             tasks[i] = WaitFor(valuesArr[i], timeout, cancellationToken);
         }
 
-        Task<bool> completed;
-        try
-        {
-            completed = await Task.WhenAny(tasks).WaitAsync(timeout, cancellationToken);
-        }
-        catch (TimeoutException)
-        {
-            throw;
-        }
-
+        _ = await Task.WhenAny(tasks);
         for (int i = 0; i < tasks.Length; i++)
         {
-            if (ReferenceEquals(tasks[i], completed))
+            if (tasks[i].IsCompleted && tasks[i].Result == true)
                 return valuesArr[i];
         }
 
-        throw new NullReferenceException("No reference to the completed task was found");
+        throw new TimeoutException("Timeout: No reference to a completed task was found");
     }
 
     /// <summary>
