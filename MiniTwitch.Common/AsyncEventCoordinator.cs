@@ -50,7 +50,12 @@ public class AsyncEventCoordinator<TEnum> : IDisposable
     public async Task<TEnum> WaitForAny(IEnumerable<TEnum> values, TimeSpan timeout, CancellationToken cancellationToken = default)
     {
         TEnum[] valuesArr = values.ToArray();
-        Task<bool>[] tasks = valuesArr.Select(x => WaitFor(x, timeout, cancellationToken)).ToArray();
+        var tasks = new Task<bool>[valuesArr.Length];
+        for (int i = 0; i < valuesArr.Length; i++)
+        {
+            tasks[i] = WaitFor(valuesArr[i], timeout, cancellationToken);
+        }
+
         Task<bool> completed;
         try
         {
@@ -58,7 +63,7 @@ public class AsyncEventCoordinator<TEnum> : IDisposable
         }
         catch (TimeoutException)
         {
-            return default;
+            throw;
         }
 
         for (int i = 0; i < tasks.Length; i++)
@@ -67,7 +72,7 @@ public class AsyncEventCoordinator<TEnum> : IDisposable
                 return valuesArr[i];
         }
 
-        return default;
+        throw new NullReferenceException("No reference to the completed task was found");
     }
 
     /// <summary>
