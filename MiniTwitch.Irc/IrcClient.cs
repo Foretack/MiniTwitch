@@ -147,8 +147,7 @@ public sealed class IrcClient : IAsyncDisposable
     #endregion
 
     #region Fields
-    private readonly SemaphoreSlim _connectionWaiter = new(0);
-    private readonly SemaphoreSlim _joinChannelWaiter = new(0);
+    private readonly AsyncEventCoordinator<WaitableEvents> _coordinator = new();
     private readonly List<string> _moderated = new();
     private readonly RateLimitManager _manager;
     private readonly WebSocketClient _ws;
@@ -222,7 +221,7 @@ public sealed class IrcClient : IAsyncDisposable
     {
         _targetUrl = new(url);
         await _ws.Start(_targetUrl, cancellationToken);
-        if (await _connectionWaiter.WaitAsync(TimeSpan.FromSeconds(15), cancellationToken).ConfigureAwait(false))
+        if (await _coordinator.WaitFor(WaitableEvents.Connected, TimeSpan.FromSeconds(15), cancellationToken))
             return true;
 
         Log(LogLevel.Critical, "Connection timed out.");
@@ -435,7 +434,7 @@ public sealed class IrcClient : IAsyncDisposable
         }
 
         await _ws.SendAsync($"JOIN #{channel}", cancellationToken: cancellationToken);
-        return await _joinChannelWaiter.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken);
+        return await _coordinator.WaitFor(WaitableEvents.JoinedChannel, TimeSpan.FromSeconds(10), cancellationToken);
     }
 
     /// <summary>
@@ -525,8 +524,7 @@ public sealed class IrcClient : IAsyncDisposable
                 break;
 
             case IrcCommand.Connected:
-                if (_connectionWaiter.CurrentCount == 0)
-                    _ = _connectionWaiter.Release();
+                _coordinator.ReleaseIfLocked(WaitableEvents.Connected);
 
                 if (_connectInvoked)
                 {
@@ -603,9 +601,9 @@ public sealed class IrcClient : IAsyncDisposable
 
             case IrcCommand.ROOMSTATE:
                 IrcChannel ircChannel = new(data);
-                if (ircChannel.Roomstate == RoomstateType.All && _joinChannelWaiter.CurrentCount == 0)
+                if (ircChannel.Roomstate == RoomstateType.All)
                 {
-                    _ = _joinChannelWaiter.Release();
+                    _coordinator.ReleaseIfLocked(WaitableEvents.JoinedChannel);
                     if (!this.JoinedChannels.Contains(ircChannel))
                     {
                         this.JoinedChannels.Add(ircChannel);
@@ -689,8 +687,7 @@ public sealed class IrcClient : IAsyncDisposable
     {
         await _ws.DisposeAsync();
         this.JoinedChannels.Clear();
-        _connectionWaiter.Dispose();
-        _joinChannelWaiter.Dispose();
+        _coordinator.Dispose();
         _moderated.Clear();
     }
 }
