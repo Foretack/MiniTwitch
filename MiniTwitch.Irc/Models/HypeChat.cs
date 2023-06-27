@@ -44,5 +44,5 @@ public readonly struct HypeChat
     /// <summary>
     /// Whether the message is a HypeChat message or not
     /// </summary>
-    public bool HasContent => this.PaidAmount > 0;
+    public bool HasContent => this.PaidAmount != 0;
 }
