@@ -22,9 +22,14 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
     public MessageAuthor Author { get; }
     /// <summary>
     /// Reply contents of the message
-    /// <para>Note: Values are <see cref="string.Empty"/> if the <see cref="MessageReply.HasContent"/> is <see langword="false"/></para>
+    /// <para>Note: Values are <see cref="string.Empty"/> if <see cref="MessageReply.HasContent"/> is <see langword="false"/></para>
     /// </summary>
     public MessageReply Reply { get; init; }
+    /// <summary>
+    /// HypeChat information about this message
+    /// <para>Note: Values are <see cref="string.Empty"/> and <see langword="default"/> if <see cref="HypeChat.HasContent"/> is <see langword="false"/></para>
+    /// </summary>
+    public HypeChat HypeChat { get; init; }
     /// <summary>
     /// The channel where the message was sent
     /// </summary>
@@ -96,7 +101,6 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
         UserType userType = UserType.None;
 
         // MessageReply
-        bool hasReply = false;
         string replyMessageId = string.Empty;
         long replyUserId = 0;
         string replyMessageBody = string.Empty;
@@ -104,6 +108,14 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
         string replyDisplayName = string.Empty;
         string threadParentMessageid = string.Empty;
         string threadParentUsername = string.Empty;
+
+        //HypeChat
+        int paidAmount = 0;
+        int cPaidAmount = 0;
+        string currency = string.Empty;
+        int exponent = 0;
+        bool isSystemMessage = false;
+        string level = string.Empty;
 
         // IBasicChannel
         string channelName = memory.Span.FindChannel();
@@ -226,7 +238,6 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
                 //reply-parent-msg-id
                 case 1873:
                     replyMessageId = TagHelper.GetString(tagValue);
-                    hasReply = true;
                     break;
 
                 //reply-parent-user-id
@@ -239,9 +250,29 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
                     replyMessageBody = TagHelper.GetString(tagValue, unescape: true);
                     break;
 
+                //pinned-chat-paid-level
+                case 2139:
+                    level = TagHelper.GetString(tagValue, intern: true);
+                    break;
+
+                //pinned-chat-paid-amount
+                case 2263:
+                    paidAmount = TagHelper.GetInt(tagValue);
+                    break;
+
                 //reply-parent-user-login
                 case 2325:
                     replyUsername = TagHelper.GetString(tagValue);
+                    break;
+
+                //pinned-chat-paid-currency
+                case 2478:
+                    currency = TagHelper.GetString(tagValue, intern: true);
+                    break;
+
+                //pinned-chat-paid-exponent
+                case 2484:
+                    exponent = TagHelper.GetInt(tagValue);
                     break;
 
                 //reply-parent-display-name
@@ -257,6 +288,16 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
                 //reply-thread-parent-user-login
                 case 3002:
                     threadParentUsername = TagHelper.GetString(tagValue);
+                    break;
+
+                //pinned-chat-paid-canonical-amount
+                case 3244:
+                    cPaidAmount = TagHelper.GetInt(tagValue);
+                    break;
+
+                //pinned-chat-paid-is-system-message
+                case 3331:
+                    isSystemMessage = TagHelper.GetBool(tagValue);
                     break;
             }
         }
@@ -283,8 +324,16 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
             ParentUserId = replyUserId,
             ParentUsername = replyUsername,
             ParentThreadMessageId = threadParentMessageid,
-            ParentThreadUsername = threadParentUsername,
-            HasContent = hasReply
+            ParentThreadUsername = threadParentUsername
+        };
+        this.HypeChat = new HypeChat()
+        {
+            PaidAmount = paidAmount,
+            CanonicalPaidAmount = cPaidAmount,
+            PaymentCurrency = currency,
+            Exponent = exponent,
+            IsSystemMessage = isSystemMessage,
+            Level = level
         };
         this.Channel = new IrcChannel()
         {
