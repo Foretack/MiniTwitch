@@ -22,12 +22,12 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
     public MessageAuthor Author { get; }
     /// <summary>
     /// Reply contents of the message
-    /// <para>Note: Values are <see cref="string.Empty"/> if <see cref="MessageReply.HasContent"/> is <see langword="false"/></para>
+    /// <para>Note: If <see cref="MessageReply.HasContent"/> is <see langword="false"/>, strings are <see cref="string.Empty"/> and numbers are <see langword="0"/></para>
     /// </summary>
     public MessageReply Reply { get; init; }
     /// <summary>
     /// HypeChat information about this message
-    /// <para>Note: Values are <see cref="string.Empty"/> and <see langword="default"/> if <see cref="HypeChat.HasContent"/> is <see langword="false"/></para>
+    /// <para>Note: If <see cref="HypeChat.HasContent"/> is <see langword="false"/>, strings are <see cref="string.Empty"/> and numbers are <see langword="0"/></para>
     /// </summary>
     public HypeChat HypeChat { get; init; }
     /// <summary>
