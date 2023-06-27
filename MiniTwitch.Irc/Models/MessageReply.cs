@@ -38,7 +38,7 @@ public readonly struct MessageReply
     /// <summary>
     /// Whether there are reply contents in this message
     /// </summary>
-    public bool HasContent { get; init; }
+    public bool HasContent => ParentUserId != 0;
 
     /// <inheritdoc/>
     public static implicit operator string(MessageReply messageReply) => messageReply.HasContent ? messageReply.ParentMessage : string.Empty;
