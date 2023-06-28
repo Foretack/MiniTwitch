@@ -1,132 +1,45 @@
-# MiniTwitch
-
 <img src="https://media.occluder.space/f/banner.png" alt="MiniTwitch" />
-MiniTwitch is a Twitch library for .NET6+ that is focused on performance and memory, it can parse through 350k messages/s (on i5-9400F). 
 
-MiniTwitch currently supports IRC, with plans of supporting Helix, PubSub and hopefully EventSub in the future as well.
+# About
 
+MiniTwitch is a collection of Twitch libraries for NET Core 6.0+ with the goal of providing convenient asynchronous APIs for Twitch services and care for performance and memory.
 
-## Features & Getting started
+Only the IRC component is curently implemented, other components for remaining Twitch services are still in development (Helix, PubSub, EventSub). 🛠
 
-### MiniTwitch.Irc
-The IRC component is responsible for connection and communication with chat.
+# MiniTwitch.Irc
 
-The client is completely asynchronous and will handle reconnections & "keep-alive-ping"s for you!
+MiniTwitch.Irc is the component responsible for Twitch chat services. The usage of this package revolves around the `IrcClient`  class which handles connection, communication and channel management
 
+## Features
 
-Events for the following are exposed through `IrcClient`:
- - Receive connection information:
- 
- `IrcClient.OnConnect`
+* Package code is fully documented with XML comments
+* Full coverage of chatroom messages and events with convenient APIs
+* Built with performance and memory in mind. Nanosecond speeds, with low memory allocation
+* Exposes events as `ValueTask`, making for efficient & concurrent usage
+* Automatically reconnects upon disconnection & automatically rejoins channels
+* Simple & customizable ratelimiting of sending messages and joining channels
+* Allows for connecting anonymously - No need for authorization if you don't plan to send anything!
+* Understand what happens behind the scenes by supplying an `ILogger`. Allows you to use any logging library which implements [logging abstractions](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging)
 
- `IrcClient.OnReconnect`
+## Getting Started
 
- `IrcClient.OnDisconnect`
- - Receive chat messages:
+here is an example usage of the `IrcClient` class:
 
- `IrcClient.OnMessage` 
- - Receive ban/timeout information:
-
- `IrcClient.OnUserTimeout`
-
- `IrcClient.OnUserBan`
- - Receive subscription information:
- `IrcClient.OnSubscriptionNotice`
- `IrcClient.OnGiftedSubNotice`
- `IrcClient.OnGiftedSubNoticeIntro`
-	 - Also includes information about users extending/upgrading their subscriptions:
-
-
-	 `IrcClient.OnPaidUpgradeNotice` 
-
-
-	 `IrcClient.OnPrimeUpgradeNotice`
-- Receive raid information:
-
-`IrcClient.OnRaidNotice`
-- Receive announcements:
-
-`IrcClient.OnAnnouncement`
-- Receive chat/message clear information:
-
-`IrcClient.OnMessageDelete`
-
-`IrcClient.OnChatClear`
-- Receive channel information:
-`IrcClient.OnChannelJoin`
-`IrcClient.OnChannelPart`
-	- Also includes Roomstate information:
-
-	`IrcClient.OnEmoteOnlyModified`
-
-	`IrcClient.OnFollowerModeModified`
-
-	`IrcClient.OnUniqueModeModified`
-
-	`IrcClient.OnSlowModeModified`
-
-	`IrcClient.OnSubOnlyModified`
-- Receive whispers:
-
-`IrcClient.OnWhisper`
-- Receive Userstate information:
-
-`IrcClient.OnUserstate`
-- Receive notices:
-`IrcClient.OnNotice`
-	- Exposes notice type through `Notice.Type`:
-		- Emote_only_on
-		- Emote_only_off 
-		- Followers_on
-		- Followers_on_zero
-		- Followers_off
-		- Subs_on
-		- Subs_off
-		- R9K_on
-		- R9K_off
-		- Slow_on
-		- Slow_off
-		- Cmds_available
-		- Msg_channel_suspended
-		- Msg_duplicate
-		- Msg_emoteonly
-		- Msg_followersonly_zero
-		- Msg_followersonly
-		- Msg_rejected_mandatory
-		- Msg_R9K
-		- Msg_slowmode
-		- Msg_subsonly
-		- Msg_timedout
-		- Msg_banned
-		- Msg_requires_verified_phone_number
-		- Msg_ratelimit
-		- Msg_suspended
-		- Msg_verified_email
-		- No_permission
-		- Unavailable_command
-		- Unrecognized_cmd
-		- Bad_auth
-		- Invalid_parent
-
-The following is an example implementation of the `IrcClient` class:
-```csharp
-using Microsoft.Extensions.Logging;
+```c#
 using MiniTwitch.Irc;
-using Serilog;
 using MiniTwitch.Irc.Models;
 
-namespace ExampleApp;
+namespace MiniTwitchExample;
 
 public class Program
 {
-    private static async Task Main(string[] args)
+    static async Task Main()
     {
-        // Optional: Set up logger
-        Bot bot = new Bot("myusername", "mytoken");
+        Bot bot = new("myusername", "mytoken");
         await bot.Client.ConnectAsync();
-        await bot.Client.JoinChannel("mychannel");
+        await bot.Client.JoinChannel("occluder");
 
-        Console.ReadLine();
+        _ = Console.ReadLine();
     }
 }
 
@@ -134,55 +47,78 @@ public class Bot
 {
     public IrcClient Client { get; init; }
 
-    public Bot(string username, string oauth)
+    public Bot(string username, string token)
     {
         Client = new IrcClient(options =>
         {
             options.Username = username;
-            options.OAuth = oauth;
-            // Optional
-            options.Logger = new LoggerFactory().AddSerilog(Log.Logger).CreateLogger<Bot>();
+            options.OAuth = token;
         });
 
-        Client.OnMessage += OnMessage_AsyncExample;
-        //// Syncronous example
-        //Client.OnMessage += OnMessage_SyncExample;
-
-        //// Alternatively, you can subscribe with anonymous methods:
-
-        //// This is an example of an async anonymous event subscription
-        //Client.OnMessage += async message =>
-        //{
-        //    if (message.Content == "!ping")
-        //        await message.ReplyWith("Pong!");
-        //};
-
-        //// Syncronous variant
-        //Client.OnMessage += message =>
-        //{
-        //    if (message.Content == "penis123")
-        //        Console.WriteLine("Your password got leaked 🚨 🚨 🚨 ");
-
-        //    return ValueTask.CompletedTask;
-        //};
+        Client.OnChannelJoin += ChannelJoinEvent;
+        Client.OnMessage += MessageEvent;
     }
 
-    // This is an example of an async event subscription
-    // The delegate on most events is Func<T, ValueTask>, which means the method return type needs to be ValueTask
-    // The T type is what is passed in the parameter
-    // This event's handler is Func<Privmsg, ValueTask>
-    private async ValueTask OnMessage_AsyncExample(Privmsg message)
+    private ValueTask ChannelJoinEvent(IrcChannel channel)
     {
-        if (message.Content == "!ping")
-            await message.ReplyWith("Pong!");
+        return Client.SendMessage(channel.Name, "Hello from MiniTwitch!");
     }
 
-    //private ValueTask OnMessage_SyncExample(Privmsg message)
-    //{
-    //    if (message.Content == "penis123")
-    //        Console.WriteLine("Your password got leaked 🚨 🚨 🚨 ");
-
-    //    return ValueTask.CompletedTask;
-    //}
+    private async ValueTask MessageEvent(Privmsg message)
+    {
+        if (message.Content == "penis123")
+        {
+            await message.ReplyWith("That's my password!!");
+        }
+        else if (message.Content == "Wait a minute!")
+        {
+            await Task.Delay(TimeSpan.FromMinutes(1));
+            await message.ReplyWith("I waited. Now what?");
+        }
+    }
 }
 ```
+
+### Subscribing to events
+
+All events use either the `Func<T, ValueTask>` or `Func<ValueTask>` delegates. Meaning that subscribing methods must have the return type `ValueTask` and account for the `T` parameter when it's present (see `Client.OnMessage` in the example above), the parameter name you set does not matter. Also, if the method doesn't have any asynchronous code you should not mark it as `async` and return `ValueTask.CompletedTask`, `default`or some `ValueTask` object instead.
+
+
+Subscribing can be done either programmatically:
+
+```c#
+Client.OnMessage += MessageEvent;
+
+private async ValueTask MessageEvent(Privmsg message)
+{
+    ...
+}
+```
+
+or with anonymous functions:
+
+```c#
+Client.OnMessage += async message => 
+{
+    ...
+};
+```
+
+Note that you cannot unsubscribe from events if you used anonymous functions.
+
+Read more about event subscriptions [here](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/events/how-to-subscribe-to-and-unsubscribe-from-events)
+
+## Installation
+
+****
+
+You can add this package to your project by searching for it with the package manager, or by using the NuGet cli tool:
+
+```c#
+Install-Package MiniTwitch.Irc
+```
+
+## Dependencies
+
+1. [Microsoft.Extensions.Logging](https://www.nuget.org/packages/Microsoft.Extensions.Logging/)
+2. [MiniTwitch.Common](https://www.nuget.org/packages/MiniTwitch.Common/)

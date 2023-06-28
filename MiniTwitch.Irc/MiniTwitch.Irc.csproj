@@ -5,7 +5,7 @@
     <PackageId>MiniTwitch.Irc</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageVersion>1.2.2</PackageVersion>
+    <PackageVersion>1.2.3</PackageVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>MiniTwitch.Irc</Title>
@@ -14,9 +14,9 @@
     <RepositoryUrl>https://github.com/Foretack/MiniTwitch</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>IRC;Twitch;Bots;Client;Events;Chat</PackageTags>
-    <PackageReleaseNotes>ReconnectionDelay property fix</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
     <license>MIT</license>
-    <Version>1.2.2</Version>
+    <Version>1.2.3</Version>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIconUrl>https://media.occluder.space/f/irc.png</PackageIconUrl>
   </PropertyGroup>
