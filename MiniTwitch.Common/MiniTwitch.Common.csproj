@@ -4,7 +4,7 @@
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
       <PackageId>MiniTwitch.Common</PackageId>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-      <PackageVersion>1.0.3</PackageVersion>
+      <PackageVersion>1.1.0</PackageVersion>
       <ImplicitUsings>enable</ImplicitUsings>
       <Nullable>enable</Nullable>
       <Title>MiniTwitch.Common</Title>
@@ -12,9 +12,9 @@
       <Authors>Foretack</Authors>
       <RepositoryUrl>https://github.com/Foretack/MiniTwitch</RepositoryUrl>
       <RepositoryType>git</RepositoryType>
-      <PackageReleaseNotes>CopyUnescaped method for byte spans</PackageReleaseNotes>
+      <PackageReleaseNotes></PackageReleaseNotes>
       <license>MIT</license>
-      <Version>1.0.3</Version>
+      <Version>1.1.0</Version>
       <PackageLicenseFile>LICENSE</PackageLicenseFile>
       <PackageIconUrl>https://media.occluder.space/f/common.png</PackageIconUrl>
   </PropertyGroup>

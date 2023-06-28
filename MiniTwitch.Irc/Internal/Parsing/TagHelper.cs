@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Drawing;
+using System.Text;
 using MiniTwitch.Common.Extensions;
 
 namespace MiniTwitch.Irc.Internal.Parsing;
@@ -71,6 +72,25 @@ internal static class TagHelper
         }
 
         return Enum.Parse<TEnum>(interned, true);
+    }
+
+    public static Color GetColor(ReadOnlySpan<byte> hexBytes)
+    {
+        const byte zero = (byte)'0';
+        const byte nine = (byte)'9';
+        const byte leading = (byte)'#';
+        const byte A = (byte)'A';
+
+        int hexValue = 0;
+        foreach (byte b in hexBytes)
+        {
+            if (b == leading)
+                continue;
+
+            hexValue = (hexValue << 4) | (b is >= zero and <= nine ? b - zero : (b & 0x4F) - A + 10);
+        }
+
+        return Color.FromArgb(hexValue);
     }
 
     private static int ParseInt(ReadOnlySpan<byte> span)

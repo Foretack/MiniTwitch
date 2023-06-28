@@ -14,7 +14,7 @@ public class MessageAuthorTests
 
         Assert.Equal("subscriber/42", author.BadgeInfo);
         Assert.Equal("subscriber/42,glhf-pledge/1", author.Badges);
-        Assert.Equal("#F97304", author.ColorCode);
+        Assert.Equal("f97304", author.ChatColor.Name);
         Assert.Equal("zneix", author.DisplayName);
         Assert.Equal("zneix", author.Name);
         Assert.Equal(99631238, author.Id);
@@ -41,7 +41,7 @@ public class MessageAuthorTests
 
         Assert.Equal(default, author.BadgeInfo);
         Assert.Equal(default, author.Badges);
-        Assert.Equal(default, author.ColorCode);
+        Assert.Equal(default, author.ChatColor);
         Assert.Equal(default, author.DisplayName);
         Assert.Equal(default, author.Type);
     }
@@ -55,7 +55,7 @@ public class MessageAuthorTests
 
         Assert.Equal(string.Empty, author.BadgeInfo);
         Assert.Equal("broadcaster/1", author.Badges);
-        Assert.Equal("#F2647B", author.ColorCode);
+        Assert.Equal("f2647b", author.ChatColor.Name);
         Assert.Equal("occluder", author.Name);
         Assert.Equal("occluder", author.DisplayName);
         Assert.Equal(UserType.None, author.Type);
@@ -78,7 +78,7 @@ public class MessageAuthorTests
 
         Assert.Equal(default, author.BadgeInfo);
         Assert.Equal(default, author.Badges);
-        Assert.Equal(default, author.ColorCode);
+        Assert.Equal(default, author.ChatColor);
         Assert.Equal(default, author.DisplayName);
         Assert.Equal(default, author.IsSubscriber);
         Assert.Equal(default, author.IsTurbo);
@@ -96,7 +96,7 @@ public class MessageAuthorTests
         var author = (MessageAuthor)whisper.Author;
 
         Assert.Equal(string.Empty, author.Badges);
-        Assert.Equal("#2E8B57", author.ColorCode);
+        Assert.Equal("2e8b57", author.ChatColor.Name);
         Assert.Equal("pajbot", author.DisplayName);
         Assert.Equal("pajbot", author.Name);
         Assert.Equal(82008718, author.Id);
@@ -118,7 +118,7 @@ public class MessageAuthorTests
 
         Assert.Equal("subscriber/13", author.BadgeInfo);
         Assert.Equal("subscriber/12,premium/1", author.Badges);
-        Assert.Equal("#0000FF", author.ColorCode);
+        Assert.Equal("ff", author.ChatColor.Name);
         Assert.Equal("Goop_456789", author.DisplayName);
         Assert.Equal("goop_456789", author.Name);
         Assert.Equal(93668177, author.Id);
