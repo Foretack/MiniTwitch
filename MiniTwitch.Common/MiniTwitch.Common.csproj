@@ -4,7 +4,7 @@
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
       <PackageId>MiniTwitch.Common</PackageId>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-      <PackageVersion>1.1.0</PackageVersion>
+      <PackageVersion>1.1.1</PackageVersion>
       <ImplicitUsings>enable</ImplicitUsings>
       <Nullable>enable</Nullable>
       <Title>MiniTwitch.Common</Title>
@@ -14,7 +14,7 @@
       <RepositoryType>git</RepositoryType>
       <PackageReleaseNotes></PackageReleaseNotes>
       <license>MIT</license>
-      <Version>1.1.0</Version>
+      <Version>1.1.1</Version>
       <PackageLicenseFile>LICENSE</PackageLicenseFile>
       <PackageIconUrl>https://media.occluder.space/f/common.png</PackageIconUrl>
   </PropertyGroup>

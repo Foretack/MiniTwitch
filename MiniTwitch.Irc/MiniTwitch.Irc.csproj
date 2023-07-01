@@ -5,7 +5,7 @@
     <PackageId>MiniTwitch.Irc</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageVersion>1.2.3</PackageVersion>
+    <PackageVersion>1.2.4</PackageVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>MiniTwitch.Irc</Title>
@@ -16,7 +16,7 @@
     <PackageTags>IRC;Twitch;Bots;Client;Events;Chat</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
     <license>MIT</license>
-    <Version>1.2.3</Version>
+    <Version>1.2.4</Version>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIconUrl>https://media.occluder.space/f/irc.png</PackageIconUrl>
   </PropertyGroup>
