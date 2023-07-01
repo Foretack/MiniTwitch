@@ -3,8 +3,10 @@
 internal enum WaitableEvents
 {
     Connected,
+    Success,
     ERR_BADMESSAGE,
     ERR_BADAUTH,
     ERR_SERVER,
-    ERR_BADTOPIC
+    ERR_BADTOPIC,
+    PONG
 }

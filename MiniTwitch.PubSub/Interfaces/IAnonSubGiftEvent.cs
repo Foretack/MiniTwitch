@@ -1,4 +1,4 @@
-﻿using MiniTwitch.PubSub.Models;
+﻿using MiniTwitch.PubSub.Models.Payloads;
 
 namespace MiniTwitch.PubSub.Interfaces;
 

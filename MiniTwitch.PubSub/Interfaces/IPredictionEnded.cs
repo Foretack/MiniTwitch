@@ -1,4 +1,4 @@
-﻿using MiniTwitch.PubSub.Models;
+﻿using MiniTwitch.PubSub.Models.Payloads;
 
 namespace MiniTwitch.PubSub.Interfaces;
 
@@ -11,11 +11,11 @@ public interface IPredictionEnded
     string Id { get; }
     long ChannelId { get; }
     DateTime CreatedAt { get; }
-    ChannelPredictionsPayload.User CreatedBy { get; }
+    ChannelPredictions.User CreatedBy { get; }
     DateTime? EndedAt { get; }
-    ChannelPredictionsPayload.User? EndedBy { get; }
+    ChannelPredictions.User? EndedBy { get; }
     DateTime? LockedAt { get; }
-    IReadOnlyList<ChannelPredictionsPayload.Outcome> Outcomes { get; }
+    IReadOnlyList<ChannelPredictions.Outcome> Outcomes { get; }
     int PredictionWindowSeconds { get; }
     string Title { get; }
     string WinningOutcomeId { get; }

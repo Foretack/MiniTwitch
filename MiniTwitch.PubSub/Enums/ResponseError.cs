@@ -3,9 +3,10 @@
 public enum ResponseError
 {
     None,
-    Unknown,
+    Success,
     ERR_BADMESSAGE,
     ERR_BADAUTH,
     ERR_SERVER,
-    ERR_BADTOPIC
+    ERR_BADTOPIC,
+    Response_Timeout,
 }

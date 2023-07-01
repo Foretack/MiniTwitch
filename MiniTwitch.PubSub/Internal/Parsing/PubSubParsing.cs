@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.Json;
 using MiniTwitch.Common.Extensions;
 using MiniTwitch.PubSub.Enums;
@@ -27,10 +26,11 @@ internal static class PubSubParsing
         return type;
     }
 
-    public static MessageTopic ParseTopic(ReadOnlySpan<byte> span)
+    public static (MessageTopic, long) ParseTopic(ReadOnlySpan<byte> span)
     {
         const byte quotationMark = (byte)'"';
         const byte dot = (byte)'.';
+        const byte zero = (byte)'0';
         int qCount = 0;
         int start = 0;
         while (qCount < 9)
@@ -39,9 +39,19 @@ internal static class PubSubParsing
             qCount++;
         }
 
-        int end = span[start..].IndexOfAny(stackalloc byte[] { dot, quotationMark }) + start;
+        ReadOnlySpan<byte> upperBound = stackalloc byte[] { dot, quotationMark };
+        int end = span[start..].IndexOfAny(upperBound) + start;
         MessageTopic topic = (MessageTopic)span[start..end].Sum();
-        return topic;
+        long arg = 0;
+        end++;
+        int end2 = span[end..].IndexOfAny(upperBound) + end;
+        foreach (byte b in span[end..end2])
+        {
+            arg *= 10;
+            arg += b - zero;
+        }
+
+        return (topic, arg);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -68,13 +78,32 @@ internal static class PubSubParsing
         return JsonSerializer.Deserialize<T>(unescaped[..endIndex], options);
     }
 
+    public static (T1?, T2?) TwitchIsRetarded<T1, T2>(this ReadOnlySpan<byte> span, bool escaped = true, JsonSerializerOptions? options = null)
+        where T1 : struct
+        where T2 : struct
+    {
+        ReadOnlySpan<byte> message = span.ReadMessage(escaped);
+        Span<byte> unescaped = stackalloc byte[message.Length];
+        int endIndex = message.CopyUnescaped(unescaped);
+        try
+        {
+            T1 value1 = JsonSerializer.Deserialize<T1>(unescaped[..endIndex], options);
+            return (value1, default);
+        }
+        catch (Exception)
+        {
+            T2 value2 = JsonSerializer.Deserialize<T2>(unescaped[..endIndex], options);
+            return (default, value2);
+        }
+    }
+
     public static ListenResponse ParseResponse(ReadOnlySpan<byte> span)
     {
         var response = JsonSerializer.Deserialize<ResponsePayload>(span);
         return new ListenResponse()
         {
             TopicKey = response.Nonce,
-            Error = Enum.TryParse(response.Error, true, out ResponseError error) ? error : ResponseError.None,
+            Error = Enum.TryParse(response.Error, true, out ResponseError error) ? error : ResponseError.Success,
         };
     }
 }

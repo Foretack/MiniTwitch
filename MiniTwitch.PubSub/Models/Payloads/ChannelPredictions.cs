@@ -1,9 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 using MiniTwitch.PubSub.Interfaces;
 
-namespace MiniTwitch.PubSub.Models;
+namespace MiniTwitch.PubSub.Models.Payloads;
 
-public readonly struct ChannelPredictionsPayload
+public readonly struct ChannelPredictions
 {
     [JsonPropertyName("type")]
     public string Type { get; init; }
@@ -29,7 +29,7 @@ public readonly struct ChannelPredictionsPayload
         [property: JsonPropertyName("status")] string Status,
         [property: JsonPropertyName("title")] string Title,
         [property: JsonPropertyName("winning_outcome_id")] string WinningOutcomeId
-    ) : IPredictionStarted, ITopPredictorsChanged, IPredictionWindowClosed, IPredictionEnded,
+    ) : IPredictionStarted, IPredictionUpdate, IPredictionWindowClosed, IPredictionEnded,
         IPredictionLocked, IPredictionCancelled;
 
     public readonly record struct User(
