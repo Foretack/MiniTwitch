@@ -240,8 +240,10 @@ public class PubSubClient : IAsyncDisposable
     private async Task OnWsReconnect()
     {
         Log(LogLevel.Information, "Reconnected");
-        _pingerToken.Cancel();
         _pinger.Dispose();
+        _pingerToken.Cancel();
+        _pingerToken.Dispose();
+        _pingerToken = new();
         _pinger = Task.Factory.StartNew(PingerTask, TaskCreationOptions.LongRunning);
         foreach (Topic t in _topics)
             _ = await ListenTo(t);
