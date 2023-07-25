@@ -53,7 +53,7 @@ public class AsyncEventCoordinator<TEnum> : IDisposable
         TEnum[] valuesArr = values.ToArray();
         var tasks = new Task<bool>[valuesArr.Length];
         CancellationToken token = new(false);
-        CancellationTokenSource tokenSource = CancellationTokenSource.CreateLinkedTokenSource(new[] { token, cancellationToken });
+        CancellationTokenSource tokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, cancellationToken);
         for (int i = 0; i < valuesArr.Length; i++)
         {
             tasks[i] = WaitFor(valuesArr[i], timeout, tokenSource.Token);
