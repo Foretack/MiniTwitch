@@ -72,10 +72,10 @@ public class PubSubClient : IAsyncDisposable
     public event Func<UserId, ChannelId, IUserBanned, ValueTask> OnUserBanned = default!;
     public event Func<UserId, ChannelId, IUserUntimedOut, ValueTask> OnUserUntimedOut = default!;
     public event Func<UserId, ChannelId, IUserUnbanned, ValueTask> OnUserUnbanned = default!;
-    public event Func<ChannelId, Polls, ValueTask> OnPollCreated = default!;
-    public event Func<ChannelId, Polls, ValueTask> OnPollUpdate = default!;
-    public event Func<ChannelId, Polls, ValueTask> OnPollCompleted = default!;
-    public event Func<ChannelId, Polls, ValueTask> OnPollArchived = default!;
+    public event Func<ChannelId, Poll, ValueTask> OnPollCreated = default!;
+    public event Func<ChannelId, Poll, ValueTask> OnPollUpdate = default!;
+    public event Func<ChannelId, Poll, ValueTask> OnPollCompleted = default!;
+    public event Func<ChannelId, Poll, ValueTask> OnPollArchived = default!;
     #endregion
 
     #region Fields
@@ -494,19 +494,19 @@ public class PubSubClient : IAsyncDisposable
                         switch (poll.Type)
                         {
                             case "POLL_CREATE":
-                                OnPollCreated?.Invoke(info[0], poll).StepOver(GetExceptionHandler());
+                                OnPollCreated?.Invoke(info[0], poll.Data.Poll).StepOver(GetExceptionHandler());
                                 break;
 
                             case "POLL_UPDATE":
-                                OnPollUpdate?.Invoke(info[0], poll).StepOver(GetExceptionHandler());
+                                OnPollUpdate?.Invoke(info[0], poll.Data.Poll).StepOver(GetExceptionHandler());
                                 break;
 
                             case "POLL_COMPLETE":
-                                OnPollCompleted?.Invoke(info[0], poll).StepOver(GetExceptionHandler());
+                                OnPollCompleted?.Invoke(info[0], poll.Data.Poll).StepOver(GetExceptionHandler());
                                 break;
 
                             case "POLL_ARCHIVE":
-                                OnPollArchived?.Invoke(info[0], poll).StepOver(GetExceptionHandler());
+                                OnPollArchived?.Invoke(info[0], poll.Data.Poll).StepOver(GetExceptionHandler());
                                 break;
 
                             default:
