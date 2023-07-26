@@ -142,6 +142,9 @@ public class PubSubClient : IAsyncDisposable
 
     public async Task<ListenResponse> ListenTo(Topic topic, CancellationToken cancellationToken = default)
     {
+        if (_topics.Count >= 50)
+            Log(LogLevel.Warning, "Exceeding maximum allowed topics on a single connection (50)");
+
         string msg = _templates.Listen(topic);
         await _ws.SendAsync(msg, sensitive: true, cancellationToken: cancellationToken);
         TimeSpan timeout = TimeSpan.FromSeconds(5);
