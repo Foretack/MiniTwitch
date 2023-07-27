@@ -1,13 +1,14 @@
 ﻿using System.Text.Json.Serialization;
+using MiniTwitch.PubSub.Interfaces;
 
 namespace MiniTwitch.PubSub.Models.Payloads;
 
-public readonly struct BroadcastSettingsUpdate
+public readonly struct BroadcastSettingsUpdate : ITitleChange, IGameChange
 {
     [JsonPropertyName("channel")]
     public string Channel { get; init; }
     [JsonPropertyName("channel_id")]
-    public string ChannelId { get; init; }
+    public long ChannelId { get; init; }
     [JsonPropertyName("old_status")]
     public string OldTitle { get; init; }
     [JsonPropertyName("status")]

@@ -67,7 +67,8 @@ public class PubSubClient : IAsyncDisposable
     public event Func<ChannelId, IViewerCountUpdate, ValueTask> OnViewerCountUpdate = default!;
     public event Func<ChannelId, ICommercialBreak, ValueTask> OnCommercialBreak = default!;
     public event Func<ChannelId, IStreamDown, ValueTask> OnStreamDown = default!;
-    public event Func<ChannelId, BroadcastSettingsUpdate, ValueTask> OnBroadcastSettingsUpdate = default!;
+    public event Func<ChannelId, ITitleChange, ValueTask> OnTitleChange = default!;
+    public event Func<ChannelId, IGameChange, ValueTask> OnGameChange = default!;
     public event Func<UserId, ChannelId, IUserTimedOut, ValueTask> OnUserTimedOut = default!;
     public event Func<UserId, ChannelId, IUserBanned, ValueTask> OnUserBanned = default!;
     public event Func<UserId, ChannelId, IUserUntimedOut, ValueTask> OnUserUntimedOut = default!;
@@ -465,7 +466,12 @@ public class PubSubClient : IAsyncDisposable
 
                     case MessageTopic.BroadcastSettingsUpdate:
                         var settingsUpdate = data.Span.ReadJsonMessage<BroadcastSettingsUpdate>(options: _sOptions);
-                        OnBroadcastSettingsUpdate?.Invoke(info[0], settingsUpdate).StepOver(GetExceptionHandler());
+                        if (settingsUpdate.NewTitle != settingsUpdate.OldTitle)
+                            OnTitleChange?.Invoke(info[0], settingsUpdate).StepOver(GetExceptionHandler());
+
+                        if (settingsUpdate.NewGameId != settingsUpdate.OldGameId)
+                            OnGameChange?.Invoke(info[0], settingsUpdate).StepOver(GetExceptionHandler());
+
                         break;
 
                     case MessageTopic.ModeratorActions:
