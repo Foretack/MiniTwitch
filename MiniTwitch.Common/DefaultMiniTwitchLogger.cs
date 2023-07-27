@@ -2,12 +2,12 @@
 
 namespace MiniTwitch.Common;
 
-public class DefaultMiniTwitchLogger<T> : ILogger<T>
+public class DefaultMiniTwitchLogger<T> : ILogger<T>, ILogger
 {
     public bool Enabled { get; set; } = true;
     public LogLevel MinimumLevel { get; set; } = LogLevel.Information;
 
-    private readonly object _lock = new();
+    private static readonly object _lock = new();
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
