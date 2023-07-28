@@ -73,9 +73,9 @@ public class PubSubClient : IAsyncDisposable
     public event Func<UserId, ChannelId, IUserBanned, ValueTask> OnUserBanned = default!;
     public event Func<UserId, ChannelId, IUserUntimedOut, ValueTask> OnUserUntimedOut = default!;
     public event Func<UserId, ChannelId, IUserUnbanned, ValueTask> OnUserUnbanned = default!;
-    public event Func<ChannelId, Poll, ValueTask> OnPollCreated = default!;
-    public event Func<ChannelId, Poll, ValueTask> OnPollUpdate = default!;
-    public event Func<ChannelId, Poll, ValueTask> OnPollCompleted = default!;
+    public event Func<ChannelId, IPollCreated, ValueTask> OnPollCreated = default!;
+    public event Func<ChannelId, IPollUpdated, ValueTask> OnPollUpdate = default!;
+    public event Func<ChannelId, IPollCompleted, ValueTask> OnPollCompleted = default!;
     public event Func<ChannelId, Poll, ValueTask> OnPollArchived = default!;
     #endregion
 

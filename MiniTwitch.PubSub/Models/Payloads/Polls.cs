@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using MiniTwitch.PubSub.Interfaces;
 
 namespace MiniTwitch.PubSub.Models.Payloads;
 
@@ -14,7 +15,7 @@ internal readonly struct Polls
     );
 }
 
-public readonly struct Poll
+public readonly struct Poll : IPollCreated, IPollUpdated, IPollCompleted
 {
     [JsonPropertyName("poll_id")]
     public string PollId { get; init; }
@@ -31,7 +32,7 @@ public readonly struct Poll
     [JsonPropertyName("ended_by")]
     public long? EndedBy { get; init; }
     [JsonPropertyName("duration_seconds")]
-    public int DurationSeconds { get; init; }
+    public long DurationSeconds { get; init; }
     [JsonPropertyName("settings")]
     public PollSettings Settings { get; init; }
     [JsonPropertyName("status")]
