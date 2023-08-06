@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using MiniTwitch.Common.Extensions;
 using MiniTwitch.PubSub.Enums;
 using MiniTwitch.PubSub.Internal.Enums;
@@ -40,12 +42,28 @@ internal static class PubSubParsing
         return span[start..end];
     }
 
-    public static T ReadJsonMessage<T>(this ReadOnlySpan<byte> span, bool escaped = true, JsonSerializerOptions? options = null) where T : struct
+    public static T ReadJsonMessage<T>(this ReadOnlySpan<byte> span, bool escaped = true, JsonSerializerOptions? options = null, ILogger? logger = null)
+        where T : struct
     {
         ReadOnlySpan<byte> message = span.ReadMessage(escaped);
         Span<byte> unescaped = stackalloc byte[message.Length];
         int endIndex = message.CopyUnescaped(unescaped);
-        return JsonSerializer.Deserialize<T>(unescaped[..endIndex], options);
+        T val;
+        try
+        {
+            val = JsonSerializer.Deserialize<T>(unescaped[..endIndex], options);
+        }
+        catch (Exception ex)
+        {
+            string json = Encoding.UTF8.GetString(unescaped[..endIndex]);
+            logger?.LogError("Failed to deserialize JSON.\nmessage: ({ExceptionType}) {ExceptionMessage}\n{StackTrace}\nJSON string: {JsonString}\nIf you see this error, " +
+                "please open an issue! Include the JSON string and the exception. https://github.com/Foretack/MiniTwitch/issues",
+                ex.GetType().Name, ex.Message, ex.StackTrace, json);
+
+            return default;
+        }
+
+        return val;
     }
 
     public static ListenResponse ParseResponse(ReadOnlySpan<byte> span)

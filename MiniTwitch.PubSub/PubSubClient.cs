@@ -299,7 +299,7 @@ public class PubSubClient : IAsyncDisposable
                 switch (info.Topic)
                 {
                     case MessageTopic.ChannelPredictions:
-                        var prediction = data.Span.ReadJsonMessage<ChannelPredictions>(options: _sOptions);
+                        var prediction = data.Span.ReadJsonMessage<ChannelPredictions>(options: _sOptions, logger: GetLogger());
                         if (prediction.Type == "event-created")
                         {
                             OnPredictionStarted?.Invoke(info[0], prediction.Data.Event).StepOver(GetExceptionHandler());
@@ -334,7 +334,7 @@ public class PubSubClient : IAsyncDisposable
                         break;
 
                     case MessageTopic.ChatroomsUser:
-                        var chatrooms = data.Span.ReadJsonMessage<ChatroomsUser>(options: _sOptions);
+                        var chatrooms = data.Span.ReadJsonMessage<ChatroomsUser>(options: _sOptions, logger: GetLogger());
                         switch (chatrooms.Type)
                         {
                             case "user_moderation_action":
@@ -367,22 +367,22 @@ public class PubSubClient : IAsyncDisposable
                         break;
 
                     case MessageTopic.BitsEventsV1 or MessageTopic.BitsEventsV2:
-                        var bits = data.Span.ReadJsonMessage<BitsEvents>(options: _sOptions);
+                        var bits = data.Span.ReadJsonMessage<BitsEvents>(options: _sOptions, logger: GetLogger());
                         OnBitsEvent?.Invoke(info[0], bits).StepOver(GetExceptionHandler());
                         break;
 
                     case MessageTopic.BitsBadgeUnlock:
-                        var bitBadgeUnlock = data.Span.ReadJsonMessage<BitsBadgeUnlock>(options: _sOptions);
+                        var bitBadgeUnlock = data.Span.ReadJsonMessage<BitsBadgeUnlock>(options: _sOptions, logger: GetLogger());
                         OnBitsBadgeUnlock?.Invoke(info[0], bitBadgeUnlock).StepOver(GetExceptionHandler());
                         break;
 
                     case MessageTopic.ChannelPoints:
-                        var channelPoints = data.Span.ReadJsonMessage<ChannelPoints>(options: _sOptions);
+                        var channelPoints = data.Span.ReadJsonMessage<ChannelPoints>(options: _sOptions, logger: GetLogger());
                         OnChannelPointsRedemption?.Invoke(info[0], channelPoints).StepOver(GetExceptionHandler());
                         break;
 
                     case MessageTopic.SubscribeEvents:
-                        var subEvent = data.Span.ReadJsonMessage<SubscribeEvents>(options: _sOptions);
+                        var subEvent = data.Span.ReadJsonMessage<SubscribeEvents>(options: _sOptions, logger: GetLogger());
                         switch (subEvent.Context)
                         {
                             case "sub" or "resub":
@@ -400,12 +400,12 @@ public class PubSubClient : IAsyncDisposable
                         break;
 
                     case MessageTopic.AutomodQueue:
-                        var automod = data.Span.ReadJsonMessage<AutoModQueue>(options: _sOptions);
+                        var automod = data.Span.ReadJsonMessage<AutoModQueue>(options: _sOptions, logger: GetLogger());
                         OnAutoModMessageCaught?.Invoke(info[0], info[1], automod).StepOver(GetExceptionHandler());
                         break;
 
                     case MessageTopic.LowTrustUsers:
-                        var lowTrust = data.Span.ReadJsonMessage<LowTrustUser>(options: _sOptions);
+                        var lowTrust = data.Span.ReadJsonMessage<LowTrustUser>(options: _sOptions, logger: GetLogger());
                         if (lowTrust.IsTreatmentMessage)
                             OnLowTrustTreatmentMessage?.Invoke(info[0], info[1], lowTrust).StepOver(GetExceptionHandler());
                         else
@@ -414,12 +414,12 @@ public class PubSubClient : IAsyncDisposable
                         break;
 
                     case MessageTopic.ModerationNotifications:
-                        var notification = data.Span.ReadJsonMessage<ModerationNotificationMessage>(options: _sOptions);
+                        var notification = data.Span.ReadJsonMessage<ModerationNotificationMessage>(options: _sOptions, logger: GetLogger());
                         OnModerationNotificationMessage?.Invoke(info[0], info[1], notification).StepOver(GetExceptionHandler());
                         break;
 
                     case MessageTopic.PinnedChatUpdates:
-                        var pinUpdate = data.Span.ReadJsonMessage<PinnedChatUpdates>(options: _sOptions);
+                        var pinUpdate = data.Span.ReadJsonMessage<PinnedChatUpdates>(options: _sOptions, logger: GetLogger());
                         switch (pinUpdate.Type)
                         {
                             case "pin-message":
@@ -438,7 +438,7 @@ public class PubSubClient : IAsyncDisposable
                         break;
 
                     case MessageTopic.VideoPlayback:
-                        var videoPlayback = data.Span.ReadJsonMessage<VideoPlayback>(options: _sOptions);
+                        var videoPlayback = data.Span.ReadJsonMessage<VideoPlayback>(options: _sOptions, logger: GetLogger());
                         switch (videoPlayback.Type)
                         {
                             case "stream-up":
@@ -465,7 +465,7 @@ public class PubSubClient : IAsyncDisposable
                         break;
 
                     case MessageTopic.BroadcastSettingsUpdate:
-                        var settingsUpdate = data.Span.ReadJsonMessage<BroadcastSettingsUpdate>(options: _sOptions);
+                        var settingsUpdate = data.Span.ReadJsonMessage<BroadcastSettingsUpdate>(options: _sOptions, logger: GetLogger());
                         if (settingsUpdate.NewTitle != settingsUpdate.OldTitle)
                             OnTitleChange?.Invoke(info[0], settingsUpdate).StepOver(GetExceptionHandler());
 
@@ -475,7 +475,7 @@ public class PubSubClient : IAsyncDisposable
                         break;
 
                     case MessageTopic.ModeratorActions:
-                        var modAction = data.Span.ReadJsonMessage<ModeratorActions>(options: _sOptions);
+                        var modAction = data.Span.ReadJsonMessage<ModeratorActions>(options: _sOptions, logger: GetLogger());
                         switch (modAction.Data.ModerationAction)
                         {
                             case "timeout":
@@ -501,7 +501,7 @@ public class PubSubClient : IAsyncDisposable
                         break;
 
                     case MessageTopic.Polls:
-                        var poll = data.Span.ReadJsonMessage<Polls>(options: _sOptions);
+                        var poll = data.Span.ReadJsonMessage<Polls>(options: _sOptions, logger: GetLogger());
                         switch (poll.Type)
                         {
                             case "POLL_CREATE":
@@ -528,7 +528,7 @@ public class PubSubClient : IAsyncDisposable
                         break;
 
                     case MessageTopic.CommunityChannelPoints:
-                        var cChannelPoints = data.Span.ReadJsonMessage<ChannelPoints>(options: _sOptions);
+                        var cChannelPoints = data.Span.ReadJsonMessage<ChannelPoints>(options: _sOptions, logger: GetLogger());
                         OnChannelPointsRedemption?.Invoke(info[0], cChannelPoints).StepOver(GetExceptionHandler());
                         break;
                 }
