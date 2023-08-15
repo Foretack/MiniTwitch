@@ -20,7 +20,7 @@ public readonly struct SubscribeEvents : ISubEvent, ISubGiftEvent, IAnonSubGiftE
     [JsonPropertyName("is_gift")]
     public bool IsGift { get; init; } = default;
     [JsonPropertyName("sub_message")]
-    public SubMessage SubMessage { get; init; } = default;
+    public SubMessageData SubMessage { get; init; } = default;
     [JsonPropertyName("recipient_id")]
     public long RecipientId { get; init; } = default;
     [JsonPropertyName("recipient_user_name")]
@@ -43,15 +43,15 @@ public readonly struct SubscribeEvents : ISubEvent, ISubGiftEvent, IAnonSubGiftE
     public int CumulativeMonths { get; init; } = 0;
 
     internal SubscribeEvents(object? any) { }
+
+    public readonly record struct EmoteData(
+        [property: JsonPropertyName("start")] int Start,
+        [property: JsonPropertyName("end")] int End,
+        [property: JsonPropertyName("id")] int Id
+    );
+
+    public readonly record struct SubMessageData(
+        [property: JsonPropertyName("message")] string Message = "",
+        [property: JsonPropertyName("emotes")] IReadOnlyList<EmoteData>? Emotes = default
+    );
 }
-
-public readonly record struct Emote(
-    [property: JsonPropertyName("start")] int Start,
-    [property: JsonPropertyName("end")] int End,
-    [property: JsonPropertyName("id")] int Id
-);
-
-public readonly record struct SubMessage(
-    [property: JsonPropertyName("message")] string Message = "",
-    [property: JsonPropertyName("emotes")] IReadOnlyList<Emote>? Emotes = default
-);

@@ -48,11 +48,11 @@ public readonly struct Poll : IPollCreated, IPollUpdated, IPollCompleted
     [JsonPropertyName("remaining_duration_milliseconds")]
     public long RemainingDurationMilliseconds { get; init; }
     [JsonPropertyName("top_contributor")]
-    public string? TopContributor { get; init; }
+    public object? TopContributor { get; init; }
     [JsonPropertyName("top_bits_contributor")]
-    public string? TopBitsContributor { get; init; }
+    public object? TopBitsContributor { get; init; }
     [JsonPropertyName("top_channel_points_contributor")]
-    public string? TopChannelPointsContributor { get; init; }
+    public object? TopChannelPointsContributor { get; init; }
 
 
     public readonly record struct CostSetting(

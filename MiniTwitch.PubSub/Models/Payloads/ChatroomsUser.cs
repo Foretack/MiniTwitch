@@ -3,10 +3,13 @@ using MiniTwitch.PubSub.Interfaces;
 
 namespace MiniTwitch.PubSub.Models.Payloads;
 
+/// <inheritdoc/>
 public readonly struct ChatroomsUser
 {
+    /// <inheritdoc/>
     [JsonPropertyName("type")]
     public string Type { get; init; }
+    /// <inheritdoc/>
     [JsonPropertyName("data")]
     public PayloadData Data { get; init; }
 

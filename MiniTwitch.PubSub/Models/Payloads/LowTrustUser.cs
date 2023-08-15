@@ -3,28 +3,40 @@ using MiniTwitch.PubSub.Interfaces;
 
 namespace MiniTwitch.PubSub.Models.Payloads;
 
+/// <inheritdoc/>
 public readonly struct LowTrustUser : ILowTrustTreatmentMessage, ILowTrustChatMessage
 {
+    /// <inheritdoc/>
     [JsonPropertyName("low_trust_user")]
     public LowTrustUserData LowTrustUserInfo { get; init; } = default;
+    /// <inheritdoc/>
     [JsonPropertyName("message_content")]
     public MessageContentData MessageContent { get; init; } = default;
+    /// <inheritdoc/>
     [JsonPropertyName("message_id")]
     public string MessageId { get; init; } = "";
+    /// <inheritdoc/>
     [JsonPropertyName("sent_at")]
     public DateTime SentAt { get; init; } = default;
+    /// <inheritdoc/>
     [JsonPropertyName("low_trust_id")]
     public string LowTrustId { get; init; } = "";
+    /// <inheritdoc/>
     [JsonPropertyName("channel_id")]
     public long ChannelId { get; init; } = default;
+    /// <inheritdoc/>
     [JsonPropertyName("updated_by")]
     public UserInfo UpdatedBy { get; init; } = default;
+    /// <inheritdoc/>
     [JsonPropertyName("updated_at")]
     public DateTime UpdatedAt { get; init; } = default;
+    /// <inheritdoc/>
     [JsonPropertyName("target_user_id")]
     public long TargetUserId { get; init; } = default;
+    /// <inheritdoc/>
     [JsonPropertyName("target_user")]
     public string TargetUser { get; init; } = "";
+    /// <inheritdoc/>
     [JsonPropertyName("types")]
     public string[] Types { get; init; } = Array.Empty<string>();
     [JsonPropertyName("evaluated_at")]

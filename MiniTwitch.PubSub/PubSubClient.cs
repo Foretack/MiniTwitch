@@ -67,6 +67,9 @@ public class PubSubClient : IAsyncDisposable
     public event Func<ChannelId, IViewerCountUpdate, ValueTask> OnViewerCountUpdate = default!;
     public event Func<ChannelId, ICommercialBreak, ValueTask> OnCommercialBreak = default!;
     public event Func<ChannelId, IStreamDown, ValueTask> OnStreamDown = default!;
+    /// <summary>
+    /// Invoked when the title of the stream is changed
+    /// </summary>
     public event Func<ChannelId, ITitleChange, ValueTask> OnTitleChange = default!;
     public event Func<ChannelId, IGameChange, ValueTask> OnGameChange = default!;
     public event Func<UserId, ChannelId, IUserTimedOut, ValueTask> OnUserTimedOut = default!;

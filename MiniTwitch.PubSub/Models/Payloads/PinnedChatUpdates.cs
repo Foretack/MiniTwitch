@@ -3,10 +3,13 @@ using MiniTwitch.PubSub.Interfaces;
 
 namespace MiniTwitch.PubSub.Models.Payloads;
 
+/// Not exposed directly 
 public readonly struct PinnedChatUpdates
 {
+    /// Not exposed directly 
     [JsonPropertyName("type")]
     public string Type { get; init; }
+    /// Not exposed directly 
     [JsonPropertyName("data")]
     public PayloadData Data { get; init; }
 

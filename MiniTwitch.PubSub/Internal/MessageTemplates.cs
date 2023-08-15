@@ -2,7 +2,7 @@
 
 namespace MiniTwitch.PubSub.Internal;
 
-internal class MessageTemplates
+internal sealed class MessageTemplates
 {
     private readonly string _authToken;
     public MessageTemplates(string authToken)

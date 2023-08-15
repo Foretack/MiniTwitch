@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 using MiniTwitch.PubSub.Interfaces;
 
 namespace MiniTwitch.PubSub.Models.Payloads;
@@ -20,8 +22,8 @@ public readonly struct ChannelPredictions
         [property: JsonPropertyName("channel_id")] long ChannelId,
         [property: JsonPropertyName("created_at")] DateTime CreatedAt,
         [property: JsonPropertyName("created_by")] User CreatedBy,
-        [property: JsonPropertyName("ended_at")] DateTime? EndedAt,
-        [property: JsonPropertyName("ended_by")] User? EndedBy,
+        [property: JsonPropertyName("ended_at"), NotNull] DateTime? EndedAt,
+        [property: JsonPropertyName("ended_by"), NotNull] User? EndedBy,
         [property: JsonPropertyName("locked_at")] DateTime? LockedAt,
         [property: JsonPropertyName("locked_by")] User? LockedBy,
         [property: JsonPropertyName("outcomes")] IReadOnlyList<Outcome> Outcomes,
