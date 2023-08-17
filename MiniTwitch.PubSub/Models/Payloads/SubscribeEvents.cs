@@ -60,5 +60,7 @@ public readonly struct SubscribeEvents : ISubEvent, ISubGiftEvent, IAnonSubGiftE
     {
         [JsonPropertyName("message")]
         public string Message { get; init; }
+        [JsonPropertyName("emotes")]
+        public IReadOnlyList<EmoteData>? Emotes { get; init; }
     }
 }

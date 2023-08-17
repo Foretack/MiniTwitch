@@ -64,6 +64,9 @@ public readonly struct LowTrustUser : ILowTrustTreatmentMessage, ILowTrustChatMe
         [JsonPropertyName("sender")]
         public UserInfo Sender { get; init; }
 
+        [JsonPropertyName("shared_ban_channel_ids")]
+        public long[]? SharedBanChannelIds { get; init; }
+
         [JsonPropertyName("evaluated_at")]
         public DateTime EvaluatedAt { get; init; }
 
