@@ -50,27 +50,53 @@ public readonly struct LowTrustUser : ILowTrustTreatmentMessage, ILowTrustChatMe
 
     public LowTrustUser(object? _) { }
 
-    public readonly record struct LowTrustUserData(
-        [property: JsonPropertyName("id")] long Id,
-        [property: JsonPropertyName("low_trust_id")] string LowTrustId,
-        [property: JsonPropertyName("channel_id")] long ChannelId,
-        [property: JsonPropertyName("sender")] UserInfo Sender,
-        [property: JsonPropertyName("evaluated_at")] DateTime EvaluatedAt,
-        [property: JsonPropertyName("updated_at")] DateTime UpdatedAt,
-        [property: JsonPropertyName("updated_by")] UserInfo UpdatedBy,
-        [property: JsonPropertyName("shared_ban_channel_ids")] long[]? SharedBanChannelIds,
-        [property: JsonPropertyName("types")] string[] Types,
-        [property: JsonPropertyName("treatment")] string Treatment,
-        [property: JsonPropertyName("ban_evasion_evaluation")] string BanEvasionEvaluation
-    );
+    public readonly struct LowTrustUserData
+    {
+        [JsonPropertyName("id")]
+        public long Id { get; init; }
 
-    public readonly record struct UserInfo(
-        [property: JsonPropertyName("id")] long Id,
-        [property: JsonPropertyName("login")] string Login,
-        [property: JsonPropertyName("display_name")] string DisplayName
-    );
+        [JsonPropertyName("low_trust_id")]
+        public string LowTrustId { get; init; }
 
-    public readonly record struct MessageContentData(
-        [property: JsonPropertyName("text")] string Text
-    );
+        [JsonPropertyName("channel_id")]
+        public long ChannelId { get; init; }
+
+        [JsonPropertyName("sender")]
+        public UserInfo Sender { get; init; }
+
+        [JsonPropertyName("evaluated_at")]
+        public DateTime EvaluatedAt { get; init; }
+
+        [JsonPropertyName("updated_at")]
+        public DateTime UpdatedAt { get; init; }
+
+        [JsonPropertyName("updated_by")]
+        public UserInfo UpdatedBy { get; init; }
+
+        [JsonPropertyName("types")]
+        public string[] Types { get; init; }
+
+        [JsonPropertyName("treatment")]
+        public string Treatment { get; init; }
+
+        [JsonPropertyName("ban_evasion_evaluation")]
+        public string BanEvasionEvaluation { get; init; }
+    }
+    public readonly struct UserInfo
+    {
+        [JsonPropertyName("id")]
+        public long Id { get; init; }
+
+        [JsonPropertyName("login")]
+        public string Login { get; init; }
+
+        [JsonPropertyName("display_name")]
+        public string DisplayName { get; init; }
+    }
+    public readonly struct MessageContentData
+    {
+        [JsonPropertyName("text")]
+        public string Text { get; init; }
+    }
+
 }

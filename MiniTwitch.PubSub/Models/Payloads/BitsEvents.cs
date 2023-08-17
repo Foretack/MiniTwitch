@@ -15,21 +15,45 @@ public readonly struct BitsEvents
     [JsonPropertyName("is_anonymous")]
     public bool IsAnonymous { get; init; }
 
-    public readonly record struct BadgeEntitlement(
-        [property: JsonPropertyName("new_version")] int NewVersion,
-        [property: JsonPropertyName("previous_version")] int PreviousVersion
-    );
+    public readonly struct BadgeEntitlement
+    {
+        [JsonPropertyName("new_version")]
+        public int NewVersion { get; init; }
 
-    public readonly record struct BitsData(
-        [property: JsonPropertyName("user_name")] string? Username,
-        [property: JsonPropertyName("channel_name")] string ChannelName,
-        [property: JsonPropertyName("user_id")] long? UserId,
-        [property: JsonPropertyName("channel_id")] long ChannelId,
-        [property: JsonPropertyName("time")] DateTime Time,
-        [property: JsonPropertyName("chat_message")] string ChatMessage,
-        [property: JsonPropertyName("bits_used")] int BitsUsed,
-        [property: JsonPropertyName("total_bits_used")] int TotalBitsUsed,
-        [property: JsonPropertyName("context")] string Context,
-        [property: JsonPropertyName("badge_entitlement")] BadgeEntitlement? BadgeEntitlement
-    );
+        [JsonPropertyName("previous_version")]
+        public int PreviousVersion { get; init; }
+    }
+    public readonly struct BitsData
+    {
+        [JsonPropertyName("user_name")]
+        public string? Username { get; init; }
+
+        [JsonPropertyName("channel_name")]
+        public string ChannelName { get; init; }
+
+        [JsonPropertyName("user_id")]
+        public long? UserId { get; init; }
+
+        [JsonPropertyName("channel_id")]
+        public long ChannelId { get; init; }
+
+        [JsonPropertyName("time")]
+        public DateTime Time { get; init; }
+
+        [JsonPropertyName("chat_message")]
+        public string ChatMessage { get; init; }
+
+        [JsonPropertyName("bits_used")]
+        public int BitsUsed { get; init; }
+
+        [JsonPropertyName("total_bits_used")]
+        public int TotalBitsUsed { get; init; }
+
+        [JsonPropertyName("context")]
+        public string Context { get; init; }
+
+        [JsonPropertyName("badge_entitlement")]
+        public BadgeEntitlement? BadgeEntitlement { get; init; }
+    }
+
 }

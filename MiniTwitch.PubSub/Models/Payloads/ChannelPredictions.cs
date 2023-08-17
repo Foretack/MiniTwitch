@@ -12,66 +12,144 @@ public readonly struct ChannelPredictions
     [JsonPropertyName("data")]
     public PredictionData Data { get; init; }
 
-    public readonly record struct PredictionData(
-        [property: JsonPropertyName("timestamp")] DateTime Timestamp,
-        [property: JsonPropertyName("event")] EventData Event
-    );
+    public readonly struct PredictionData
+    {
+        [JsonPropertyName("timestamp")]
+        public DateTime Timestamp { get; init; }
 
-    public readonly record struct EventData(
-        [property: JsonPropertyName("id")] string Id,
-        [property: JsonPropertyName("channel_id")] long ChannelId,
-        [property: JsonPropertyName("created_at")] DateTime CreatedAt,
-        [property: JsonPropertyName("created_by")] User CreatedBy,
-        [property: JsonPropertyName("ended_at"), NotNull] DateTime? EndedAt,
-        [property: JsonPropertyName("ended_by"), NotNull] User? EndedBy,
-        [property: JsonPropertyName("locked_at")] DateTime? LockedAt,
-        [property: JsonPropertyName("locked_by")] User? LockedBy,
-        [property: JsonPropertyName("outcomes")] IReadOnlyList<Outcome> Outcomes,
-        [property: JsonPropertyName("prediction_window_seconds")] int PredictionWindowSeconds,
-        [property: JsonPropertyName("status")] string Status,
-        [property: JsonPropertyName("title")] string Title,
-        [property: JsonPropertyName("winning_outcome_id")] string WinningOutcomeId
-    ) : IPredictionStarted, IPredictionUpdate, IPredictionWindowClosed, IPredictionEnded,
-        IPredictionLocked, IPredictionCancelled;
+        [JsonPropertyName("event")]
+        public EventData Event { get; init; }
+    }
 
-    public readonly record struct User(
-        [property: JsonPropertyName("type")] string Type,
-        [property: JsonPropertyName("user_id")] long UserId,
-        [property: JsonPropertyName("user_display_name")] string UserDisplayName,
-        [property: JsonPropertyName("extension_client_id")] string? ExtensionClientId
-    );
+    public readonly struct EventData : IPredictionStarted, IPredictionUpdate, IPredictionWindowClosed,
+        IPredictionEnded, IPredictionLocked, IPredictionCancelled
+    {
+        [JsonPropertyName("id")]
+        public string Id { get; init; }
 
-    public readonly record struct Outcome(
-        [property: JsonPropertyName("id")] string Id,
-        [property: JsonPropertyName("color")] string Color,
-        [property: JsonPropertyName("title")] string Title,
-        [property: JsonPropertyName("total_points")] int TotalPoints,
-        [property: JsonPropertyName("total_users")] int TotalUsers,
-        [property: JsonPropertyName("top_predictors")] IReadOnlyList<Predictor> TopPredictors,
-        [property: JsonPropertyName("badge")] Badge Badge
-    );
+        [JsonPropertyName("channel_id")]
+        public long ChannelId { get; init; }
 
-    public readonly record struct Predictor(
-        [property: JsonPropertyName("id")] string Id,
-        [property: JsonPropertyName("event_id")] string EventId,
-        [property: JsonPropertyName("outcome_id")] string OutcomeId,
-        [property: JsonPropertyName("channel_id")] string ChannelId,
-        [property: JsonPropertyName("points")] int Points,
-        [property: JsonPropertyName("predicted_at")] string PredictedAt,
-        [property: JsonPropertyName("updated_at")] string UpdatedAt,
-        [property: JsonPropertyName("user_id")] long UserId,
-        [property: JsonPropertyName("result")] Result? Result,
-        [property: JsonPropertyName("user_display_name")] string UserDisplayName
-    );
+        [JsonPropertyName("created_at")]
+        public DateTime CreatedAt { get; init; }
 
-    public readonly record struct Result(
-        [property: JsonPropertyName("type")] string Type,
-        [property: JsonPropertyName("points_won")] int? PointsWon,
-        [property: JsonPropertyName("is_acknowledged")] bool IsAcknowledged
-    );
+        [JsonPropertyName("created_by")]
+        public User CreatedBy { get; init; }
 
-    public readonly record struct Badge(
-        [property: JsonPropertyName("version")] string Version,
-        [property: JsonPropertyName("set_id")] string SetId
-    );
+        [JsonPropertyName("ended_at")]
+        public DateTime? EndedAt { get; init; }
+
+        [JsonPropertyName("ended_by")]
+        public User? EndedBy { get; init; }
+
+        [JsonPropertyName("locked_at")]
+        public DateTime? LockedAt { get; init; }
+
+        [JsonPropertyName("locked_by")]
+        public User? LockedBy { get; init; }
+
+        [JsonPropertyName("outcomes")]
+        public IReadOnlyList<Outcome> Outcomes { get; init; }
+
+        [JsonPropertyName("prediction_window_seconds")]
+        public int PredictionWindowSeconds { get; init; }
+
+        [JsonPropertyName("status")]
+        public string Status { get; init; }
+
+        [JsonPropertyName("title")]
+        public string Title { get; init; }
+
+        [JsonPropertyName("winning_outcome_id")]
+        public string WinningOutcomeId { get; init; }
+    }
+
+    public readonly struct User
+    {
+        [JsonPropertyName("type")]
+        public string Type { get; init; }
+
+        [JsonPropertyName("user_id")]
+        public long UserId { get; init; }
+
+        [JsonPropertyName("user_display_name")]
+        public string UserDisplayName { get; init; }
+
+        [JsonPropertyName("extension_client_id")]
+        public string? ExtensionClientId { get; init; }
+    }
+    public readonly struct Outcome
+    {
+        [JsonPropertyName("id")]
+        public string Id { get; init; }
+
+        [JsonPropertyName("color")]
+        public string Color { get; init; }
+
+        [JsonPropertyName("title")]
+        public string Title { get; init; }
+
+        [JsonPropertyName("total_points")]
+        public int TotalPoints { get; init; }
+
+        [JsonPropertyName("total_users")]
+        public int TotalUsers { get; init; }
+
+        [JsonPropertyName("top_predictors")]
+        public IReadOnlyList<Predictor> TopPredictors { get; init; }
+
+        [JsonPropertyName("badge")]
+        public Badge Badge { get; init; }
+    }
+    public readonly struct Predictor
+    {
+        [JsonPropertyName("id")]
+        public string Id { get; init; }
+
+        [JsonPropertyName("event_id")]
+        public string EventId { get; init; }
+
+        [JsonPropertyName("outcome_id")]
+        public string OutcomeId { get; init; }
+
+        [JsonPropertyName("channel_id")]
+        public string ChannelId { get; init; }
+
+        [JsonPropertyName("points")]
+        public int Points { get; init; }
+
+        [JsonPropertyName("predicted_at")]
+        public string PredictedAt { get; init; }
+
+        [JsonPropertyName("updated_at")]
+        public string UpdatedAt { get; init; }
+
+        [JsonPropertyName("user_id")]
+        public long UserId { get; init; }
+
+        [JsonPropertyName("result")]
+        public Result? Result { get; init; }
+
+        [JsonPropertyName("user_display_name")]
+        public string UserDisplayName { get; init; }
+    }
+    public readonly struct Result
+    {
+        [JsonPropertyName("type")]
+        public string Type { get; init; }
+
+        [JsonPropertyName("points_won")]
+        public int? PointsWon { get; init; }
+
+        [JsonPropertyName("is_acknowledged")]
+        public bool IsAcknowledged { get; init; }
+    }
+    public readonly struct Badge
+    {
+        [JsonPropertyName("version")]
+        public string Version { get; init; }
+
+        [JsonPropertyName("set_id")]
+        public string SetId { get; init; }
+    }
 }

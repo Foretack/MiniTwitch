@@ -44,14 +44,21 @@ public readonly struct SubscribeEvents : ISubEvent, ISubGiftEvent, IAnonSubGiftE
 
     internal SubscribeEvents(object? any) { }
 
-    public readonly record struct EmoteData(
-        [property: JsonPropertyName("start")] int Start,
-        [property: JsonPropertyName("end")] int End,
-        [property: JsonPropertyName("id")] int Id
-    );
+    public readonly struct EmoteData
+    {
+        [JsonPropertyName("start")]
+        public int Start { get; init; }
 
-    public readonly record struct SubMessageData(
-        [property: JsonPropertyName("message")] string Message = "",
-        [property: JsonPropertyName("emotes")] IReadOnlyList<EmoteData>? Emotes = default
-    );
+        [JsonPropertyName("end")]
+        public int End { get; init; }
+
+        [JsonPropertyName("id")]
+        public int Id { get; init; }
+    }
+
+    public readonly struct SubMessageData
+    {
+        [JsonPropertyName("message")]
+        public string Message { get; init; }
+    }
 }

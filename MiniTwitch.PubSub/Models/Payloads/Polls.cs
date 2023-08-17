@@ -55,35 +55,75 @@ public readonly struct Poll : IPollCreated, IPollUpdated, IPollCompleted
     public object? TopChannelPointsContributor { get; init; }
 
 
-    public readonly record struct CostSetting(
-        [property: JsonPropertyName("is_enabled")] bool IsEnabled,
-        [property: JsonPropertyName("cost")] int Cost
-    );
-    public readonly record struct Choice(
-        [property: JsonPropertyName("choice_id")] string ChoiceId,
-        [property: JsonPropertyName("title")] string Title,
-        [property: JsonPropertyName("votes")] PollVotes Votes,
-        [property: JsonPropertyName("tokens")] PollTokens Tokens,
-        [property: JsonPropertyName("total_voters")] int TotalVoters
-    );
-    public readonly record struct Setting(
-        [property: JsonPropertyName("is_enabled")] bool IsEnabled
-    );
-    public readonly record struct PollSettings(
-        [property: JsonPropertyName("multi_choice")] Setting MultiChoice,
-        [property: JsonPropertyName("subscriber_only")] Setting SubscriberOnly,
-        [property: JsonPropertyName("subscriber_multiplier")] Setting SubscriberMultiplier,
-        [property: JsonPropertyName("bits_votes")] CostSetting BitsVotes,
-        [property: JsonPropertyName("channel_points_votes")] CostSetting ChannelPointsVotes
-    );
-    public readonly record struct PollTokens(
-        [property: JsonPropertyName("bits")] int Bits,
-        [property: JsonPropertyName("channel_points")] int ChannelPoints
-    );
-    public readonly record struct PollVotes(
-        [property: JsonPropertyName("total")] int Total,
-        [property: JsonPropertyName("bits")] int Bits,
-        [property: JsonPropertyName("channel_points")] int ChannelPoints,
-        [property: JsonPropertyName("base")] int Base
-    );
+    public readonly struct CostSetting
+    {
+        [JsonPropertyName("is_enabled")]
+        public bool IsEnabled { get; init; }
+        [JsonPropertyName("cost")]
+        public int Cost { get; init; }
+    }
+    public readonly struct Choice
+    {
+        [JsonPropertyName("choice_id")]
+        public string ChoiceId { get; init; }
+
+        [JsonPropertyName("title")]
+        public string Title { get; init; }
+
+        [JsonPropertyName("votes")]
+        public PollVotes Votes { get; init; }
+
+        [JsonPropertyName("tokens")]
+        public PollTokens Tokens { get; init; }
+
+        [JsonPropertyName("total_voters")]
+        public int TotalVoters { get; init; }
+    }
+    public readonly struct Setting
+    {
+        [JsonPropertyName("is_enabled")]
+        public bool IsEnabled { get; init; }
+    }
+    public readonly struct PollSettings
+    {
+        [JsonPropertyName("multi_choice")]
+        public Setting MultiChoice { get; init; }
+
+        [JsonPropertyName("subscriber_only")]
+        public Setting SubscriberOnly { get; init; }
+
+        [JsonPropertyName("subscriber_multiplier")]
+        public Setting SubscriberMultiplier { get; init; }
+
+        [JsonPropertyName("bits_votes")]
+        public CostSetting BitsVotes { get; init; }
+
+        [JsonPropertyName("channel_points_votes")]
+        public CostSetting ChannelPointsVotes { get; init; }
+
+    }
+    public readonly struct PollTokens
+    {
+        [JsonPropertyName("bits")]
+        public int Bits { get; init; }
+
+        [JsonPropertyName("channel_points")]
+        public int ChannelPoints { get; init; }
+
+    }
+    public readonly struct PollVotes
+    {
+        [JsonPropertyName("total")]
+        public int Total { get; init; }
+
+        [JsonPropertyName("bits")]
+        public int Bits { get; init; }
+
+        [JsonPropertyName("channel_points")]
+        public int ChannelPoints { get; init; }
+
+        [JsonPropertyName("base")]
+        public int Base { get; init; }
+
+    }
 }

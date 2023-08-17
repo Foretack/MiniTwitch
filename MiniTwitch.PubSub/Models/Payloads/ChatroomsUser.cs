@@ -13,15 +13,31 @@ public readonly struct ChatroomsUser
     [JsonPropertyName("data")]
     public PayloadData Data { get; init; }
 
-    public readonly record struct PayloadData(
-    [property: JsonPropertyName("action")] string Action,
-    [property: JsonPropertyName("channel_id")] long ChannelId,
-    [property: JsonPropertyName("expires_at")] DateTime ExpiresAt,
-    [property: JsonPropertyName("expires_in_ms")] long ExpiresInMs,
-    [property: JsonPropertyName("reason")] string Reason,
-    [property: JsonPropertyName("target_id")] long TargetId,
-    [property: JsonPropertyName("user_is_restricted")] bool UserIsRestricted,
-    [property: JsonPropertyName("ChannelID")] long ChannelId2
-    ) : ITimeOutData, IUntimeOutData, IBanData, IUnbanData, IAliasRestrictedUpdate;
+    public readonly struct PayloadData : ITimeOutData, IUntimeOutData, IBanData, IUnbanData, IAliasRestrictedUpdate
+    {
+        [JsonPropertyName("action")]
+        public string Action { get; init; }
+
+        [JsonPropertyName("channel_id")]
+        public long ChannelId { get; init; }
+
+        [JsonPropertyName("expires_at")]
+        public DateTime ExpiresAt { get; init; }
+
+        [JsonPropertyName("expires_in_ms")]
+        public long ExpiresInMs { get; init; }
+
+        [JsonPropertyName("reason")]
+        public string Reason { get; init; }
+
+        [JsonPropertyName("target_id")]
+        public long TargetId { get; init; }
+
+        [JsonPropertyName("user_is_restricted")]
+        public bool UserIsRestricted { get; init; }
+
+        [JsonPropertyName("ChannelID")]
+        public long ChannelId2 { get; init; }
+    }
 }
 

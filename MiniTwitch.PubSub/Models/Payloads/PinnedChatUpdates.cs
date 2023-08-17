@@ -13,37 +13,75 @@ public readonly struct PinnedChatUpdates
     [JsonPropertyName("data")]
     public PayloadData Data { get; init; }
 
-    public readonly record struct PayloadData(
-        [property: JsonPropertyName("id")] string Id,
-        [property: JsonPropertyName("pinned_by")] UserInfo PinnedBy = default,
-        [property: JsonPropertyName("unpinned_by")] UserInfo UnpinnedBy = default,
-        [property: JsonPropertyName("message")] MessageData Message = default,
-        [property: JsonPropertyName("reason")] string Reason = ""
-    ) : IPinnedMessage, IUnpinnedMessage;
+    public readonly struct PayloadData : IPinnedMessage, IUnpinnedMessage
+    {
+        [JsonPropertyName("id")]
+        public string Id { get; init; }
 
-    public readonly record struct UserInfo(
-        [property: JsonPropertyName("id")] long Id,
-        [property: JsonPropertyName("display_name")] string DisplayName
-    );
+        [JsonPropertyName("pinned_by")]
+        public UserInfo PinnedBy { get; init; }
 
-    public readonly record struct MessageData(
-        [property: JsonPropertyName("id")] string Id = "",
-        [property: JsonPropertyName("ends_at")] long EndsAt = default,
-        [property: JsonPropertyName("sender")] MessageSenderInfo Sender = default,
-        [property: JsonPropertyName("content")] MessageContent Content = default,
-        [property: JsonPropertyName("type")] string Type = "",
-        [property: JsonPropertyName("starts_at")] long StartsAt = default,
-        [property: JsonPropertyName("sent_at")] long SentAt = default,
-        [property: JsonPropertyName("updated_at")] long UpdatedAt = default
-    ) : IPinnedMessageData, IPinnedMessageDataUpdate;
+        [JsonPropertyName("unpinned_by")]
+        public UserInfo UnpinnedBy { get; init; }
 
-    public readonly record struct MessageSenderInfo(
-        [property: JsonPropertyName("id")] long Id,
-        [property: JsonPropertyName("display_name")] string DisplayName,
-        [property: JsonPropertyName("chat_color")] string ColorCode
-    );
+        [JsonPropertyName("message")]
+        public MessageData Message { get; init; }
 
-    public readonly record struct MessageContent(
-        [property: JsonPropertyName("text")] string Text
-    );
+        [JsonPropertyName("reason")]
+        public string Reason { get; init; }
+    }
+
+    public readonly struct UserInfo
+    {
+        [JsonPropertyName("id")]
+        public long Id { get; init; }
+
+        [JsonPropertyName("display_name")]
+        public string DisplayName { get; init; }
+    }
+
+    public readonly struct MessageData : IPinnedMessageData, IPinnedMessageDataUpdate
+    {
+        [JsonPropertyName("id")]
+        public string Id { get; init; }
+
+        [JsonPropertyName("ends_at")]
+        public long EndsAt { get; init; }
+
+        [JsonPropertyName("sender")]
+        public MessageSenderInfo Sender { get; init; }
+
+        [JsonPropertyName("content")]
+        public MessageContent Content { get; init; }
+
+        [JsonPropertyName("type")]
+        public string Type { get; init; }
+
+        [JsonPropertyName("starts_at")]
+        public long StartsAt { get; init; }
+
+        [JsonPropertyName("sent_at")]
+        public long SentAt { get; init; }
+
+        [JsonPropertyName("updated_at")]
+        public long UpdatedAt { get; init; }
+    }
+
+    public readonly struct MessageSenderInfo
+    {
+        [JsonPropertyName("id")]
+        public long Id { get; init; }
+
+        [JsonPropertyName("display_name")]
+        public string DisplayName { get; init; }
+
+        [JsonPropertyName("chat_color")]
+        public string ColorCode { get; init; }
+    }
+
+    public readonly struct MessageContent
+    {
+        [JsonPropertyName("text")]
+        public string Text { get; init; }
+    }
 }

@@ -18,8 +18,13 @@ public readonly struct ModerationNotificationMessage
     [JsonPropertyName("data")]
     public PayloadData Data { get; init; }
 
-    public readonly record struct PayloadData(
-        [property: JsonPropertyName("message_id")] string MessageId,
-        [property: JsonPropertyName("status")] string Status
-    );
+    public readonly struct PayloadData
+    {
+        [JsonPropertyName("message_id")]
+        public string MessageId { get; init; }
+
+        [JsonPropertyName("status")]
+        public string Status { get; init; }
+    }
+
 }
