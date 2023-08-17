@@ -14,13 +14,29 @@ using MiniTwitch.PubSub.Models.Payloads;
 
 namespace MiniTwitch.PubSub;
 
+/// <summary>
+/// Responsible for communication with the Twitch PubSub services.
+/// </summary>
 public class PubSubClient : IAsyncDisposable
 {
+    #region Properties
+    /// <summary>
+    /// The action that is invoked when an exception is thrown in events
+    /// </summary>
     public Action<Exception> ExceptionHandler { get; set; } = default!;
+    /// <summary>
+    /// A collection of topics that are being listened to by this client
+    /// </summary>
     public IReadOnlyCollection<Topic> ActiveTopics => _topics;
+    /// <summary>
+    /// The default logger for <see cref="PubSubClient"/>, only used when <see cref="ILogger"/> is not provided in the constructor
+    /// <para>Can be toggled with <see cref="DefaultMiniTwitchLogger{T}.Enabled"/></para>
+    /// </summary>
     public DefaultMiniTwitchLogger<PubSubClient> DefaultLogger { get; } = new();
+    #endregion
 
     #region Events
+    // TODO: Also document required scopes
     /// <summary>
     /// Invoked upon connecting to the PubSub service
     /// <para>Note: This is only invoked once. Following connections to PubSub will invoke <see cref="OnReconnect"/></para>
@@ -31,54 +47,201 @@ public class PubSubClient : IAsyncDisposable
     /// </summary>
     public event Func<ValueTask> OnReconnect = default!;
     /// <summary>
-    /// Invoked upon disconnection from TMI
+    /// Invoked upon disconnecting from PubSub
     /// </summary>
     public event Func<ValueTask> OnDisconnect = default!;
+    /// <summary>
+    /// Invoked when a prediction is started
+    /// <para>Requires topic: <see cref="Topics.ChannelPredictions(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, IPredictionStarted, ValueTask> OnPredictionStarted = default!;
+    /// <summary>
+    /// Invoked every second when a prediction is active, giving updated information about the prediction as more users participate
+    /// <para>Requires topic: <see cref="Topics.ChannelPredictions(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, IPredictionUpdate, ValueTask> OnPredictionUpdate = default!;
+    /// <summary>
+    /// Invoked when the period for users to predict has ended
+    /// <para>Requires topic: <see cref="Topics.ChannelPredictions(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, IPredictionWindowClosed, ValueTask> OnPredictionWindowClosed = default!;
     /// <summary>
     /// Invoked when a prediction is ended, an outcome was chosen to be the winner
     /// <para>See <see cref="IPredictionEnded.WinningOutcomeId"/> for chosen outcome</para>
-    /// <para> <see cref="ChannelId"/> is the parameter specified in <see cref="Topics.ChannelPredictions(long)"/> </para>
+    /// <para>Requires topic: <see cref="Topics.ChannelPredictions(long, string?)"/></para>
     /// </summary>
     public event Func<ChannelId, IPredictionEnded, ValueTask> OnPredictionEnded = default!;
+    /// <summary>
+    /// Invoked when a moderator manually closes the prediction window for users to participate
+    /// <para>Requires topic: <see cref="Topics.ChannelPredictions(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, IPredictionLocked, ValueTask> OnPredictionLocked = default!;
+    /// <summary>
+    /// Invoked when the prediction is cancelled/refunded
+    /// <para>Requires topic: <see cref="Topics.ChannelPredictions(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, IPredictionCancelled, ValueTask> OnPredictionCancelled = default!;
+    /// <summary>
+    /// Invoked when the listener (you) is timed out from a channel
+    /// <para>Requires topic: <see cref="Topics.ChatroomsUser(long, string?)"/></para>
+    /// </summary>
     public event Func<UserId, ITimeOutData, ValueTask> OnTimedOut = default!;
+    /// <summary>
+    /// Invoked when the listener (you) is untimed out from a channel
+    /// <para>Requires topic: <see cref="Topics.ChatroomsUser(long, string?)"/></para>
+    /// </summary>
     public event Func<UserId, IUntimeOutData, ValueTask> OnUntimedOut = default!;
+    /// <summary>
+    /// Invoked when the listener (you) is banned from a channel
+    /// <para>Requires topic: <see cref="Topics.ChatroomsUser(long, string?)"/></para>
+    /// </summary>
     public event Func<UserId, IBanData, ValueTask> OnBanned = default!;
+    /// <summary>
+    /// Invoked when the listener (you) is unbanned from a channel
+    /// <para>Requires topic: <see cref="Topics.ChatroomsUser(long, string?)"/></para>
+    /// </summary>
     public event Func<UserId, IUntimeOutData, ValueTask> OnUnbanned = default!;
+    /// <summary>
+    /// It is not known what this does
+    /// <para>If you know what this does, please open an issue describing how it works</para>
+    /// <para>Requires topic: <see cref="Topics.ChatroomsUser(long, string?)"/></para>
+    /// </summary>
     public event Func<UserId, IAliasRestrictedUpdate, ValueTask> OnAliasRestrictionUpdate = default!;
+    /// <summary>
+    /// Invoked when a user cheers with bits
+    /// <para>Requires topic: <see cref="Topics.BitsEventsV1(long, string?)"/> or <see cref="Topics.BitsEventsV2(long, string?)"/> (difference between these 2 topics is unknown)</para>
+    /// </summary>
     public event Func<ChannelId, BitsEvents, ValueTask> OnBitsEvent = default!;
+    /// <summary>
+    /// Invoked when a user unlocks a new bits badge
+    /// <para>Requires topic: <see cref="Topics.BitsBadgeUnlock(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, BitsBadgeUnlock, ValueTask> OnBitsBadgeUnlock = default!;
+    /// <summary>
+    /// Invoked when a user redeems a channel point reward
+    /// <para>Requires topic: <see cref="Topics.ChannelPoints(long, string?)"/> or <see cref="Topics.CommunityChannelPoints(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, ChannelPoints, ValueTask> OnChannelPointsRedemption = default!;
+    /// <summary>
+    /// Invoked when a user subscribes
+    /// <para>Requires topic: <see cref="Topics.SubscribeEvents(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, ISubEvent, ValueTask> OnSub = default!;
+    /// <summary>
+    /// Invoked when a user gifts a sub
+    /// <para>Requires topic: <see cref="Topics.SubscribeEvents(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, ISubGiftEvent, ValueTask> OnSubGift = default!;
+    /// <summary>
+    /// Invoked when an anonymous user gifts a sub
+    /// <para>Requires topic: <see cref="Topics.SubscribeEvents(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, IAnonSubGiftEvent, ValueTask> OnAnonSubGift = default!;
+    /// <summary>
+    /// Invoked when a message is caught by automod
+    /// <para>Requires topic: <see cref="Topics.AutomodQueue(long, long, string?)"/></para>
+    /// </summary>
     public event Func<UserId, ChannelId, AutoModQueue, ValueTask> OnAutoModMessageCaught = default!;
+    /// <summary>
+    /// Invoked when a low-trusted chat message is treated
+    /// <para>Requires topic: <see cref="Topics.LowTrustUsers(long, long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, UserId, ILowTrustTreatmentMessage, ValueTask> OnLowTrustTreatmentMessage = default!;
+    /// <summary>
+    /// Invoked when a low-trusted chat message is sent
+    /// <para>Requires topic: <see cref="Topics.LowTrustUsers(long, long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, UserId, ILowTrustChatMessage, ValueTask> OnLowTrustChatMessage = default!;
+    /// <summary>
+    /// Invoked when a user's message held by AutoMod has been approved or denied
+    /// <para>Requires topic: <see cref="Topics.ModerationNotifications(long, long, string?)"/></para>
+    /// </summary>
     public event Func<UserId, ChannelId, ModerationNotificationMessage, ValueTask> OnModerationNotificationMessage = default!;
+    /// <summary>
+    /// Invoked when a message is pinned by a moderator or as a result of Hype Chat
+    /// <para>Check if <see cref="IPinnedMessageData.Type"/> == "MOD" to determine whether the message is pinned by a moderator</para>
+    /// <para>Requires topic: <see cref="Topics.PinnedChatUpdates(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, IPinnedMessage, IPinnedMessageData, ValueTask> OnMessagePinned = default!;
+    /// <summary>
+    /// Invoked when a message is unpinned
+    /// <para>Requires topic: <see cref="Topics.PinnedChatUpdates(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, IUnpinnedMessage, ValueTask> OnMessageUnpinned = default!;
+    /// <summary>
+    /// Invoked when the pin status of a message is updated
+    /// <para>Requires topic: <see cref="Topics.PinnedChatUpdates(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, IPinnedMessageDataUpdate, ValueTask> OnPinnedMessageUpdated = default!;
+    /// <summary>
+    /// Invoked when a stream goes online
+    /// <para>Requires topic: <see cref="Topics.VideoPlayback(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, IStreamUp, ValueTask> OnStreamUp = default!;
+    /// <summary>
+    /// Invoked every few seconds when a stream is online, returning updates about the viewer count
+    /// <para>Requires topic: <see cref="Topics.VideoPlayback(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, IViewerCountUpdate, ValueTask> OnViewerCountUpdate = default!;
+    /// <summary>
+    /// Invoked when a stream takes a commercial break
+    /// <para>Requires topic: <see cref="Topics.VideoPlayback(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, ICommercialBreak, ValueTask> OnCommercialBreak = default!;
+    /// <summary>
+    /// Invoked when a stream goes offline
+    /// <para>Requires topic: <see cref="Topics.VideoPlayback(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, IStreamDown, ValueTask> OnStreamDown = default!;
     /// <summary>
-    /// Invoked when the title of the stream is changed
+    /// Invoked when the title of a stream is changed
+    /// <para>Requires topic: <see cref="Topics.BroadcastSettingsUpdate(long, string?)"/></para>
     /// </summary>
     public event Func<ChannelId, ITitleChange, ValueTask> OnTitleChange = default!;
+    /// <summary>
+    /// Invoked when the game of a stream is changed
+    /// <para>Requires topic: <see cref="Topics.BroadcastSettingsUpdate(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, IGameChange, ValueTask> OnGameChange = default!;
+    /// <summary>
+    /// Invoked when a user is timed out
+    /// <para>Requires topic: <see cref="Topics.ModeratorActions(long, long, string?)"/></para>
+    /// </summary>
     public event Func<UserId, ChannelId, IUserTimedOut, ValueTask> OnUserTimedOut = default!;
+    /// <summary>
+    /// Invoked when a user is banned
+    /// <para>Requires topic: <see cref="Topics.ModeratorActions(long, long, string?)"/></para>
+    /// </summary>
     public event Func<UserId, ChannelId, IUserBanned, ValueTask> OnUserBanned = default!;
+    /// <summary>
+    /// Invoked when a user is untimed out
+    /// <para>Requires topic: <see cref="Topics.ModeratorActions(long, long, string?)"/></para>
+    /// </summary>
     public event Func<UserId, ChannelId, IUserUntimedOut, ValueTask> OnUserUntimedOut = default!;
+    /// <summary>
+    /// Invoked when a user is unbanned
+    /// <para>Requires topic: <see cref="Topics.ModeratorActions(long, long, string?)"/></para>
+    /// </summary>
     public event Func<UserId, ChannelId, IUserUnbanned, ValueTask> OnUserUnbanned = default!;
+    /// <summary>
+    /// Invoked when a poll is created
+    /// <para>Requires topic: <see cref="Topics.Polls(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, IPollCreated, ValueTask> OnPollCreated = default!;
+    /// <summary>
+    /// Invoked when a user participates in the poll (possibly ratelimited to 1 update/s)
+    /// <para>Requires topic: <see cref="Topics.Polls(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, IPollUpdated, ValueTask> OnPollUpdate = default!;
+    /// <summary>
+    /// Invoked when a poll ends
+    /// <para>Requires topic: <see cref="Topics.Polls(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, IPollCompleted, ValueTask> OnPollCompleted = default!;
+    /// <summary>
+    /// Invoked when a poll is no longer displayed
+    /// <para>Requires topic: <see cref="Topics.Polls(long, string?)"/></para>
+    /// </summary>
     public event Func<ChannelId, Poll, ValueTask> OnPollArchived = default!;
     #endregion
 
@@ -107,6 +270,11 @@ public class PubSubClient : IAsyncDisposable
     #endregion
 
     #region Init
+    /// <summary>
+    /// Initializes the client with the given parameters
+    /// </summary>
+    /// <param name="authToken">The default authentication token to use in listen/unlisten requests</param>
+    /// <param name="logger">The destination for logs. If none is provided then <see cref="DefaultLogger"/> is used</param>
     public PubSubClient(string authToken, ILogger? logger = null)
     {
         _ws = new(TimeSpan.FromMinutes(1));
@@ -132,6 +300,12 @@ public class PubSubClient : IAsyncDisposable
             await ReconnectAsync();
     }
 
+    /// <summary>
+    /// Listen to multiple PubSub topics
+    /// </summary>
+    /// <param name="topics">A collection of the desired topics to listen to</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    /// <returns>An array of responses for all listen requests</returns>
     public async Task<ListenResponse[]> ListenTo(IEnumerable<Topic> topics, CancellationToken cancellationToken = default)
     {
         Topic[] arr = topics is Topic[] array ? array : topics.ToArray();
@@ -144,6 +318,12 @@ public class PubSubClient : IAsyncDisposable
         return results;
     }
 
+    /// <summary>
+    /// Listen to a PubSub topic
+    /// </summary>
+    /// <param name="topic">The desired topic to listen to</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    /// <returns>A response to the listen request</returns>
     public async Task<ListenResponse> ListenTo(Topic topic, CancellationToken cancellationToken = default)
     {
         if (_topics.Count >= 50)
@@ -169,6 +349,12 @@ public class PubSubClient : IAsyncDisposable
         return new() { Error = (ResponseError)returnedEvent, TopicKey = _response.TopicKey };
     }
 
+    /// <summary>
+    /// Unlisten to a PubSub topic
+    /// </summary>
+    /// <param name="topic">The topic to unlisten to</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    /// <returns>A response to the unlisten request</returns>
     public async Task<ListenResponse> UnlistenTo(Topic topic, CancellationToken cancellationToken = default)
     {
         if (!_topics.Contains(topic))
@@ -198,10 +384,19 @@ public class PubSubClient : IAsyncDisposable
     #endregion
 
     #region Connection
+    /// <summary>
+    /// Fire-and-forget a connection attempt to the Twitch PubSub service
+    /// </summary>
+    /// <param name="url">Url of the PubSub service</param>
     public void Connect(string url = "wss://pubsub-edge.twitch.tv") => ConnectAsync(url).StepOver();
 
-    public async Task<bool> ConnectAsync(string url = "wss://pubsub-edge.twitch.tv",
-        CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Attempt to connect to the Twitch PubSub service asynchronously
+    /// </summary>
+    /// <param name="url">Url of the PubSub service</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    /// <returns><see langword="true"/> if the connection was established successfully; Otherwise <see langword="false"/></returns>
+    public async Task<bool> ConnectAsync(string url = "wss://pubsub-edge.twitch.tv", CancellationToken cancellationToken = default)
     {
         _targetUrl = new(url);
         await _ws.Start(_targetUrl, cancellationToken);
@@ -213,17 +408,17 @@ public class PubSubClient : IAsyncDisposable
     }
 
     /// <summary>
-    /// Disconnects from TMI in a "fire and forget" style
+    /// Fire-and-forget a disconnection attempt to the Twitch PubSub service
     /// </summary>
     public void Disconnect() => _ws.Disconnect().StepOver();
 
     /// <summary>
-    /// Disconnects from TMI
+    /// Asynchronously disconnect from the Twitch PubSub service
     /// </summary>
     public Task DisconnectAsync(CancellationToken cancellationToken = default) => _ws.Disconnect(cancellationToken);
 
     /// <summary>
-    /// Disconnects then reconnects to TMI
+    /// Asynchronously reconnect (disconnect then connect) to the Twitch PubSub service
     /// </summary>
     public Task ReconnectAsync(CancellationToken cancellationToken = default) => _ws.Restart(TimeSpan.FromSeconds(60), cancellationToken);
 
@@ -554,6 +749,9 @@ public class PubSubClient : IAsyncDisposable
     }
     #endregion
 
+    /// <summary>
+    /// Disconnects and disposes of resources used by <see cref="PubSubClient"/>
+    /// </summary>
     public async ValueTask DisposeAsync()
     {
         await _ws.DisposeAsync();

@@ -69,6 +69,7 @@ public static class Topics
     /// <param name="channelId">ID of the channel to observe the automod events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
     public static Topic AutomodQueue(long moderatorId, long channelId, string? overrideToken = null) => new($"automod-queue.{moderatorId}.{channelId}") { OverrideToken = overrideToken };
+    // TODO: The paramaters of this are wrong. Check Twitch4J
     /// <summary>
     /// Triggers <see cref="PubSubClient.OnLowTrustChatMessage"/>, <see cref="PubSubClient.OnLowTrustTreatmentMessage"/>
     /// </summary>
