@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents information about a pinned message that was updated
 /// </summary>
-public interface IPinnedMessageDataUpdate
+public interface IModPinnedMessageDataUpdate
 {
     /// <summary>
     /// ID of the message

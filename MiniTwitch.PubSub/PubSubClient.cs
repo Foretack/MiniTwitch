@@ -156,23 +156,27 @@ public class PubSubClient : IAsyncDisposable
     /// Invoked when a user's message held by AutoMod has been approved or denied
     /// <para>Requires topic: <see cref="Topics.ModerationNotifications(long, long, string?)"/></para>
     /// </summary>
-    public event Func<UserId, ChannelId, ModerationNotificationMessage, ValueTask> OnModerationNotificationMessage = default!;
+    public event Func<UserId, ChannelId, CaughtMessageData, ValueTask> OnModerationNotificationMessage = default!;
     /// <summary>
-    /// Invoked when a message is pinned by a moderator or as a result of Hype Chat
-    /// <para>Check if <see cref="IPinnedMessageData.Type"/> == "MOD" to determine whether the message is pinned by a moderator</para>
+    /// Invoked when a message is pinned by a moderator
     /// <para>Requires topic: <see cref="Topics.PinnedChatUpdates(long, string?)"/></para>
     /// </summary>
-    public event Func<ChannelId, IPinnedMessage, IPinnedMessageData, ValueTask> OnMessagePinned = default!;
+    public event Func<ChannelId, IModPinnedMessage, IModPinnedMessageData, ValueTask> OnModPinnedMessage = default!;
     /// <summary>
     /// Invoked when a message is unpinned
     /// <para>Requires topic: <see cref="Topics.PinnedChatUpdates(long, string?)"/></para>
     /// </summary>
-    public event Func<ChannelId, IUnpinnedMessage, ValueTask> OnMessageUnpinned = default!;
+    public event Func<ChannelId, IModUnpinnedMessage, ValueTask> OnModUnpinnedMessage = default!;
     /// <summary>
     /// Invoked when the pin status of a message is updated
     /// <para>Requires topic: <see cref="Topics.PinnedChatUpdates(long, string?)"/></para>
     /// </summary>
-    public event Func<ChannelId, IPinnedMessageDataUpdate, ValueTask> OnPinnedMessageUpdated = default!;
+    public event Func<ChannelId, IModPinnedMessageDataUpdate, ValueTask> OnModPinnedMessageUpdated = default!;
+    /// <summary>
+    /// Invoked when a Hype Chat message is pinned
+    /// <para>Requires topic: <see cref="Topics.PinnedChatUpdates(long, string?)"/></para>
+    /// </summary>
+    public event Func<ChannelId, IHypeChatPinnedMessage, IHypeChatPinnedMessageData, ValueTask> OnHypeChatMessagePinned = default!;
     /// <summary>
     /// Invoked when a stream goes online
     /// <para>Requires topic: <see cref="Topics.VideoPlayback(long, string?)"/></para>
@@ -613,7 +617,7 @@ public class PubSubClient : IAsyncDisposable
 
                     case MessageTopic.ModerationNotifications:
                         var notification = data.Span.ReadJsonMessage<ModerationNotificationMessage>(options: _sOptions, logger: GetLogger());
-                        OnModerationNotificationMessage?.Invoke(info[0], info[1], notification).StepOver(GetExceptionHandler());
+                        OnModerationNotificationMessage?.Invoke(info[0], info[1], notification.Data).StepOver(GetExceptionHandler());
                         break;
 
                     case MessageTopic.PinnedChatUpdates:
@@ -621,15 +625,19 @@ public class PubSubClient : IAsyncDisposable
                         switch (pinUpdate.Type)
                         {
                             case "pin-message":
-                                OnMessagePinned?.Invoke(info[0], pinUpdate.Data, pinUpdate.Data.Message).StepOver(GetExceptionHandler());
+                                if (pinUpdate.Data.Message.Type == "MOD")
+                                    OnModPinnedMessage?.Invoke(info[0], pinUpdate.Data, pinUpdate.Data.Message).StepOver(GetExceptionHandler());
+                                else
+                                    OnHypeChatMessagePinned?.Invoke(info[0], pinUpdate.Data, pinUpdate.Data.Message).StepOver(GetExceptionHandler());
+
                                 break;
 
                             case "unpin-message":
-                                OnMessageUnpinned?.Invoke(info[0], pinUpdate.Data).StepOver(GetExceptionHandler());
+                                OnModUnpinnedMessage?.Invoke(info[0], pinUpdate.Data).StepOver(GetExceptionHandler());
                                 break;
 
                             case "update-message":
-                                OnPinnedMessageUpdated?.Invoke(info[0], pinUpdate.Data.Message).StepOver(GetExceptionHandler());
+                                OnModPinnedMessageUpdated?.Invoke(info[0], pinUpdate.Data.Message).StepOver(GetExceptionHandler());
                                 break;
                         }
 
@@ -656,7 +664,7 @@ public class PubSubClient : IAsyncDisposable
                                 break;
 
                             default:
-                                Console.WriteLine($"unknown VideoPlayBack type: {videoPlayback.Type} ({videoPlayback.Type.Length})");
+                                Log(LogLevel.Warning, "unknown VideoPlayBack type: {VideoPlaybackType}", videoPlayback.Type);
                                 break;
                         }
 

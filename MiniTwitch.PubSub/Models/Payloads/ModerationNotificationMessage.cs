@@ -16,15 +16,22 @@ public readonly struct ModerationNotificationMessage
     /// Information about the caught message
     /// </summary>
     [JsonPropertyName("data")]
-    public PayloadData Data { get; init; }
+    public CaughtMessageData Data { get; init; }
+}
 
-    public readonly struct PayloadData
-    {
-        [JsonPropertyName("message_id")]
-        public string MessageId { get; init; }
-
-        [JsonPropertyName("status")]
-        public string Status { get; init; }
-    }
-
+/// <summary>
+/// Contains information about the caught message
+/// </summary>
+public readonly struct CaughtMessageData
+{
+    /// <summary>
+    /// ID of the caught message
+    /// </summary>
+    [JsonPropertyName("message_id")]
+    public string MessageId { get; init; }
+    /// <summary>
+    /// Current status of the message, can be “PENDING”, “ALLOWED”, “DENIED”, or “EXPIRED”
+    /// </summary>
+    [JsonPropertyName("status")]
+    public string Status { get; init; }
 }

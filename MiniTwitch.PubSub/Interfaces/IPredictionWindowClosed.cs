@@ -28,7 +28,6 @@ public interface IPredictionWindowClosed
     /// Time when the prediction was locked
     /// <para>This property is not null in this interface</para>
     /// </summary>
-    [MemberNotNullWhen(true)]
     DateTime? LockedAt { get; }
     /// <summary>
     /// The possible outcomes for the prediction

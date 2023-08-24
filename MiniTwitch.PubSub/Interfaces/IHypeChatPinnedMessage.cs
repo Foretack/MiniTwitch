@@ -3,9 +3,9 @@
 namespace MiniTwitch.PubSub.Interfaces;
 
 /// <summary>
-/// Represents information about a pinned message event
+/// Represents information about a Hype Chat pinned message event
 /// </summary>
-public interface IPinnedMessage
+public interface IHypeChatPinnedMessage
 {
     /// <summary>
     /// ID of this event
@@ -13,15 +13,15 @@ public interface IPinnedMessage
     /// </summary>
     string Id { get; }
     /// <summary>
-    /// Represents information about the user that pinned the message
+    /// Represents the user that sent the Hype Chat message
     /// </summary>
     PinnedChatUpdates.UserInfo PinnedBy { get; }
 }
 
 /// <summary>
-/// Represents information about the message that was pinned
+/// Represents information about the Hype Chat message that was pinned
 /// </summary>
-public interface IPinnedMessageData
+public interface IHypeChatPinnedMessageData
 {
     /// <summary>
     /// ID of the message
@@ -36,18 +36,9 @@ public interface IPinnedMessageData
     /// </summary>
     PinnedChatUpdates.MessageContent Content { get; }
     /// <summary>
-    /// The type of user that pinned the message.
-    /// <para>If the value is not "MOD", then the message is likely a hypechat-pinned message</para>
-    /// </summary>
-    string Type { get; }
-    /// <summary>
     /// Timestamp of when the message was pinned
     /// </summary>
     long StartsAt { get; }
-    /// <summary>
-    /// Timestamp of when the "pin event" was last updated
-    /// </summary>
-    long UpdatedAt { get; }
     /// <summary>
     /// Timestamp of when the message is automatically unpinned
     /// </summary>
@@ -56,4 +47,8 @@ public interface IPinnedMessageData
     /// Timestamp of when the message was sent
     /// </summary>
     long SentAt { get; }
+    /// <summary>
+    /// Represents information about Hype Chat data
+    /// </summary>
+    PinnedChatUpdates.PaidMessageMetadata? Metadata { get; }
 }

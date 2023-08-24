@@ -28,13 +28,11 @@ public interface IPredictionLocked
     /// Time when the prediction was locked
     /// <para>This property is not null in this interface</para>
     /// </summary>
-    [MemberNotNullWhen(true)]
     DateTime? LockedAt { get; }
     /// <summary>
     /// Information about the user that locked the prediction
     /// <para>This property is not null in this interface</para>
     /// </summary>
-    [MemberNotNullWhen(true)]
     ChannelPredictions.User? LockedBy { get; }
     /// <summary>
     /// The possible outcomes for the prediction

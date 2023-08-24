@@ -97,7 +97,7 @@ public static class Topics
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
     public static Topic ChannelPredictions(long channelId, string? overrideToken = null) => new($"predictions-channel-v1.{channelId}") { OverrideToken = overrideToken };
     /// <summary>
-    /// Triggers <see cref="PubSubClient.OnMessagePinned"/>, <see cref="PubSubClient.OnPinnedMessageUpdated"/>  and <see cref="PubSubClient.OnMessageUnpinned"/>
+    /// Triggers <see cref="PubSubClient.OnModPinnedMessage"/>, <see cref="PubSubClient.OnModPinnedMessageUpdated"/>  and <see cref="PubSubClient.OnModUnpinnedMessage"/>
     /// </summary>
     /// <param name="channelId">ID of the channel to observe pin events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>

@@ -5,7 +5,7 @@ namespace MiniTwitch.PubSub.Interfaces;
 /// <summary>
 /// Represents information about a message that was unpinned
 /// </summary>
-public interface IUnpinnedMessage
+public interface IModUnpinnedMessage
 {
     /// <summary>
     /// ID of the "pinned message" event

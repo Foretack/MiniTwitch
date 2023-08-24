@@ -30,9 +30,8 @@ public interface IPollCompleted
     DateTime StartedAt { get; }
     /// <summary>
     /// Time when the poll ended
-    /// <para>This property is not null in this interface</para>
+    /// <para>This property is not null here</para>
     /// </summary>
-    [MemberNotNullWhen(true)]
     DateTime? EndedAt { get; }
     /// <summary>
     /// ID of the user that ended the poll, if applicable
