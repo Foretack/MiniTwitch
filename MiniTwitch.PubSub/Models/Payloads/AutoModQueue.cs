@@ -90,12 +90,12 @@ public readonly struct AutoModQueue
         /// Segments of the message that violated AutoMod
         /// </summary>
         [JsonPropertyName("fragments")]
-        public Fragments[] Fragments { get; init; }
+        public Fragment[] Fragments { get; init; }
     }
     /// <summary>
     /// Portrays a segment of a message that violated AutoMod
     /// </summary>
-    public readonly struct Fragments
+    public readonly struct Fragment
     {
         /// <summary>
         /// Text of the segment
@@ -161,5 +161,4 @@ public readonly struct AutoModQueue
         [JsonPropertyName("level")]
         public double Level { get; init; }
     }
-
 }

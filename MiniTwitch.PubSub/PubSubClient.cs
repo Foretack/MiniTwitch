@@ -146,7 +146,7 @@ public class PubSubClient : IAsyncDisposable
     /// Invoked when a low-trusted chat message is treated
     /// <para>Requires topic: <see cref="Topics.LowTrustUsers(long, long, string?)"/></para>
     /// </summary>
-    public event Func<ChannelId, UserId, ILowTrustTreatmentMessage, ValueTask> OnLowTrustTreatmentMessage = default!;
+    public event Func<ChannelId, UserId, ILowTrustTreatmentMessage, ValueTask> OnLowTrustTreatmentUpdate = default!;
     /// <summary>
     /// Invoked when a low-trusted chat message is sent
     /// <para>Requires topic: <see cref="Topics.LowTrustUsers(long, long, string?)"/></para>
@@ -254,7 +254,6 @@ public class PubSubClient : IAsyncDisposable
     {
         NumberHandling = JsonNumberHandling.AllowReadingFromString,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
-        ReadCommentHandling = JsonCommentHandling.Skip
     };
     private readonly WaitableEvents[] _topicResponses = new[]
     {
@@ -609,7 +608,7 @@ public class PubSubClient : IAsyncDisposable
                     case MessageTopic.LowTrustUsers:
                         var lowTrust = data.Span.ReadJsonMessage<LowTrustUser>(options: _sOptions, logger: GetLogger());
                         if (lowTrust.IsTreatmentMessage)
-                            OnLowTrustTreatmentMessage?.Invoke(info[0], info[1], lowTrust).StepOver(GetExceptionHandler());
+                            OnLowTrustTreatmentUpdate?.Invoke(info[0], info[1], lowTrust).StepOver(GetExceptionHandler());
                         else
                             OnLowTrustChatMessage?.Invoke(info[0], info[1], lowTrust).StepOver(GetExceptionHandler());
 

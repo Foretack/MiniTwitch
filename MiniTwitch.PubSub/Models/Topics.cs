@@ -1,4 +1,6 @@
-﻿namespace MiniTwitch.PubSub.Models;
+﻿using Microsoft.Extensions.Logging;
+
+namespace MiniTwitch.PubSub.Models;
 
 /// <summary>
 /// Represents a PubSub topic
@@ -57,49 +59,88 @@ public static class Topics
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
     public static Topic ChannelPoints(long channelId, string? overrideToken = null) => new($"channel-points-channel-v1.{channelId}") { OverrideToken = overrideToken };
     /// <summary>
-    /// Triggers <see cref="PubSubClient.OnSub"/>, <see cref="PubSubClient.OnSubGift"/> and <see cref="PubSubClient.OnAnonSubGift"/>
+    /// Events that can be triggered by this topic:
+    /// <list type="bullet">
+    /// <item><see cref="PubSubClient.OnSub"/></item>
+    /// <item><see cref="PubSubClient.OnSubGift"/></item>
+    /// <item><see cref="PubSubClient.OnAnonSubGift"/></item>
+    /// </list>
     /// </summary>
-    /// <param name="channelId">ID of the channel to observe the subscribe events in</param>
+    /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
     public static Topic SubscribeEvents(long channelId, string? overrideToken = null) => new($"channel-subscribe-events-v1.{channelId}") { OverrideToken = overrideToken };
     /// <summary>
-    /// Triggers <see cref="PubSubClient.OnAutoModMessageCaught"/>
+    /// Events that can be triggered by this topic:
+    /// <list type="bullet">
+    /// <item><see cref="PubSubClient.OnAutoModMessageCaught"/></item>
+    /// </list>
     /// </summary>
-    /// <param name="moderatorId">ID of the moderator that wants to observe the automod events</param>
-    /// <param name="channelId">ID of the channel to observe the automod events in</param>
+    /// <param name="moderatorId">ID of the moderator observing the events</param>
+    /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
     public static Topic AutomodQueue(long moderatorId, long channelId, string? overrideToken = null) => new($"automod-queue.{moderatorId}.{channelId}") { OverrideToken = overrideToken };
-    // TODO: The paramaters of this are wrong. Check Twitch4J
     /// <summary>
-    /// Triggers <see cref="PubSubClient.OnLowTrustChatMessage"/>, <see cref="PubSubClient.OnLowTrustTreatmentMessage"/>
+    /// Events that can be triggered by this topic:
+    /// <list type="bullet">
+    /// <item><see cref="PubSubClient.OnLowTrustChatMessage"/></item>
+    /// <item><see cref="PubSubClient.OnLowTrustTreatmentUpdate"/></item>
+    /// </list>
     /// </summary>
-    /// <param name="channelId">ID of the channel to observe the low trust events in</param>
-    /// <param name="moderatorId">ID of the moderator that wants to observe low trust user events</param>
+    /// <param name="moderatorId">ID of the moderator observing the events</param>
+    /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
-    public static Topic LowTrustUsers(long channelId, long moderatorId, string? overrideToken = null) => new($"low-trust-users.{channelId}.{moderatorId}") { OverrideToken = overrideToken };
+    public static Topic LowTrustUsers(long moderatorId, long channelId, string? overrideToken = null) => new($"low-trust-users.{moderatorId}.{channelId}") { OverrideToken = overrideToken };
     /// <summary>
-    /// Triggers <see cref="PubSubClient.OnUserBanned"/>, <see cref="PubSubClient.OnUserUnbanned"/>, <see cref="PubSubClient.OnUserTimedOut"/> and <see cref="PubSubClient.OnUserUntimedOut"/>
+    /// Events that can be triggered by this topic:
+    /// <list type="bullet">
+    /// <item><see cref="PubSubClient.OnUserTimedOut"/></item>
+    /// <item><see cref="PubSubClient.OnUserBanned"/></item>
+    /// <item><see cref="PubSubClient.OnUserUntimedOut"/></item>
+    /// <item><see cref="PubSubClient.OnUserUnbanned"/></item>
+    /// <item><see cref="PubSubClient.OnAliasRestrictionUpdate"/></item>
+    /// </list>
     /// </summary>
-    /// <param name="moderatorId">ID of the moderator that wants to observe the notifications</param>
-    /// <param name="channelId">ID of the channel to observe the notifications in</param>
+    /// <param name="moderatorId">ID of the moderator observing the events</param>
+    /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
     public static Topic ModerationNotifications(long moderatorId, long channelId, string? overrideToken = null) => new($"user-moderation-notifications.{moderatorId}.{channelId}") { OverrideToken = overrideToken };
     /// <summary>
-    /// Triggers <see cref="PubSubClient.OnBanned"/>, <see cref="PubSubClient.OnUnbanned"/>, <see cref="PubSubClient.OnTimedOut"/>, <see cref="PubSubClient.OnUntimedOut"/> and <see cref="PubSubClient.OnAliasRestrictionUpdate"/>
+    /// Events that can be triggered by this topic:
+    /// <list type="bullet">
+    /// <item><see cref="PubSubClient.OnTimedOut"/></item>
+    /// <item><see cref="PubSubClient.OnBanned"/></item>
+    /// <item><see cref="PubSubClient.OnUntimedOut"/></item>
+    /// <item><see cref="PubSubClient.OnUnbanned"/></item>
+    /// <item><see cref="PubSubClient.OnAliasRestrictionUpdate"/></item>
+    /// </list>
     /// </summary>
-    /// <param name="userId">ID of the user that wants to observe chatroom events</param>
+    /// <param name="userId">ID of the user observing the events</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
     public static Topic ChatroomsUser(long userId, string? overrideToken = null) => new($"chatrooms-user-v1.{userId}") { OverrideToken = overrideToken };
     /// <summary>
-    /// Triggers <see cref="PubSubClient.OnPredictionStarted"/>, <see cref="PubSubClient.OnPredictionUpdate"/>, <see cref="PubSubClient.OnPredictionLocked"/>, <see cref="PubSubClient.OnPredictionWindowClosed"/>, <see cref="PubSubClient.OnPredictionCancelled"/> and <see cref="PubSubClient.OnPredictionEnded"/>
+    /// Events that can be triggered by this topic:
+    /// <list type="bullet">
+    /// <item><see cref="PubSubClient.OnPredictionStarted"/></item>
+    /// <item><see cref="PubSubClient.OnPredictionUpdate"/></item>
+    /// <item><see cref="PubSubClient.OnPredictionWindowClosed"/></item>
+    /// <item><see cref="PubSubClient.OnPredictionLocked"/></item>
+    /// <item><see cref="PubSubClient.OnPredictionCancelled"/></item>
+    /// <item><see cref="PubSubClient.OnPredictionEnded"/></item>
+    /// </list>
     /// </summary>
-    /// <param name="channelId">ID of the channel to observe predictions in</param>
+    /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
     public static Topic ChannelPredictions(long channelId, string? overrideToken = null) => new($"predictions-channel-v1.{channelId}") { OverrideToken = overrideToken };
     /// <summary>
-    /// Triggers <see cref="PubSubClient.OnModPinnedMessage"/>, <see cref="PubSubClient.OnModPinnedMessageUpdated"/>  and <see cref="PubSubClient.OnModUnpinnedMessage"/>
+    /// Events that can be triggered by this topic:
+    /// <list type="bullet">
+    /// <item><see cref="PubSubClient.OnModPinnedMessage"/></item>
+    /// <item><see cref="PubSubClient.OnModPinnedMessageUpdated"/></item>
+    /// <item><see cref="PubSubClient.OnModUnpinnedMessage"/></item>
+    /// <item><see cref="PubSubClient.OnHypeChatMessagePinned"/></item>
+    /// </list>
     /// </summary>
-    /// <param name="channelId">ID of the channel to observe pin events in</param>
+    /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
     public static Topic PinnedChatUpdates(long channelId, string? overrideToken = null) => new($"pinned-chat-updates-v1.{channelId}") { OverrideToken = overrideToken };
     /// <summary>

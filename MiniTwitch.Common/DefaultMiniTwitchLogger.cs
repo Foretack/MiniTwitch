@@ -47,6 +47,6 @@ public class DefaultMiniTwitchLogger<T> : ILogger<T>, ILogger
                 Console.WriteLine(exception);
         }
     }
-    public bool IsEnabled(LogLevel logLevel) => Enabled && logLevel >= this.MinimumLevel;
+    public bool IsEnabled(LogLevel logLevel) => this.Enabled && logLevel >= this.MinimumLevel;
     public IDisposable? BeginScope<TState>(TState state) where TState : notnull => throw new NotImplementedException();
 }
