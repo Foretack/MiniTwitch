@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MiniTwitch.PubSub.Models.Payloads;
+namespace MiniTwitch.PubSub.Payloads;
 
 /// <summary>
 /// Portrays information about an announced bits badge unlock

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MiniTwitch.PubSub.Models.Payloads;
+namespace MiniTwitch.PubSub.Payloads;
 
 /// <summary>
 ///  Received when AutoMod flags a message as potentially inappropriate, and when a moderator takes action on a message.

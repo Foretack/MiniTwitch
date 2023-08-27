@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace MiniTwitch.PubSub.Models;
+﻿namespace MiniTwitch.PubSub.Models;
 
 /// <summary>
 /// Represents a PubSub topic

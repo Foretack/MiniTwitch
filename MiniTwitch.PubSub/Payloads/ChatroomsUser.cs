@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using MiniTwitch.PubSub.Interfaces;
 
-namespace MiniTwitch.PubSub.Models.Payloads;
+namespace MiniTwitch.PubSub.Payloads;
 
 /// Not exposed
 public readonly struct ChatroomsUser

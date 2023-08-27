@@ -9,8 +9,8 @@ using MiniTwitch.PubSub.Internal;
 using MiniTwitch.PubSub.Internal.Enums;
 using MiniTwitch.PubSub.Internal.Models;
 using MiniTwitch.PubSub.Internal.Parsing;
+using MiniTwitch.PubSub.Payloads;
 using MiniTwitch.PubSub.Models;
-using MiniTwitch.PubSub.Models.Payloads;
 
 namespace MiniTwitch.PubSub;
 
