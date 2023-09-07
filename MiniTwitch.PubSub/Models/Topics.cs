@@ -187,7 +187,7 @@ public static class Topics
     /// </summary>
     /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
-    public static Topic Polls(long channelId, string? overrideToken = null) => new($"polls.{channelId}");
+    public static Topic Polls(long channelId, string? overrideToken = null) => new($"polls.{channelId}") { OverrideToken = overrideToken };
     /// <summary>
     /// Events that can be triggered by this topic:
     /// <list type="bullet">
@@ -196,5 +196,14 @@ public static class Topics
     /// </summary>
     /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
-    public static Topic CommunityChannelPoints(long channelId, string? overrideToken = null) => new($"community-points-channel-v1.{channelId}");
+    public static Topic CommunityChannelPoints(long channelId, string? overrideToken = null) => new($"community-points-channel-v1.{channelId}") { OverrideToken = overrideToken };
+    /// <summary>
+    /// Events that can be triggered by this topic:
+    /// <list type="bullet">
+    /// <item><see cref="PubSubClient.OnFollow"/></item>
+    /// </list>
+    /// </summary>
+    /// <param name="channelId">ID of the channel to observe the events in</param>
+    /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
+    public static Topic Following(long channelId, string? overrideToken = null) => new($"following.{channelId}") { OverrideToken = overrideToken };
 }

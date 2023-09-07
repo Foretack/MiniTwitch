@@ -247,6 +247,11 @@ public class PubSubClient : IAsyncDisposable
     /// <para>Requires topic: <see cref="Topics.Polls(long, string?)"/></para>
     /// </summary>
     public event Func<ChannelId, Poll, ValueTask> OnPollArchived = default!;
+    /// <summary>
+    /// Invoked when a user follows the channel specified
+    /// <para>Requires topic: <see cref="Topics.Following(long, string?)"/></para>
+    /// </summary>
+    public event Func<ChannelId, Follower, ValueTask> OnFollow = default!;
     #endregion
 
     #region Fields
@@ -735,6 +740,11 @@ public class PubSubClient : IAsyncDisposable
                     case MessageTopic.CommunityChannelPoints:
                         var cChannelPoints = data.Span.ReadJsonMessage<ChannelPoints>(options: _sOptions, logger: GetLogger());
                         OnChannelPointsRedemption?.Invoke(info[0], cChannelPoints).StepOver(GetExceptionHandler());
+                        break;
+
+                    case MessageTopic.Following:
+                        var follower = data.Span.ReadJsonMessage<Follower>(options: _sOptions, logger: GetLogger());
+                        OnFollow?.Invoke(info[0], follower).StepOver(GetExceptionHandler());
                         break;
                 }
 

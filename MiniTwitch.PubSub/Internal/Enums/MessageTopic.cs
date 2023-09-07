@@ -4,6 +4,7 @@ internal enum MessageTopic
 {
     None,
     Polls = 554,
+    Following = 977,
     AutomodQueue = 1355,
     LowTrustUsers = 1568,
     ChatroomsUser = 1680,
