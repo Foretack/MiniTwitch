@@ -20,5 +20,6 @@ internal enum MessageTopic
     BitsBadgeUnlock = 2564,
     SubscribeEvents = 2654,
     CommunityChannelPoints = 2697,
+    CommunityMoments = 2799,
     ModerationNotifications = 3013,
 }

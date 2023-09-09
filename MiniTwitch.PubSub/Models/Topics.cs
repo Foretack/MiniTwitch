@@ -206,4 +206,13 @@ public static class Topics
     /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
     public static Topic Following(long channelId, string? overrideToken = null) => new($"following.{channelId}") { OverrideToken = overrideToken };
+    /// <summary>
+    /// Events that can be triggered by this topic:
+    /// <list type="bullet">
+    /// <item><see cref="PubSubClient.OnCommunityMoment"/></item>
+    /// </list>
+    /// </summary>
+    /// <param name="channelId">ID of the channel to observe the events in</param>
+    /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
+    public static Topic CommunityMoments(long channelId, string? overrideToken = null) => new($"community-moments-channel-v1.{channelId}") { OverrideToken = overrideToken };
 }

@@ -252,6 +252,11 @@ public class PubSubClient : IAsyncDisposable
     /// <para>Requires topic: <see cref="Topics.Following(long, string?)"/></para>
     /// </summary>
     public event Func<ChannelId, Follower, ValueTask> OnFollow = default!;
+    /// <summary>
+    /// Invoked when a "moments" event happens in a channel
+    /// <para>Requires topic: <see cref="Topics.CommunityMoments(long, string?)"/></para>
+    /// </summary>
+    public event Func<ChannelId, CommunityMoments, ValueTask> OnCommunityMoment = default!;
     #endregion
 
     #region Fields
@@ -745,6 +750,11 @@ public class PubSubClient : IAsyncDisposable
                     case MessageTopic.Following:
                         var follower = data.Span.ReadJsonMessage<Follower>(options: _sOptions, logger: GetLogger());
                         OnFollow?.Invoke(info[0], follower).StepOver(GetExceptionHandler());
+                        break;
+
+                    case MessageTopic.CommunityMoments:
+                        var moment = data.Span.ReadJsonMessage<CommunityMoments>(options: _sOptions, logger: GetLogger());
+                        OnCommunityMoment.Invoke(info[0], moment).StepOver(GetExceptionHandler());
                         break;
                 }
 
