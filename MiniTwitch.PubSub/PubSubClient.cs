@@ -25,9 +25,9 @@ public sealed class PubSubClient : IAsyncDisposable
     /// </summary>
     public Action<Exception> ExceptionHandler { get; set; } = default!;
     /// <summary>
-    /// A collection of topics that are being listened to by this client
+    /// A collection of topics that are actively being listened to by this client
     /// </summary>
-    public IReadOnlyCollection<Topic> ActiveTopics => _topics;
+    public IReadOnlyCollection<Topic> ActiveTopics => _ws.IsConnected ? _topics : Array.Empty<Topic>();
     /// <summary>
     /// The default logger for <see cref="PubSubClient"/>, only used when <see cref="ILogger"/> is not provided in the constructor
     /// <para>Can be toggled with <see cref="DefaultMiniTwitchLogger{T}.Enabled"/></para>
