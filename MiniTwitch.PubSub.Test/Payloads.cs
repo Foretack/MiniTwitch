@@ -1117,4 +1117,95 @@ public static class Payloads
           }
         }
         """;
+
+    [Topic("automod-queue.27620241.27620241", MessageTopic.AutomodQueue, typeof(AutoModQueue))]
+    private const string AutomodQueueJson = """
+        {
+            "type":"automod_caught_message",
+            "data":{
+                "content_classification":{
+                    "category":"aggression",
+                    "level":4
+                },
+                "message":{
+                    "content":{
+                        "text":"you suck balls",
+                        "fragments":[
+                            {
+                                "text":"you suck balls",
+                                "automod":{
+                                    "topics":{
+                                        "bullying":3,
+                                        "dating_and_sexting":7,
+                                        "vulgar":5
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "id":"23b15313-ff6c-4e1c-8d0d-ea9c382a3806",
+                    "sender":{
+                        "user_id":"268131879",
+                        "login":"prettyb0i_swe",
+                        "display_name":"prettyb0i_swe"
+                    },
+                    "sent_at":"2021-05-29T13:12:41.237693525Z"
+                },
+                "reason_code":"",
+                "resolver_id":"",
+                "resolver_login":"",
+                "status":"PENDING"
+            }
+        }
+        """;
+
+    [Topic("automod-queue.27620241.27620241", MessageTopic.AutomodQueue, typeof(AutoModQueue))]
+    private const string AutomodQueueJson2 = """
+        {
+            "type":"automod_caught_message",
+            "data":{
+                "content_classification":{
+                    "category":"homophobia",
+                    "level":1
+                },
+                "message":{
+                    "content":{
+                        "text":"Automod had an issues with the word deps?",
+                        "fragments":[
+                            {
+                                "text":"Automod had an issues with the word "
+                            },
+                            {
+                                "text":"deps?",
+                                "automod":{
+                                    "topics":{
+                                        "identity":7
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "id":"933829c6-9db6-4b16-8f9d-4569cd4dd8d7",
+                    "sender":{
+                        "user_id":"1234",
+                        "login":"justinfan123",
+                        "display_name":"justinfan123",
+                        "chat_color":"#B382E8",
+                        "badges":[
+                            {
+                                "id":"partner",
+                                "version":"1"
+                            }
+                        ]
+                    },
+                    "sent_at":"2021-10-18T19:12:01.860963699Z",
+                    "non_broadcaster_language":"fr"
+                },
+                "reason_code":"",
+                "resolver_id":"",
+                "resolver_login":"",
+                "status":"PENDING"
+            }
+        }
+        """;
 }
