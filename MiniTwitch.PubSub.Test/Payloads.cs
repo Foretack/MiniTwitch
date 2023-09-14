@@ -1052,4 +1052,69 @@ public static class Payloads
           "version": "1.0"
         }
         """;
+
+    [Topic("chatrooms-user-v1.1234567", MessageTopic.ChatroomsUser, typeof(ChatroomsUser))]
+    private const string SelfTimedOutJson = """
+        {
+          "type": "user_moderation_action",
+          "data": {
+            "action": "timeout",
+            "channel_id": "72256775",
+            "expires_at": "2022-05-08T12:54:07.263176344Z",
+            "expires_in_ms": 974,
+            "reason": "Banned phrase 3231 (vanish)",
+            "target_id": "99631238"
+          }
+        }
+        
+        """;
+
+    [Topic("chatrooms-user-v1.1234567", MessageTopic.ChatroomsUser, typeof(ChatroomsUser))]
+    private const string SelfBannedJson = """
+        {
+          "type": "user_moderation_action",
+          "data": {
+            "action": "ban",
+            "channel_id": "648946956",
+            "reason": "foo bar baz",
+            "target_id": "99631238"
+          }
+        }
+        """;
+
+    [Topic("chatrooms-user-v1.1234567", MessageTopic.ChatroomsUser, typeof(ChatroomsUser))]
+    private const string SelfUntimedOutJson = """
+        {
+          "type": "user_moderation_action",
+          "data": {
+            "action": "untimeout",
+            "channel_id": "648946956",
+            "target_id": "99631238"
+          }
+        }
+        """;
+
+    [Topic("chatrooms-user-v1.1234567", MessageTopic.ChatroomsUser, typeof(ChatroomsUser))]
+    private const string SelfUnbannedJson = """
+        {
+          "type": "user_moderation_action",
+          "data": {
+            "action": "unban",
+            "channel_id": "648946956",
+            "target_id": "99631238"
+          }
+        }
+        
+        """;
+
+    [Topic("chatrooms-user-v1.1234567", MessageTopic.ChatroomsUser, typeof(ChatroomsUser))]
+    private const string AliasRestrictionUpdateJson = """
+        {
+          "type": "channel_banned_alias_restriction_update",
+          "data": {
+            "user_is_restricted": false,
+            "ChannelID": "648946956"
+          }
+        }
+        """;
 }
