@@ -39,11 +39,14 @@ public readonly struct AutoModQueue
         /// </summary>
         [JsonPropertyName("status")]
         public string Status { get; init; }
+
+        [JsonPropertyName("resolver_id")]
+        private string _tmp { get; init; }
+
         /// <summary>
         /// User ID of the moderator that resolved this message
         /// </summary>
-        [JsonPropertyName("resolver_id")]
-        public long ResolverId { get; init; }
+        public long ResolverId => _tmp is { Length:> 0 } ? long.Parse(_tmp) : 0;
         /// <summary>
         /// Name of the moderator that resolved this message
         /// </summary>
