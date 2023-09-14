@@ -6,7 +6,7 @@ namespace MiniTwitch.PubSub.Test;
 public static class Payloads
 {
     [Topic("channel-points-channel-v1.27620241", MessageTopic.ChannelPoints, typeof(ChannelPoints))]
-    private const string RewardRedeemedJson = """
+    public const string RewardRedeemedJson = """
     {
         "type": "reward-redeemed",
         "data": {
@@ -64,7 +64,7 @@ public static class Payloads
     """;
 
     [Topic("channel-points-channel-v1.27620241", MessageTopic.ChannelPoints, typeof(ChannelPoints))]
-    private const string CustomRewardUpdatedJson = """
+    public const string CustomRewardUpdatedJson = """
         {
             "type": "custom-reward-updated",
             "data": {
@@ -110,7 +110,7 @@ public static class Payloads
         """;
 
     [Topic("channel-subscribe-events-v1.27620241", MessageTopic.SubscribeEvents, typeof(SubscribeEvents))]
-    private const string ResubJson = """
+    public const string ResubJson = """
         {
             "benefit_end_month": 0,
             "user_name": "tmi",
@@ -141,7 +141,7 @@ public static class Payloads
         """;
 
     [Topic("channel-subscribe-events-v1.27620241", MessageTopic.SubscribeEvents, typeof(SubscribeEvents))]
-    private const string NewSubJson = """
+    public const string NewSubJson = """
         {
             "benefit_end_month": 11,
             "user_name": "tmi",
@@ -165,7 +165,7 @@ public static class Payloads
         """;
 
     [Topic("channel-subscribe-events-v1.27620241", MessageTopic.SubscribeEvents, typeof(SubscribeEvents))]
-    private const string ResubGiftJson = """
+    public const string ResubGiftJson = """
         {
             "benefit_end_month": 0,
             "user_name": "emilgardis",
@@ -197,7 +197,7 @@ public static class Payloads
         """;
 
     [Topic("community-points-channel-v1.27620241", MessageTopic.CommunityChannelPoints, typeof(ChannelPoints))]
-    private const string CommunityPointsJson = """
+    public const string CommunityPointsJson = """
         {
             "type": "reward-redeemed",
             "data": {
@@ -255,7 +255,7 @@ public static class Payloads
         """;
 
     [Topic("chat_moderator_actions.27620241.27620241", MessageTopic.ModeratorActions, typeof(ModeratorActions))]
-    private const string ModActionDeleteJson = """
+    public const string ModActionDeleteJson = """
         {
             "type":"moderation_action",
             "data":{
@@ -277,7 +277,7 @@ public static class Payloads
         """;
 
     [Topic("chat_moderator_actions.27620241.27620241", MessageTopic.ModeratorActions, typeof(ModeratorActions))]
-    private const string ModActionTimeoutJson = """
+    public const string ModActionTimeoutJson = """
         {
             "type":"moderation_action",
             "data":{
@@ -299,7 +299,7 @@ public static class Payloads
         """;
 
     [Topic("chat_moderator_actions.27620241.27620241", MessageTopic.ModeratorActions, typeof(ModeratorActions))]
-    private const string ModeratorAddedJson = """
+    public const string ModeratorAddedJson = """
         {
         	"type":"moderator_added",
         	"data":{
@@ -314,7 +314,7 @@ public static class Payloads
         """;
 
     [Topic("chat_moderator_actions.27620241.27620241", MessageTopic.ModeratorActions, typeof(ModeratorActions))]
-    private const string ModeratorRemoveJson = """
+    public const string ModeratorRemoveJson = """
         {
             "type":"moderator_removed",
             "data":{
@@ -329,7 +329,7 @@ public static class Payloads
         """;
 
     [Topic("chat_moderator_actions.27620241.27620241", MessageTopic.ModeratorActions, typeof(ModeratorActions))]
-    private const string ModeratorDenyUnbanRequestJson = """
+    public const string ModeratorDenyUnbanRequestJson = """
         {
             "type":"deny_unban_request",
             "data":{
@@ -344,7 +344,7 @@ public static class Payloads
         """;
 
     [Topic("chat_moderator_actions.27620241.27620241", MessageTopic.ModeratorActions, typeof(ModeratorActions))]
-    private const string ModeratorApproveUnbanRequestJson = """
+    public const string ModeratorApproveUnbanRequestJson = """
         {
             "type":"approve_unban_request",
             "data":{
@@ -359,7 +359,7 @@ public static class Payloads
         """;
 
     [Topic("chat_moderator_actions.27620241.27620241", MessageTopic.ModeratorActions, typeof(ModeratorActions))]
-    private const string ModerationAutomodPropertiesJson = """
+    public const string ModerationAutomodPropertiesJson = """
         {
             "type":"moderation_action",
             "data":{
@@ -377,7 +377,7 @@ public static class Payloads
         """;
 
     [Topic("chat_moderator_actions.27620241.27620241", MessageTopic.ModeratorActions, typeof(ModeratorActions))]
-    private const string ModerationDeleteBlockedTermJson = """
+    public const string ModerationDeleteBlockedTermJson = """
         {
             "type":"channel_terms_action",
             "data":{
@@ -395,7 +395,7 @@ public static class Payloads
         """;
 
     [Topic("user-moderation-notifications.27620241.268131879", MessageTopic.ModerationNotifications, typeof(ModerationNotificationMessage))]
-    private const string ModeratorNotificationAutoModCaughtJson = """
+    public const string ModeratorNotificationAutoModCaughtJson = """
         {
             "type":"automod_caught_message",
             "data":{
@@ -406,7 +406,7 @@ public static class Payloads
         """;
 
     [Topic("following.12345678", MessageTopic.Following, typeof(Follower))]
-    private const string FollowerJson = """
+    public const string FollowerJson = """
         {
             "display_name": "tmi",
             "username": "tmi",
@@ -415,7 +415,7 @@ public static class Payloads
         """;
 
     [Topic("community-moments-channel-v1.169185650", MessageTopic.CommunityMoments, typeof(CommunityMoments))]
-    private const string CommunityMomentsJson = """
+    public const string CommunityMomentsJson = """
         {
           "type": "active",
           "data": {
@@ -427,7 +427,7 @@ public static class Payloads
         """;
 
     [Topic("video-playback-by-id.1234567", MessageTopic.VideoPlayback, typeof(VideoPlayback))]
-    private const string StreamOnlinePlaybackJson = """
+    public const string StreamOnlinePlaybackJson = """
         {
           "server_time": 1637067607,
           "play_delay": 0,
@@ -436,7 +436,7 @@ public static class Payloads
         """;
 
     [Topic("video-playback-by-id.1234567", MessageTopic.VideoPlayback, typeof(VideoPlayback))]
-    private const string ViewerCountUpdateJson = """
+    public const string ViewerCountUpdateJson = """
         {
           "type": "viewcount",
           "server_time": 1605026941.187422,
@@ -445,7 +445,7 @@ public static class Payloads
         """;
 
     [Topic("video-playback-by-id.1234567", MessageTopic.VideoPlayback, typeof(VideoPlayback))]
-    private const string CommercialJson = """
+    public const string CommercialJson = """
         {
           "type": "commercial",
           "server_time": 1605026941.187422,
@@ -455,7 +455,7 @@ public static class Payloads
         """;
 
     [Topic("video-playback-by-id.1234567", MessageTopic.VideoPlayback, typeof(VideoPlayback))]
-    private const string StreamOfflinePlaybackJson = """
+    public const string StreamOfflinePlaybackJson = """
         {
           "type": "commercial",
           "server_time": 1605026941.187422,
@@ -465,7 +465,7 @@ public static class Payloads
         """;
 
     [Topic("video-playback-by-id.1234567", MessageTopic.VideoPlayback, typeof(VideoPlayback))]
-    private const string TosStrikePlaybackJson = """
+    public const string TosStrikePlaybackJson = """
         {
           "type": "tos-strike",
           "server_time": 1605281499.16761
@@ -473,7 +473,7 @@ public static class Payloads
         """;
 
     [Topic("polls.1234567", MessageTopic.Polls, typeof(Polls))]
-    private const string PollStartJson = """
+    public const string PollStartJson = """
                 {
           "type": "POLL_CREATE",
           "data": {
@@ -544,7 +544,7 @@ public static class Payloads
         """;
 
     [Topic("polls.1234567", MessageTopic.Polls, typeof(Polls))]
-    private const string PollUpdateJson = """
+    public const string PollUpdateJson = """
         {
           "type": "POLL_UPDATE",
           "data": {
@@ -675,7 +675,7 @@ public static class Payloads
         """;
 
     [Topic("polls.1234567", MessageTopic.Polls, typeof(Polls))]
-    private const string PollCompleteJson = """
+    public const string PollCompleteJson = """
         {
           "type": "POLL_COMPLETE",
           "data": {
@@ -806,7 +806,7 @@ public static class Payloads
         """;
 
     [Topic("polls.1234567", MessageTopic.Polls, typeof(Polls))]
-    private const string PollArchivedJson = """
+    public const string PollArchivedJson = """
         {
           "type": "POLL_ARCHIVE",
           "data": {
@@ -937,7 +937,7 @@ public static class Payloads
         """;
 
     [Topic("low-trust-users.1234567.1234567", MessageTopic.LowTrustUsers, typeof(LowTrustUser))]
-    private const string LowTrustTreatmentUpdateJson = """
+    public const string LowTrustTreatmentUpdateJson = """
         {
           "type": "low_trust_user_treatment_update",
           "data": {
@@ -959,7 +959,7 @@ public static class Payloads
         """;
 
     [Topic("low-trust-users.1234567.1234567", MessageTopic.LowTrustUsers, typeof(LowTrustUser))]
-    private const string LowTrustNewMessageJson = """
+    public const string LowTrustNewMessageJson = """
         {
           "type": "low_trust_user_new_message",
           "data": {
@@ -997,7 +997,7 @@ public static class Payloads
         """;
 
     [Topic("broadcast-settings-update.1234567", MessageTopic.BroadcastSettingsUpdate, typeof(BroadcastSettingsUpdate))]
-    private const string BroadcasterSettingsUpdateJson = """
+    public const string BroadcasterSettingsUpdateJson = """
         {
           "type": "broadcast_settings_update",
 
@@ -1016,7 +1016,7 @@ public static class Payloads
         """;
 
     [Topic("channel-bits-badge-unlocks.1234567", MessageTopic.BitsBadgeUnlock, typeof(BitsBadgeUnlock))]
-    private const string BitsBadgeEventsJson = """
+    public const string BitsBadgeEventsJson = """
         {
           "user_id": "232889822",
           "user_name": "willowolf",
@@ -1029,7 +1029,7 @@ public static class Payloads
         """;
 
     [Topic("channel-bits-events-v2.1234567", MessageTopic.BitsEventsV2, typeof(BitsBadgeUnlock))]
-    private const string BitsEvents = """
+    public const string BitsEvents = """
         {
           "data": {
             "badge_entitlement": {
@@ -1054,7 +1054,7 @@ public static class Payloads
         """;
 
     [Topic("chatrooms-user-v1.1234567", MessageTopic.ChatroomsUser, typeof(ChatroomsUser))]
-    private const string SelfTimedOutJson = """
+    public const string SelfTimedOutJson = """
         {
           "type": "user_moderation_action",
           "data": {
@@ -1070,7 +1070,7 @@ public static class Payloads
         """;
 
     [Topic("chatrooms-user-v1.1234567", MessageTopic.ChatroomsUser, typeof(ChatroomsUser))]
-    private const string SelfBannedJson = """
+    public const string SelfBannedJson = """
         {
           "type": "user_moderation_action",
           "data": {
@@ -1083,7 +1083,7 @@ public static class Payloads
         """;
 
     [Topic("chatrooms-user-v1.1234567", MessageTopic.ChatroomsUser, typeof(ChatroomsUser))]
-    private const string SelfUntimedOutJson = """
+    public const string SelfUntimedOutJson = """
         {
           "type": "user_moderation_action",
           "data": {
@@ -1095,7 +1095,7 @@ public static class Payloads
         """;
 
     [Topic("chatrooms-user-v1.1234567", MessageTopic.ChatroomsUser, typeof(ChatroomsUser))]
-    private const string SelfUnbannedJson = """
+    public const string SelfUnbannedJson = """
         {
           "type": "user_moderation_action",
           "data": {
@@ -1108,7 +1108,7 @@ public static class Payloads
         """;
 
     [Topic("chatrooms-user-v1.1234567", MessageTopic.ChatroomsUser, typeof(ChatroomsUser))]
-    private const string AliasRestrictionUpdateJson = """
+    public const string AliasRestrictionUpdateJson = """
         {
           "type": "channel_banned_alias_restriction_update",
           "data": {
@@ -1119,7 +1119,7 @@ public static class Payloads
         """;
 
     [Topic("automod-queue.27620241.27620241", MessageTopic.AutomodQueue, typeof(AutoModQueue))]
-    private const string AutomodQueueJson = """
+    public const string AutomodQueueJson = """
         {
             "type":"automod_caught_message",
             "data":{
@@ -1160,7 +1160,7 @@ public static class Payloads
         """;
 
     [Topic("automod-queue.27620241.27620241", MessageTopic.AutomodQueue, typeof(AutoModQueue))]
-    private const string AutomodQueueJson2 = """
+    public const string AutomodQueueJson2 = """
         {
             "type":"automod_caught_message",
             "data":{
