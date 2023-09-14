@@ -17,7 +17,7 @@ namespace MiniTwitch.PubSub;
 /// <summary>
 /// Responsible for communication with the Twitch PubSub services.
 /// </summary>
-public class PubSubClient : IAsyncDisposable
+public sealed class PubSubClient : IAsyncDisposable
 {
     #region Properties
     /// <summary>
