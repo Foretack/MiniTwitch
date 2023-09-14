@@ -66,6 +66,26 @@ internal static class PubSubParsing
         return val;
     }
 
+    public static object? ReadJsonMessage(this ReadOnlySpan<byte> span, Type outType, bool escaped = true, JsonSerializerOptions? options = null)
+    {
+        ReadOnlySpan<byte> message = span.ReadMessage(escaped);
+        Span<byte> unescaped = stackalloc byte[message.Length];
+        int endIndex = message.CopyUnescaped(unescaped);
+        object? val;
+        try
+        {
+            val = JsonSerializer.Deserialize(unescaped[..endIndex], outType, options);
+        }
+        catch (Exception ex)
+        {
+            string json = Encoding.UTF8.GetString(unescaped[..endIndex]);
+            return $"Failed to deserialize JSON.\nmessage: ({ex.GetType().Name}) {ex.Message}\n{ex.StackTrace}\nJSON string: {Encoding.UTF8.GetString(span)}\nIf you see this error, " +
+                "please open an issue! Include the JSON string and the exception. https://github.com/Foretack/MiniTwitch/issues";
+        }
+
+        return val;
+    }
+
     public static ListenResponse ParseResponse(ReadOnlySpan<byte> span)
     {
         var response = JsonSerializer.Deserialize<ResponsePayload>(span);

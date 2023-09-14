@@ -33,7 +33,9 @@ public readonly struct ModeratorActions
         public DateTime CreatedAt { get; init; }
         /// <inheritdoc/>
         [JsonPropertyName("target_user_id")]
-        public long TargetUserId { get; init; }
+        private string _tmp { get; init; }
+        /// <inheritdoc/>
+        public long TargetUserId => _tmp is { Length: > 0 } ? long.Parse(_tmp) : 0;
         /// <inheritdoc/>
         [JsonPropertyName("target_user_login")]
         public string TargetUsername { get; init; }
