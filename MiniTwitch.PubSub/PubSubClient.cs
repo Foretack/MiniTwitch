@@ -321,9 +321,9 @@ public sealed class PubSubClient : IAsyncDisposable
     /// <returns>An array of responses for all listen requests</returns>
     public async Task<ListenResponse[]> ListenTo(IEnumerable<Topic> topics, CancellationToken cancellationToken = default)
     {
-        Topic[] arr = topics is Topic[] array ? array : topics.ToArray();
-        var results = new ListenResponse[arr.Length];
-        for (int i = 0; i < arr.Length && !cancellationToken.IsCancellationRequested; i++)
+        IReadOnlyList<Topic> arr = topics is IReadOnlyList<Topic> listImpl ? listImpl : topics.ToArray();
+        var results = new ListenResponse[arr.Count];
+        for (int i = 0; i < arr.Count && !cancellationToken.IsCancellationRequested; i++)
         {
             results[i] = await ListenTo(arr[i], cancellationToken);
         }
