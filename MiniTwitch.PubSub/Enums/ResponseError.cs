@@ -22,7 +22,7 @@ public enum ResponseError
     /// </summary>
     ERR_BADAUTH,
     /// <summary>
-    /// Indicates that a server error has a occured
+    /// Indicates that a server error has a occurred
     /// </summary>
     ERR_SERVER,
     /// <summary>
@@ -33,4 +33,8 @@ public enum ResponseError
     /// Received when Twitch fails to respond to the message within the allowed time
     /// </summary>
     Response_Timeout,
+    /// <summary>
+    /// Received when trying to listen to more topics than the maximum amount (100)
+    /// </summary>
+    ERR_TOO_MANY_TOPICS
 }
