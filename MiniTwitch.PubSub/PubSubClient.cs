@@ -36,7 +36,6 @@ public sealed class PubSubClient : IAsyncDisposable
     #endregion
 
     #region Events
-    // TODO: Also document required scopes
     /// <summary>
     /// Invoked upon connecting to the PubSub service
     /// <para>Note: This is only invoked once. Following connections to PubSub will invoke <see cref="OnReconnect"/></para>
@@ -82,22 +81,22 @@ public sealed class PubSubClient : IAsyncDisposable
     /// </summary>
     public event Func<ChannelId, IPredictionCancelled, ValueTask> OnPredictionCancelled = default!;
     /// <summary>
-    /// Invoked when the listener (you) is timed out from a channel
+    /// Invoked when the listener is timed out from a channel
     /// <para>Requires topic: <see cref="Topics.ChatroomsUser(long, string?)"/></para>
     /// </summary>
     public event Func<UserId, ITimeOutData, ValueTask> OnTimedOut = default!;
     /// <summary>
-    /// Invoked when the listener (you) is untimed out from a channel
+    /// Invoked when the listener is untimed out from a channel
     /// <para>Requires topic: <see cref="Topics.ChatroomsUser(long, string?)"/></para>
     /// </summary>
     public event Func<UserId, IUntimeOutData, ValueTask> OnUntimedOut = default!;
     /// <summary>
-    /// Invoked when the listener (you) is banned from a channel
+    /// Invoked when the listener is banned from a channel
     /// <para>Requires topic: <see cref="Topics.ChatroomsUser(long, string?)"/></para>
     /// </summary>
     public event Func<UserId, IBanData, ValueTask> OnBanned = default!;
     /// <summary>
-    /// Invoked when the listener (you) is unbanned from a channel
+    /// Invoked when the listener is unbanned from a channel
     /// <para>Requires topic: <see cref="Topics.ChatroomsUser(long, string?)"/></para>
     /// </summary>
     public event Func<UserId, IUntimeOutData, ValueTask> OnUnbanned = default!;
@@ -183,12 +182,12 @@ public sealed class PubSubClient : IAsyncDisposable
     /// </summary>
     public event Func<ChannelId, IStreamUp, ValueTask> OnStreamUp = default!;
     /// <summary>
-    /// Invoked every few seconds when a stream is online, returning updates about the viewer count
+    /// Invoked every few seconds when a stream is online, returning the updated viewer count
     /// <para>Requires topic: <see cref="Topics.VideoPlayback(long, string?)"/></para>
     /// </summary>
     public event Func<ChannelId, IViewerCountUpdate, ValueTask> OnViewerCountUpdate = default!;
     /// <summary>
-    /// Invoked when a stream takes a commercial break
+    /// Invoked when a stream takes an ad break
     /// <para>Requires topic: <see cref="Topics.VideoPlayback(long, string?)"/></para>
     /// </summary>
     public event Func<ChannelId, ICommercialBreak, ValueTask> OnCommercialBreak = default!;
@@ -233,7 +232,7 @@ public sealed class PubSubClient : IAsyncDisposable
     /// </summary>
     public event Func<ChannelId, IPollCreated, ValueTask> OnPollCreated = default!;
     /// <summary>
-    /// Invoked when a user participates in the poll (possibly ratelimited to 1 update/s)
+    /// Invoked every second when users participate in a poll
     /// <para>Requires topic: <see cref="Topics.Polls(long, string?)"/></para>
     /// </summary>
     public event Func<ChannelId, IPollUpdated, ValueTask> OnPollUpdate = default!;
@@ -448,6 +447,7 @@ public sealed class PubSubClient : IAsyncDisposable
     private Task OnWsDisconnect()
     {
         Log(LogLevel.Warning, "Disconnected");
+        // TODO: This should cancel PingerTask
         OnDisconnect?.Invoke().StepOver(GetExceptionHandler());
         return Task.CompletedTask;
     }
@@ -475,7 +475,7 @@ public sealed class PubSubClient : IAsyncDisposable
                 await Ping();
                 await Task.Delay(TimeSpan.FromMinutes(4));
             }
-        });
+        }, _pingerToken.Token);
     }
     #endregion
 
