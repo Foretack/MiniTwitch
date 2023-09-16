@@ -30,30 +30,44 @@ public readonly record struct Topic(string Key)
 /// </summary>
 public static class Topics
 {
-    // TODO: Use new bullet list format
-
     /// <summary>
-    /// Triggers <see cref="PubSubClient.OnBitsEvent"/>
+    /// Events that can be triggered by this topic:
+    /// <list type="bullet">
+    /// <item><see cref="PubSubClient.OnBitsEvent"/></item>
+    /// </list>
+    /// Authentication: Access token with the scope <c>bits:read</c>
     /// </summary>
-    /// <param name="channelId">ID of the channel to observe the bit events in</param>
+    /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
     public static Topic BitsEventsV1(long channelId, string? overrideToken = null) => new($"channel-bits-events-v1.{channelId}") { OverrideToken = overrideToken };
     /// <summary>
-    /// Triggers <see cref="PubSubClient.OnBitsEvent"/>
+    /// Events that can be triggered by this topic:
+    /// <list type="bullet">
+    /// <item><see cref="PubSubClient.OnBitsEvent"/></item>
+    /// </list>
+    /// Authentication: Access token with the scope <c>bits:read</c>
     /// </summary>
-    /// <param name="channelId">ID of the channel to observe the bit events in</param>
+    /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
     public static Topic BitsEventsV2(long channelId, string? overrideToken = null) => new($"channel-bits-events-v2.{channelId}") { OverrideToken = overrideToken };
     /// <summary>
-    /// Triggers <see cref="PubSubClient.OnBitsBadgeUnlock"/>
+    /// Events that can be triggered by this topic:
+    /// <list type="bullet">
+    /// <item><see cref="PubSubClient.OnBitsBadgeUnlock"/></item>
+    /// </list>
+    /// Authentication: Access token with the scope <c>bits:read</c>
     /// </summary>
-    /// <param name="channelId">ID of the channel to observe the bit badge events in</param>
+    /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
     public static Topic BitsBadgeUnlock(long channelId, string? overrideToken = null) => new($"channel-bits-badge-unlocks.{channelId}") { OverrideToken = overrideToken };
     /// <summary>
-    /// Triggers <see cref="PubSubClient.OnChannelPointsRedemption"/>
+    /// Events that can be triggered by this topic:
+    /// <list type="bullet">
+    /// <item><see cref="PubSubClient.OnChannelPointsRedemption"/></item>
+    /// </list>
+    /// Authentication: Access token with the scope <c>channel:read:redemptions</c>
     /// </summary>
-    /// <param name="channelId">ID of the channel to observe the channel point events in</param>
+    /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
     public static Topic ChannelPoints(long channelId, string? overrideToken = null) => new($"channel-points-channel-v1.{channelId}") { OverrideToken = overrideToken };
     /// <summary>
@@ -63,6 +77,7 @@ public static class Topics
     /// <item><see cref="PubSubClient.OnSubGift"/></item>
     /// <item><see cref="PubSubClient.OnAnonSubGift"/></item>
     /// </list>
+    /// Authentication: Access token with the scope <c>channel:read:subscriptions</c>
     /// </summary>
     /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
@@ -72,6 +87,7 @@ public static class Topics
     /// <list type="bullet">
     /// <item><see cref="PubSubClient.OnAutoModMessageCaught"/></item>
     /// </list>
+    /// Authentication: Access token with the scope <c>channel:moderate</c>
     /// </summary>
     /// <param name="moderatorId">ID of the moderator observing the events</param>
     /// <param name="channelId">ID of the channel to observe the events in</param>
@@ -83,6 +99,7 @@ public static class Topics
     /// <item><see cref="PubSubClient.OnLowTrustChatMessage"/></item>
     /// <item><see cref="PubSubClient.OnLowTrustTreatmentUpdate"/></item>
     /// </list>
+    /// Authentication: Access token with the scope <c>channel:moderate</c>
     /// </summary>
     /// <param name="moderatorId">ID of the moderator observing the events</param>
     /// <param name="channelId">ID of the channel to observe the events in</param>
@@ -91,12 +108,9 @@ public static class Topics
     /// <summary>
     /// Events that can be triggered by this topic:
     /// <list type="bullet">
-    /// <item><see cref="PubSubClient.OnUserTimedOut"/></item>
-    /// <item><see cref="PubSubClient.OnUserBanned"/></item>
-    /// <item><see cref="PubSubClient.OnUserUntimedOut"/></item>
-    /// <item><see cref="PubSubClient.OnUserUnbanned"/></item>
-    /// <item><see cref="PubSubClient.OnAliasRestrictionUpdate"/></item>
+    /// <item><see cref="PubSubClient.OnModerationNotificationMessage"/></item>
     /// </list>
+    /// Authentication: Access token with the scope <c>chat:read</c>
     /// </summary>
     /// <param name="moderatorId">ID of the moderator observing the events</param>
     /// <param name="channelId">ID of the channel to observe the events in</param>
@@ -111,6 +125,7 @@ public static class Topics
     /// <item><see cref="PubSubClient.OnUnbanned"/></item>
     /// <item><see cref="PubSubClient.OnAliasRestrictionUpdate"/></item>
     /// </list>
+    /// Authentication: Access token of the specified <paramref name="userId"/>
     /// </summary>
     /// <param name="userId">ID of the user observing the events</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
@@ -125,6 +140,7 @@ public static class Topics
     /// <item><see cref="PubSubClient.OnPredictionCancelled"/></item>
     /// <item><see cref="PubSubClient.OnPredictionEnded"/></item>
     /// </list>
+    /// Authentication: No authentication required
     /// </summary>
     /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
@@ -137,6 +153,7 @@ public static class Topics
     /// <item><see cref="PubSubClient.OnModUnpinnedMessage"/></item>
     /// <item><see cref="PubSubClient.OnHypeChatMessagePinned"/></item>
     /// </list>
+    /// Authentication: No authentication required
     /// </summary>
     /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
@@ -149,6 +166,7 @@ public static class Topics
     /// <item><see cref="PubSubClient.OnCommercialBreak"/></item>
     /// <item><see cref="PubSubClient.OnViewerCountUpdate"/></item>
     /// </list>
+    /// Authentication: No authentication required
     /// </summary>
     /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
@@ -159,6 +177,7 @@ public static class Topics
     /// <item><see cref="PubSubClient.OnTitleChange"/></item>
     /// <item><see cref="PubSubClient.OnGameChange"/></item>
     /// </list>
+    /// Authentication: No authentication required
     /// </summary>
     /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
@@ -171,6 +190,7 @@ public static class Topics
     /// <item><see cref="PubSubClient.OnUserUnbanned"/></item>
     /// <item><see cref="PubSubClient.OnUserUnbanned"/></item>
     /// </list>
+    /// Authentication: Access token with the scope <c>channel:moderate</c>
     /// </summary>
     /// <param name="userId">ID of the user observing the events</param>
     /// <param name="channelId">ID of the channel to observe the events in</param>
@@ -184,6 +204,7 @@ public static class Topics
     /// <item><see cref="PubSubClient.OnPollCompleted"/></item>
     /// <item><see cref="PubSubClient.OnPollArchived"/></item>
     /// </list>
+    /// Authentication: No authentication required
     /// </summary>
     /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
@@ -193,6 +214,7 @@ public static class Topics
     /// <list type="bullet">
     /// <item><see cref="PubSubClient.OnChannelPointsRedemption"/></item>
     /// </list>
+    /// Authentication: No authentication required
     /// </summary>
     /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
@@ -202,6 +224,7 @@ public static class Topics
     /// <list type="bullet">
     /// <item><see cref="PubSubClient.OnFollow"/></item>
     /// </list>
+    /// Authentication: No authentication required
     /// </summary>
     /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
@@ -211,6 +234,7 @@ public static class Topics
     /// <list type="bullet">
     /// <item><see cref="PubSubClient.OnCommunityMoment"/></item>
     /// </list>
+    /// Authentication: No authentication required
     /// </summary>
     /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
