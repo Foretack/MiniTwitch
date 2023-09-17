@@ -447,7 +447,10 @@ public sealed class PubSubClient : IAsyncDisposable
     private Task OnWsDisconnect()
     {
         Log(LogLevel.Warning, "Disconnected");
-        // TODO: This should cancel PingerTask
+        _pingerToken.Cancel();
+        _pinger.Dispose();
+        Log(LogLevel.Trace, "Pinger task disposed");
+        _pingerToken.Dispose();
         OnDisconnect?.Invoke().StepOver(GetExceptionHandler());
         return Task.CompletedTask;
     }
@@ -455,9 +458,6 @@ public sealed class PubSubClient : IAsyncDisposable
     private async Task OnWsReconnect()
     {
         Log(LogLevel.Information, "Reconnected");
-        _pinger.Dispose();
-        _pingerToken.Cancel();
-        _pingerToken.Dispose();
         _pingerToken = new();
         _pinger = Task.Factory.StartNew(PingerTask, TaskCreationOptions.LongRunning);
         foreach (Topic t in _topics)
