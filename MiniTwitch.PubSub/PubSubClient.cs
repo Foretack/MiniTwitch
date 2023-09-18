@@ -308,7 +308,7 @@ public sealed class PubSubClient : IAsyncDisposable
     private async Task Ping()
     {
         await _ws.SendAsync(_templates.Ping());
-        if (!await _coordinator.WaitFor(WaitableEvents.PONG, TimeSpan.FromSeconds(5)))
+        if (!await _coordinator.WaitFor(WaitableEvents.PONG, TimeSpan.FromSeconds(10)))
             await ReconnectAsync();
     }
 
