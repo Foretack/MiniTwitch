@@ -1659,4 +1659,109 @@ public static class Payloads
           }
         }
         """;
+
+    [Topic("pinned-chat-updates-v1.1234567", MessageTopic.PinnedChatUpdates, typeof(PinnedChatUpdates))]
+    public const string PinnedMessageJson = """
+                {
+            "type":"pin-message",
+            "data":{
+                "id":"3c83ee14-26b4-4bac-b2d0-21fdabb76ebf",
+                "pinned_by":{
+                    "id":"75914536",
+                    "display_name":"CoffeeStainStudiosDevs"
+                },
+                "message":{
+                    "id":"9c74bf2f-315c-42f5-85ac-93a00086a315",
+                    "sender":{
+                        "id":"113390060",
+                        "display_name":"The_Forlorn_Knight",
+                        "chat_color":"#8A2BE2"
+                    },
+                    "content":{
+                        "text":"QUESTION What was the team's overall impression from the feedback you got for AGS?",
+                        "fragments":[
+                            {
+                                "text":"QUESTION What was the team's overall impression from the feedback you got for AGS?"
+                            }
+                        ]
+                    },
+                    "type":"MOD",
+                    "starts_at":1687879673,
+                    "updated_at":1687879673,
+                    "ends_at":1687880873,
+                    "sent_at":1687879586
+                }
+            }
+        }
+        """;
+
+    [Topic("pinned-chat-updates-v1.1234567", MessageTopic.PinnedChatUpdates, typeof(PinnedChatUpdates))]
+    public const string UnPinnedMessageJson = """
+                {
+            "type":"unpin-message",
+            "data":{
+                "id":"3c83ee14-26b4-4bac-b2d0-21fdabb76ebf",
+                "unpinned_by":{
+                    "id":"75914536",
+                    "display_name":"CoffeeStainStudiosDevs"
+                },
+                "reason":"UNPIN"
+            }
+        }
+        """;
+
+    [Topic("pinned-chat-updates-v1.1234567", MessageTopic.PinnedChatUpdates, typeof(PinnedChatUpdates))]
+    public const string PinnedMessageUpdateJson = """
+                {
+            "type":"update-message",
+            "data":{
+                "id":"ad837f95-2f7b-4440-b6d7-6d020652498c",
+                "ends_at":1687880180,
+                "updated_at":1687880120
+            }
+        }
+        """;
+
+    [Topic("pinned-chat-updates-v1.1234567", MessageTopic.PinnedChatUpdates, typeof(PinnedChatUpdates))]
+    public const string HypeChatPinnedMessageJson = """
+                {
+            "type":"pin-message",
+            "data":{
+                "id":"586a6519-550c-42b0-bc84-e58f17d29104",
+                "pinned_by":{
+                    "id":"24253971",
+                    "display_name":"RadonBleu"
+                },
+                "message":{
+                    "id":"586a6519-550c-42b0-bc84-e58f17d29104",
+                    "sender":{
+                        "id":"24253971",
+                        "display_name":"RadonBleu",
+                        "chat_color":"#0000FF"
+                    },
+                    "content":{
+                        "text":"How are you enjoying Wreaclast Wrugby?",
+                        "fragments":[
+                            {
+                                "text":"How are you enjoying Wreaclast Wrugby?"
+                            }
+                        ]
+                    },
+                    "type":"PAID",
+                    "starts_at":1692390499,
+                    "updated_at":1692390499,
+                    "ends_at":1692390649,
+                    "sent_at":1692390499,
+                    "metadata":{
+                        "amount":"500",
+                        "canonical-amount":"500",
+                        "currency":"USD",
+                        "exponent":"2",
+                        "isSystemMessage":"false",
+                        "level":"TWO"
+                    }
+                }
+            }
+        }
+        """;
 }
