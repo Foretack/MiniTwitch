@@ -40,7 +40,7 @@ public interface IPollUpdated
     /// </summary>
     Poll.PollVotes Votes { get; }
     /// <summary>
-    /// Total bits/points that have been used
+    /// Total points that have been used
     /// </summary>
     Poll.PollTokens Tokens { get; }
     /// <summary>
@@ -55,11 +55,6 @@ public interface IPollUpdated
     /// The data type and use of this property is unknown
     /// </summary>
     object? TopContributor { get; }
-    /// <summary>
-    /// The user that spent the most amount of bits in voting
-    /// <para>The data type of this property is unknown</para>
-    /// </summary>
-    object? TopBitsContributor { get; }
     /// <summary>
     /// The user that spent the most amount of channel points in voting
     /// <para>The data type of this property is unknown</para>

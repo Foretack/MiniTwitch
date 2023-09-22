@@ -70,9 +70,6 @@ public readonly struct Poll : IPollCreated, IPollUpdated, IPollCompleted
     /// <inheritdoc cref="IPollUpdated.TopContributor"/>
     [JsonPropertyName("top_contributor")]
     public object? TopContributor { get; init; }
-    /// <inheritdoc cref="IPollUpdated.TopBitsContributor"/>
-    [JsonPropertyName("top_bits_contributor")]
-    public object? TopBitsContributor { get; init; }
     /// <inheritdoc cref="IPollUpdated.TopChannelPointsContributor"/>
     [JsonPropertyName("top_channel_points_contributor")]
     public object? TopChannelPointsContributor { get; init; }
@@ -157,11 +154,6 @@ public readonly struct Poll : IPollCreated, IPollUpdated, IPollCompleted
         [JsonPropertyName("subscriber_multiplier")]
         public Setting SubscriberMultiplier { get; init; }
         /// <summary>
-        /// Whether the poll requires users to vote with bits
-        /// </summary>
-        [JsonPropertyName("bits_votes")]
-        public CostSetting BitsVotes { get; init; }
-        /// <summary>
         /// Whether the poll requires users to vote with channel points
         /// </summary>
         [JsonPropertyName("channel_points_votes")]
@@ -169,15 +161,10 @@ public readonly struct Poll : IPollCreated, IPollUpdated, IPollCompleted
 
     }
     /// <summary>
-    /// Contains total bits/channel points used in a poll
+    /// Contains total channel points used in a poll
     /// </summary>
     public readonly struct PollTokens
     {
-        /// <summary>
-        /// Total amount of bits used
-        /// </summary>
-        [JsonPropertyName("bits")]
-        public int Bits { get; init; }
         /// <summary>
         /// Total amount of channel points spent
         /// </summary>
@@ -195,11 +182,6 @@ public readonly struct Poll : IPollCreated, IPollUpdated, IPollCompleted
         /// </summary>
         [JsonPropertyName("total")]
         public int Total { get; init; }
-        /// <summary>
-        /// Total bits used
-        /// </summary>
-        [JsonPropertyName("bits")]
-        public int Bits { get; init; }
         /// <summary>
         /// Total channel points spent
         /// </summary>
