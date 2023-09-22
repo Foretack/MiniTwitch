@@ -309,7 +309,10 @@ public sealed class PubSubClient : IAsyncDisposable
     {
         await _ws.SendAsync(_templates.Ping());
         if (!await _coordinator.WaitFor(WaitableEvents.PONG, TimeSpan.FromSeconds(10)))
+        {
+            Log(LogLevel.Error, "PONG not received within the allowed time. Reconnecting...");
             await ReconnectAsync();
+        }
     }
 
     /// <summary>
@@ -371,7 +374,7 @@ public sealed class PubSubClient : IAsyncDisposable
     {
         if (!_topics.Contains(topic))
         {
-            Log(LogLevel.Warning, "Cannot unlisten to topic {TopicKey} because the client is not listening to it", topic.Key);
+            Log(LogLevel.Error, "Cannot unlisten to topic {TopicKey} because the client is not listening to it", topic.Key);
             return new() { Error = ResponseError.None, TopicKey = topic.Key };
         }
 
