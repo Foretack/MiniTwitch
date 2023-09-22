@@ -27,7 +27,7 @@ internal class TopicAttribute : Attribute
         data = new
         {
             topic = TopicName,
-            message = Regex.Replace(fieldInfo.GetValue(null)!.ToString(), "\t|\r|\n", string.Empty)
+            message = Regex.Replace(fieldInfo.GetValue(null)!.ToString()!, "\t|\r|\n", string.Empty)
         }
     }, options: new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, WriteIndented = false });
 }
