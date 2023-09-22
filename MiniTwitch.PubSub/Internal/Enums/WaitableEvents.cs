@@ -8,5 +8,6 @@ internal enum WaitableEvents
     ERR_BADAUTH,
     ERR_SERVER,
     ERR_BADTOPIC,
+    ERR_TOO_MANY_TOPICS,
     PONG
 }

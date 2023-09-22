@@ -30,11 +30,11 @@ public enum ResponseError
     /// </summary>
     ERR_BADTOPIC,
     /// <summary>
+    /// Received when trying to listen to more topics than the maximum amount (100)
+    /// </summary>
+    ERR_TOO_MANY_TOPICS,
+    /// <summary>
     /// Received when Twitch fails to respond to the message within the allowed time
     /// </summary>
     Response_Timeout,
-    /// <summary>
-    /// Received when trying to listen to more topics than the maximum amount (100)
-    /// </summary>
-    ERR_TOO_MANY_TOPICS
 }

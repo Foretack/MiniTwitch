@@ -267,7 +267,7 @@ public sealed class PubSubClient : IAsyncDisposable
     private readonly WaitableEvents[] _topicResponses = new[]
     {
         WaitableEvents.ERR_BADAUTH, WaitableEvents.Success, WaitableEvents.ERR_BADMESSAGE,
-        WaitableEvents.ERR_BADTOPIC, WaitableEvents.ERR_SERVER
+        WaitableEvents.ERR_BADTOPIC, WaitableEvents.ERR_SERVER, WaitableEvents.ERR_TOO_MANY_TOPICS
     };
     private readonly AsyncEventCoordinator<WaitableEvents> _coordinator = new();
     private readonly HashSet<Topic> _topics = new(10);
