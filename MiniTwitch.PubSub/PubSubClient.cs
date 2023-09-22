@@ -145,12 +145,12 @@ public sealed class PubSubClient : IAsyncDisposable
     /// Invoked when a low-trusted chat message is treated
     /// <para>Requires topic: <see cref="Topics.LowTrustUsers(long, long, string?)"/></para>
     /// </summary>
-    public event Func<ChannelId, UserId, ILowTrustTreatmentMessage, ValueTask> OnLowTrustTreatmentUpdate = default!;
+    public event Func<UserId, ChannelId, ILowTrustTreatmentMessage, ValueTask> OnLowTrustTreatmentUpdate = default!;
     /// <summary>
     /// Invoked when a low-trusted chat message is sent
     /// <para>Requires topic: <see cref="Topics.LowTrustUsers(long, long, string?)"/></para>
     /// </summary>
-    public event Func<ChannelId, UserId, ILowTrustChatMessage, ValueTask> OnLowTrustChatMessage = default!;
+    public event Func<UserId, ChannelId, ILowTrustChatMessage, ValueTask> OnLowTrustChatMessage = default!;
     /// <summary>
     /// Invoked when a user's message held by AutoMod has been approved or denied
     /// <para>Requires topic: <see cref="Topics.ModerationNotifications(long, long, string?)"/></para>
