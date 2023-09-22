@@ -1208,4 +1208,455 @@ public static class Payloads
             }
         }
         """;
+
+    [Topic("predictions-channel-v1.1234567", MessageTopic.ChannelPredictions, typeof(ChannelPredictions))]
+    public const string PredictionStartJson = """
+        {
+          "type": "event-created",
+          "data": {
+            "timestamp": "2022-06-01T11:27:46.385864171Z",
+            "event": {
+              "id": "0974f4d0-d6e7-45fe-8610-d040dbd015b7",
+              "channel_id": "128577125",
+              "created_at": "2022-06-01T11:27:46.37270505Z",
+              "created_by": {
+                "type": "USER",
+                "user_id": "99631238",
+                "user_display_name": "zneix",
+                "extension_client_id": null
+              },
+              "ended_at": null,
+              "ended_by": null,
+              "locked_at": null,
+              "locked_by": null,
+              "outcomes": [
+                {
+                  "id": "7b87a5fa-7870-448b-b895-30078ceb0fbe",
+                  "color": "BLUE",
+                  "title": "yesidothinkso",
+                  "total_points": 0,
+                  "total_users": 0,
+                  "top_predictors": [],
+                  "badge": {
+                    "version": "blue-1",
+                    "set_id": "predictions"
+                  }
+                },
+                {
+                  "id": "c6bbeb8a-da4c-4d34-92f0-c09a3cebade6",
+                  "color": "PINK",
+                  "title": "noidontthinkso",
+                  "total_points": 0,
+                  "total_users": 0,
+                  "top_predictors": [],
+                  "badge": {
+                    "version": "pink-2",
+                    "set_id": "predictions"
+                  }
+                }
+              ],
+              "prediction_window_seconds": 90,
+              "status": "ACTIVE",
+              "title": "will Kate get to top 6 now?",
+              "winning_outcome_id": null
+            }
+          }
+        }
+        """;
+
+    [Topic("predictions-channel-v1.1234567", MessageTopic.ChannelPredictions, typeof(ChannelPredictions))]
+    public const string PredictionUpdateJson = """
+        {
+          "type": "event-updated",
+          "data": {
+            "timestamp": "2022-06-01T11:27:55.184178898Z",
+            "event": {
+              "id": "0974f4d0-d6e7-45fe-8610-d040dbd015b7",
+              "channel_id": "128577125",
+              "created_at": "2022-06-01T11:27:46.37270505Z",
+              "created_by": {
+                "type": "USER",
+                "user_id": "99631238",
+                "user_display_name": "zneix",
+                "extension_client_id": null
+              },
+              "ended_at": null,
+              "ended_by": null,
+              "locked_at": null,
+              "locked_by": null,
+              "outcomes": [
+                {
+                  "id": "7b87a5fa-7870-448b-b895-30078ceb0fbe",
+                  "color": "BLUE",
+                  "title": "yesidothinkso",
+                  "total_points": 0,
+                  "total_users": 1,
+                  "top_predictors": [
+                    {
+                      "id": "c54f64ead1036aba83821e7b1d429344bb781b37fea9f814bcac4f09e84833d8",
+                      "event_id": "0974f4d0-d6e7-45fe-8610-d040dbd015b7",
+                      "outcome_id": "7b87a5fa-7870-448b-b895-30078ceb0fbe",
+                      "channel_id": "128577125",
+                      "points": 0,
+                      "predicted_at": "2022-06-01T11:27:54.112041872Z",
+                      "updated_at": "2022-06-01T11:27:54.112041872Z",
+                      "user_id": "99631238",
+                      "result": null,
+                      "user_display_name": "zneix"
+                    }
+                  ],
+                  "badge": {
+                    "version": "blue-1",
+                    "set_id": "predictions"
+                  }
+                },
+                {
+                  "id": "c6bbeb8a-da4c-4d34-92f0-c09a3cebade6",
+                  "color": "PINK",
+                  "title": "noidontthinkso",
+                  "total_points": 0,
+                  "total_users": 0,
+                  "top_predictors": [],
+                  "badge": {
+                    "version": "pink-2",
+                    "set_id": "predictions"
+                  }
+                }
+              ],
+              "prediction_window_seconds": 90,
+              "status": "ACTIVE",
+              "title": "will Kate get to top 6 now?",
+              "winning_outcome_id": null
+            }
+          }
+        }
+        """;
+
+    [Topic("predictions-channel-v1.1234567", MessageTopic.ChannelPredictions, typeof(ChannelPredictions))]
+    public const string PredictionWindowClosedJson = """
+        {
+          "type": "event-updated",
+          "data": {
+            "timestamp": "2022-06-01T11:29:16.339244813Z",
+            "event": {
+              "id": "0974f4d0-d6e7-45fe-8610-d040dbd015b7",
+              "channel_id": "128577125",
+              "created_at": "2022-06-01T11:27:46.37270505Z",
+              "created_by": {
+                "type": "USER",
+                "user_id": "99631238",
+                "user_display_name": "zneix",
+                "extension_client_id": null
+              },
+              "ended_at": null,
+              "ended_by": null,
+              "locked_at": "2022-06-01T11:29:16.330204166Z",
+              "locked_by": null,
+              "outcomes": [
+                {
+                  "id": "7b87a5fa-7870-448b-b895-30078ceb0fbe",
+                  "color": "BLUE",
+                  "title": "yesidothinkso",
+                  "total_points": 2000,
+                  "total_users": 2,
+                  "top_predictors": [
+                    {
+                      "id": "bc4842b084a39904f7cb01e9ef1ed4fa5515e7e297090da3db12520fb4169fde",
+                      "event_id": "0974f4d0-d6e7-45fe-8610-d040dbd015b7",
+                      "outcome_id": "7b87a5fa-7870-448b-b895-30078ceb0fbe",
+                      "channel_id": "128577125",
+                      "points": 2000,
+                      "predicted_at": "2022-06-01T11:28:09.596775238Z",
+                      "updated_at": "2022-06-01T11:28:09.596775238Z",
+                      "user_id": "162462751",
+                      "result": null,
+                      "user_display_name": "jay_d_j"
+                    },
+                    {
+                      "id": "c54f64ead1036aba83821e7b1d429344bb781b37fea9f814bcac4f09e84833d8",
+                      "event_id": "0974f4d0-d6e7-45fe-8610-d040dbd015b7",
+                      "outcome_id": "7b87a5fa-7870-448b-b895-30078ceb0fbe",
+                      "channel_id": "128577125",
+                      "points": 0,
+                      "predicted_at": "2022-06-01T11:27:54.112041872Z",
+                      "updated_at": "2022-06-01T11:27:54.112041872Z",
+                      "user_id": "99631238",
+                      "result": null,
+                      "user_display_name": "zneix"
+                    }
+                  ],
+                  "badge": {
+                    "version": "blue-1",
+                    "set_id": "predictions"
+                  }
+                },
+                {
+                  "id": "c6bbeb8a-da4c-4d34-92f0-c09a3cebade6",
+                  "color": "PINK",
+                  "title": "noidontthinkso",
+                  "total_points": 150,
+                  "total_users": 1,
+                  "top_predictors": [
+                    {
+                      "id": "7496421c970187cd190efc78b371083a05be88d2b79f2d18ad3d461aed0a1626",
+                      "event_id": "0974f4d0-d6e7-45fe-8610-d040dbd015b7",
+                      "outcome_id": "c6bbeb8a-da4c-4d34-92f0-c09a3cebade6",
+                      "channel_id": "128577125",
+                      "points": 150,
+                      "predicted_at": "2022-06-01T11:28:38.645752724Z",
+                      "updated_at": "2022-06-01T11:28:38.645752724Z",
+                      "user_id": "694498189",
+                      "result": null,
+                      "user_display_name": "ShoZillaa"
+                    }
+                  ],
+                  "badge": {
+                    "version": "pink-2",
+                    "set_id": "predictions"
+                  }
+                }
+              ],
+              "prediction_window_seconds": 90,
+              "status": "LOCKED",
+              "title": "will Kate get to top 6 now?",
+              "winning_outcome_id": null
+            }
+          }
+        }
+        """;
+
+    [Topic("predictions-channel-v1.1234567", MessageTopic.ChannelPredictions, typeof(ChannelPredictions))]
+    public const string PredictionEndJson = """
+                {
+          "type": "event-updated",
+          "data": {
+            "timestamp": "2022-06-01T11:31:04.596058231Z",
+            "event": {
+              "id": "0974f4d0-d6e7-45fe-8610-d040dbd015b7",
+              "channel_id": "128577125",
+              "created_at": "2022-06-01T11:27:46.37270505Z",
+              "created_by": {
+                "type": "USER",
+                "user_id": "99631238",
+                "user_display_name": "zneix",
+                "extension_client_id": null
+              },
+              "ended_at": "2022-06-01T11:31:03.70809685Z",
+              "ended_by": {
+                "type": "USER",
+                "user_id": "99631238",
+                "user_display_name": "zneix",
+                "extension_client_id": null
+              },
+              "locked_at": "2022-06-01T11:29:16.330204166Z",
+              "locked_by": null,
+              "outcomes": [
+                {
+                  "id": "7b87a5fa-7870-448b-b895-30078ceb0fbe",
+                  "color": "BLUE",
+                  "title": "yesidothinkso",
+                  "total_points": 2000,
+                  "total_users": 2,
+                  "top_predictors": [
+                    {
+                      "id": "bc4842b084a39904f7cb01e9ef1ed4fa5515e7e297090da3db12520fb4169fde",
+                      "event_id": "0974f4d0-d6e7-45fe-8610-d040dbd015b7",
+                      "outcome_id": "7b87a5fa-7870-448b-b895-30078ceb0fbe",
+                      "channel_id": "128577125",
+                      "points": 2000,
+                      "predicted_at": "2022-06-01T11:28:09.596775238Z",
+                      "updated_at": "2022-06-01T11:28:09.596775238Z",
+                      "user_id": "162462751",
+                      "result": {
+                        "type": "WIN",
+                        "points_won": 2150,
+                        "is_acknowledged": false
+                      },
+                      "user_display_name": "jay_d_j"
+                    },
+                    {
+                      "id": "c54f64ead1036aba83821e7b1d429344bb781b37fea9f814bcac4f09e84833d8",
+                      "event_id": "0974f4d0-d6e7-45fe-8610-d040dbd015b7",
+                      "outcome_id": "7b87a5fa-7870-448b-b895-30078ceb0fbe",
+                      "channel_id": "128577125",
+                      "points": 0,
+                      "predicted_at": "2022-06-01T11:27:54.112041872Z",
+                      "updated_at": "2022-06-01T11:27:54.112041872Z",
+                      "user_id": "99631238",
+                      "result": {
+                        "type": "WIN",
+                        "points_won": 0,
+                        "is_acknowledged": false
+                      },
+                      "user_display_name": "zneix"
+                    }
+                  ],
+                  "badge": {
+                    "version": "blue-1",
+                    "set_id": "predictions"
+                  }
+                },
+                {
+                  "id": "c6bbeb8a-da4c-4d34-92f0-c09a3cebade6",
+                  "color": "PINK",
+                  "title": "noidontthinkso",
+                  "total_points": 150,
+                  "total_users": 1,
+                  "top_predictors": [
+                    {
+                      "id": "7496421c970187cd190efc78b371083a05be88d2b79f2d18ad3d461aed0a1626",
+                      "event_id": "0974f4d0-d6e7-45fe-8610-d040dbd015b7",
+                      "outcome_id": "c6bbeb8a-da4c-4d34-92f0-c09a3cebade6",
+                      "channel_id": "128577125",
+                      "points": 150,
+                      "predicted_at": "2022-06-01T11:28:38.645752724Z",
+                      "updated_at": "2022-06-01T11:28:38.645752724Z",
+                      "user_id": "694498189",
+                      "result": {
+                        "type": "LOSE",
+                        "points_won": null,
+                        "is_acknowledged": false
+                      },
+                      "user_display_name": "ShoZillaa"
+                    }
+                  ],
+                  "badge": {
+                    "version": "pink-2",
+                    "set_id": "predictions"
+                  }
+                }
+              ],
+              "prediction_window_seconds": 90,
+              "status": "RESOLVED",
+              "title": "will Kate get to top 6 now?",
+              "winning_outcome_id": "7b87a5fa-7870-448b-b895-30078ceb0fbe"
+            }
+          }
+        }
+        """;
+
+    [Topic("predictions-channel-v1.1234567", MessageTopic.ChannelPredictions, typeof(ChannelPredictions))]
+    public const string PredictionLockedJson = """
+                {
+          "type": "event-updated",
+          "data": {
+            "timestamp": "2022-06-01T15:23:28.037036254Z",
+            "event": {
+              "id": "42186f02-c865-416e-afa4-aaf839b883e8",
+              "channel_id": "128577125",
+              "created_at": "2022-06-01T15:23:05.529726795Z",
+              "created_by": {
+                "type": "USER",
+                "user_id": "99631238",
+                "user_display_name": "zneix",
+                "extension_client_id": null
+              },
+              "ended_at": null,
+              "ended_by": null,
+              "locked_at": "2022-06-01T15:23:28.027906055Z",
+              "locked_by": {
+                "type": "USER",
+                "user_id": "99631238",
+                "user_display_name": "zneix",
+                "extension_client_id": null
+              },
+              "outcomes": [
+                {
+                  "id": "99d1bff7-118a-4e1c-aeff-308890183779",
+                  "color": "BLUE",
+                  "title": "yesidothinkso",
+                  "total_points": 0,
+                  "total_users": 0,
+                  "top_predictors": [],
+                  "badge": {
+                    "version": "blue-1",
+                    "set_id": "predictions"
+                  }
+                },
+                {
+                  "id": "35e2ddf1-466d-444c-aed8-bad4955dd003",
+                  "color": "PINK",
+                  "title": "noidontthinkso",
+                  "total_points": 0,
+                  "total_users": 0,
+                  "top_predictors": [],
+                  "badge": {
+                    "version": "pink-2",
+                    "set_id": "predictions"
+                  }
+                }
+              ],
+              "prediction_window_seconds": 90,
+              "status": "LOCKED",
+              "title": "FeelsDankMan",
+              "winning_outcome_id": null
+            }
+          }
+        }
+        """;
+
+    [Topic("predictions-channel-v1.1234567", MessageTopic.ChannelPredictions, typeof(ChannelPredictions))]
+    public const string PredictionCancelledJson = """
+                {
+          "type": "event-updated",
+          "data": {
+            "timestamp": "2022-06-01T15:32:19.547856011Z",
+            "event": {
+              "id": "42186f02-c865-416e-afa4-aaf839b883e8",
+              "channel_id": "128577125",
+              "created_at": "2022-06-01T15:23:05.529726795Z",
+              "created_by": {
+                "type": "USER",
+                "user_id": "99631238",
+                "user_display_name": "zneix",
+                "extension_client_id": null
+              },
+              "ended_at": "2022-06-01T15:32:16.800174675Z",
+              "ended_by": {
+                "type": "USER",
+                "user_id": "99631238",
+                "user_display_name": "zneix",
+                "extension_client_id": null
+              },
+              "locked_at": "2022-06-01T15:23:28.027906055Z",
+              "locked_by": {
+                "type": "USER",
+                "user_id": "99631238",
+                "user_display_name": "zneix",
+                "extension_client_id": null
+              },
+              "outcomes": [
+                {
+                  "id": "99d1bff7-118a-4e1c-aeff-308890183779",
+                  "color": "BLUE",
+                  "title": "yesidothinkso",
+                  "total_points": 0,
+                  "total_users": 0,
+                  "top_predictors": [],
+                  "badge": {
+                    "version": "blue-1",
+                    "set_id": "predictions"
+                  }
+                },
+                {
+                  "id": "35e2ddf1-466d-444c-aed8-bad4955dd003",
+                  "color": "PINK",
+                  "title": "noidontthinkso",
+                  "total_points": 0,
+                  "total_users": 0,
+                  "top_predictors": [],
+                  "badge": {
+                    "version": "pink-2",
+                    "set_id": "predictions"
+                  }
+                }
+              ],
+              "prediction_window_seconds": 90,
+              "status": "CANCELED",
+              "title": "FeelsDankMan",
+              "winning_outcome_id": null
+            }
+          }
+        }
+        """;
 }
