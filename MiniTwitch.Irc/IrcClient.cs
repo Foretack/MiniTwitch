@@ -142,7 +142,7 @@ public sealed class IrcClient : IAsyncDisposable
 
     #region Fields
     private readonly AsyncEventCoordinator<WaitableEvents> _coordinator = new();
-    private readonly List<string> _moderated = new();
+    private readonly HashSet<string> _moderated = new();
     private readonly RateLimitManager _manager;
     private readonly WebSocketClient _ws;
     private Uri _targetUrl = default!;
@@ -655,7 +655,7 @@ public sealed class IrcClient : IAsyncDisposable
             case IrcCommand.USERSTATE or IrcCommand.GLOBALUSERSTATE:
                 Userstate state = new(data);
                 if (state.Self.IsMod && !_moderated.Contains(state.Channel.Name))
-                    _moderated.Add(state.Channel.Name);
+                    _ = _moderated.Add(state.Channel.Name);
 
                 OnUserstate?.Invoke(state).StepOver(this.ExceptionHandler);
                 break;
