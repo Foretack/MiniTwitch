@@ -152,7 +152,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
 
                 //vip
                 case 335:
-                    vip = TagHelper.GetBool(tagValue);
+                    vip = true;
                     break;
 
                 //bits
