@@ -115,7 +115,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
         string currency = string.Empty;
         int exponent = 0;
         bool isSystemMessage = false;
-        string level = string.Empty;
+        HypeChatLevel level = HypeChatLevel.None;
 
         // IBasicChannel
         string channelName = memory.Span.FindChannel();
@@ -252,7 +252,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
 
                 //pinned-chat-paid-level
                 case 2139:
-                    level = TagHelper.GetString(tagValue, intern: true);
+                    level = TagHelper.GetEnum<HypeChatLevel>(tagValue);
                     break;
 
                 //pinned-chat-paid-amount

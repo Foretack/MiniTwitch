@@ -1,4 +1,6 @@
-﻿namespace MiniTwitch.Irc.Models;
+﻿using MiniTwitch.Irc.Enums;
+
+namespace MiniTwitch.Irc.Models;
 
 /// <summary>
 /// Represents data about HypeChat messages
@@ -40,9 +42,15 @@ public readonly struct HypeChat
     /// <para>Example: <c>pinned-chat-paid-level=ONE</c></para>
     /// <para>This tag is not officially documented</para>
     /// </summary>
-    public string Level { get; init; }
+    public HypeChatLevel Level { get; init; }
     /// <summary>
     /// Whether the message is a HypeChat message or not
     /// </summary>
     public bool HasContent => this.PaidAmount != 0;
+    /// <summary>
+    /// Gets the actual amount of money donated in the <see cref="PaymentCurrency"/> currency
+    /// <para><c>ActualAmount = PaidAmount * 10^(-Exponent)</c></para>
+    /// </summary>
+    /// <returns></returns>
+    public double GetActualAmount() => this.PaidAmount * Math.Pow(10, -this.Exponent);
 }
