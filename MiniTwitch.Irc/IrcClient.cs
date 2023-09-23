@@ -142,6 +142,10 @@ public sealed class IrcClient : IAsyncDisposable
 
     #region Fields
     private readonly AsyncEventCoordinator<WaitableEvents> _coordinator = new();
+    private readonly WaitableEvents[] _channelJoinEvents = new[] 
+    {
+        WaitableEvents.JoinedChannel, WaitableEvents.ChannelSuspended
+    };
     private readonly HashSet<string> _moderated = new();
     private readonly RateLimitManager _manager;
     private readonly WebSocketClient _ws;
@@ -428,7 +432,16 @@ public sealed class IrcClient : IAsyncDisposable
         }
 
         await _ws.SendAsync($"JOIN #{channel}", cancellationToken: cancellationToken);
-        return await _coordinator.WaitFor(WaitableEvents.JoinedChannel, TimeSpan.FromSeconds(10), cancellationToken);
+        try
+        {
+            WaitableEvents ev = await _coordinator.WaitForAny(_channelJoinEvents, TimeSpan.FromSeconds(10), cancellationToken);
+            return ev == WaitableEvents.JoinedChannel;
+        }
+        catch
+        {
+            Log(LogLevel.Error, "Failed to join channel #{channel}: Timed out. (Does the channel exist?)", channel);
+            return false;
+        }
     }
 
     /// <summary>
@@ -649,9 +662,14 @@ public sealed class IrcClient : IAsyncDisposable
             case IrcCommand.NOTICE:
                 Notice notice = new(data);
                 if (notice.Type == NoticeType.Msg_channel_suspended)
+                {
                     Log(LogLevel.Error, "Tried joining suspended channel: #{channel}", notice.Channel.Name);
+                    _coordinator.ReleaseIfLocked(WaitableEvents.ChannelSuspended);
+                }
                 else if (notice.Type == NoticeType.Bad_auth)
+                {
                     Log(LogLevel.Critical, "Authentication failed: {message}", notice.SystemMessage);
+                }
 
                 OnNotice?.Invoke(notice).StepOver(this.ExceptionHandler);
                 break;

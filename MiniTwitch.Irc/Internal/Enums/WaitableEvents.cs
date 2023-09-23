@@ -4,4 +4,5 @@ internal enum WaitableEvents
 {
     Connected,
     JoinedChannel,
+    ChannelSuspended
 }
