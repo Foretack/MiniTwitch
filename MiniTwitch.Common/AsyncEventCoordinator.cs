@@ -52,12 +52,15 @@ public class AsyncEventCoordinator<TEnum> : IDisposable
     {
         TEnum[] valuesArr = values.ToArray();
         var tasks = new Task<bool>[valuesArr.Length];
+        CancellationToken token = new(false);
+        CancellationTokenSource tokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, cancellationToken);
         for (int i = 0; i < valuesArr.Length; i++)
         {
-            tasks[i] = WaitFor(valuesArr[i], timeout, cancellationToken);
+            tasks[i] = WaitFor(valuesArr[i], timeout, tokenSource.Token);
         }
 
         _ = await Task.WhenAny(tasks);
+        tokenSource.Cancel();
         for (int i = 0; i < tasks.Length; i++)
         {
             if (tasks[i].IsCompleted && tasks[i].Result == true)

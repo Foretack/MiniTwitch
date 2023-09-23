@@ -1,10 +1,10 @@
-<img src="https://media.occluder.space/f/banner.png" alt="MiniTwitch" />
-
 # About
 
 MiniTwitch is a collection of Twitch libraries for NET Core 6.0+ with the goal of providing convenient asynchronous APIs for Twitch services and care for performance and memory.
 
-Only the IRC component is curently implemented, other components for remaining Twitch services are still in development (Helix, PubSub, EventSub). 🛠
+Only the IRC and PubSub components are curently implemented, other components for remaining Twitch services are still in development (Helix, EventSub). 🛠
+
+****
 
 # MiniTwitch.Irc
 
@@ -78,6 +78,83 @@ public class Bot
     }
 }
 ```
+****
+
+# MiniTwitch.PubSub
+
+MiniTwitch.PubSub is the component responsible for interaction with the Twitch PubSub service. The usage of this package revolves around the `PubSubClient`  class and the `Topics` static class.
+
+## Features
+
+* Package code is fully documented with XML comments
+* Exposes documented & undocumented PubSub topics
+* Uses `System.Text.Json` under the hood; Fast, efficient and without unnecessary dependencies
+* Exposes events with `Func<T1, .., ValueTask>` delegates, making asynchronous handling very easy
+* Automatically reconnects upon disconnection & automatically re-listens to topics
+* Simplistic; Events have clear descriptions on what they do and how to get them invoked
+* Multi-token support; You're not limited to 1 auth token per `PubSubClient`
+* Comes with a built-in logger, which can be disabled or replaced easily
+* Events return the topic parameters as `ChannelId` or `UserId`, making them easily distinguishable
+
+## Getting Started
+
+here is an example usage of the `PubSubClient` class:
+
+```c#
+using MiniTwitch.PubSub;
+using MiniTwitch.PubSub.Interfaces;
+using MiniTwitch.PubSub.Models;
+using MiniTwitch.PubSub.Payloads;
+
+namespace MiniTwitchExample;
+
+public class Program
+{
+    static async Task Main()
+    {
+        PubSubClient client = new("my token");
+
+        await client.ConnectAsync();
+        var playbackResponse = await client.ListenTo(Topics.VideoPlayback(36175310));
+        if (playbackResponse.IsSuccess)
+            Console.WriteLine($"Listened to {playbackResponse.TopicKey} successfully!");
+
+        var responses =  await client.ListenTo(Topics.Following(783267696) | Topics.ChatroomsUser(754250938, "a different token"));
+        foreach (var response in responses)
+        {
+            if (!response.IsSuccess)
+                Console.WriteLine($"Failed to listen to {response.TopicKey}! Error: {response.Error}");
+        }
+
+        client.OnStreamUp += OnStreamUp;
+        client.OnFollow += OnFollow;
+        client.OnTimedOut += OnTimedOut;
+
+        _ = Console.ReadLine();
+    }
+
+    private static ValueTask OnStreamUp(ChannelId channelId, IStreamUp stream)
+    {
+        Console.WriteLine($"Channel ID {channelId} just went live! (Stream delay: {stream.PlayDelay})");
+        return ValueTask.CompletedTask;
+    }
+
+    private static ValueTask OnFollow(ChannelId channelId, Follower follower)
+    {
+        Console.WriteLine($"{follower.Name} just followed you!");
+        return ValueTask.CompletedTask;
+    }
+
+    private static ValueTask OnTimedOut(UserId userId, ITimeOutData timeout)
+    {
+        Console.WriteLine(
+            $"Your other account (ID: {userId}) has been timed out for {timeout.ExpiresInMs}ms in channel ID {timeout.ChannelId}");
+        return ValueTask.CompletedTask;
+    }
+}
+```
+
+****
 
 ### Subscribing to events
 
@@ -108,17 +185,26 @@ Note that you cannot unsubscribe from events if you used anonymous functions.
 
 Read more about event subscriptions [here](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/events/how-to-subscribe-to-and-unsubscribe-from-events)
 
-## Installation
-
 ****
 
-You can add this package to your project by searching for it with the package manager, or by using the NuGet cli tool:
+## Installation
+
+You can add the packages to your project by searching for them with the package manager, or by using the NuGet cli tool:
 
 ```c#
 Install-Package MiniTwitch.Irc
 ```
+```c#
+Install-Package MiniTwitch.PubSub
+```
 
 ## Dependencies
 
-1. [Microsoft.Extensions.Logging](https://www.nuget.org/packages/Microsoft.Extensions.Logging/)
-2. [MiniTwitch.Common](https://www.nuget.org/packages/MiniTwitch.Common/)
+MiniTwitch.Common:
+- [Microsoft.Extensions.Logging](https://www.nuget.org/packages/Microsoft.Extensions.Logging/)
+
+MiniTwitch.Irc:
+- [MiniTwitch.Common](https://www.nuget.org/packages/MiniTwitch.Common/)
+
+MiniTwitch.PubSub:
+- [MiniTwitch.Common](https://www.nuget.org/packages/MiniTwitch.Common/)
