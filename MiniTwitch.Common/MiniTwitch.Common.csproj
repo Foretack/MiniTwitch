@@ -4,7 +4,8 @@
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
       <PackageId>MiniTwitch.Common</PackageId>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-      <PackageVersion>1.1.1</PackageVersion>
+      <PackageVersion>1.1.2</PackageVersion>
+      <Version>1.1.2</Version>
       <ImplicitUsings>enable</ImplicitUsings>
       <Nullable>enable</Nullable>
       <Title>MiniTwitch.Common</Title>
@@ -14,13 +15,16 @@
       <RepositoryType>git</RepositoryType>
       <PackageReleaseNotes></PackageReleaseNotes>
       <license>MIT</license>
-      <Version>1.1.1</Version>
       <PackageLicenseFile>LICENSE</PackageLicenseFile>
-      <PackageIconUrl>https://media.occluder.space/f/common.png</PackageIconUrl>
+      <PackageIcon>icon256.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="..\icon256.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
