@@ -247,7 +247,7 @@ public sealed class IrcClient : IAsyncDisposable
         foreach (string channel in this.JoinedChannels.Select(c => c.Name))
         {
             bool res = await JoinChannel(channel);
-            Log(LogLevel.Information, $"{(res ? "Rejoined" : "Failed to rejoin")} channel: {{channel}}", channel);
+            Log(LogLevel.Information, $"{(res ? "Rejoined" : "Failed to rejoin")} channel: #{{channel}}", channel);
             await Task.Delay(joinInterval);
         }
     }
@@ -466,7 +466,7 @@ public sealed class IrcClient : IAsyncDisposable
     {
         if (!_ws.IsConnected)
         {
-            Log(LogLevel.Error, "Failed to part channel {channel}: Not connected.", channel);
+            Log(LogLevel.Error, "Failed to part channel #{channel}: Not connected.", channel);
             return Task.CompletedTask;
         }
 
@@ -637,7 +637,11 @@ public sealed class IrcClient : IAsyncDisposable
             case IrcCommand.PART:
                 IrcChannel channel = new(data);
                 if (this.JoinedChannels.Remove(channel))
+                {
+                    Log(LogLevel.Information, "Parted #{channel}", channel.Name);
                     Log(LogLevel.Debug, "Removed #{channel} from joined channels list.", channel.Name);
+
+                }
 
                 OnChannelPart?.Invoke(channel).StepOver(this.ExceptionHandler);
                 break;
