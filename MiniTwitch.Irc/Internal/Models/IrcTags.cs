@@ -1,5 +1,4 @@
 ﻿using System.Buffers;
-using System.Collections;
 using System.Runtime.CompilerServices;
 
 namespace MiniTwitch.Irc.Internal.Models;
