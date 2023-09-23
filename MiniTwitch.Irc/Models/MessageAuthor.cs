@@ -31,13 +31,6 @@ public readonly struct MessageAuthor : IBanTarget, IDeletedMessageAuthor, IWhisp
     public string Badges { get; init; }
     /// <summary>
     /// The color of the user’s name in the chat room
-    /// <para>This property is deprecated and will be removed in a future version</para>
-    /// <para>Use <see cref="ChatColor"/> instead</para>
-    /// </summary>
-    [Obsolete("Use the 'ChatColor' property instead. This property will be removed in a future version")]
-    public string ColorCode => ChatColor.Name;
-    /// <summary>
-    /// The color of the user’s name in the chat room
     /// </summary>
     public Color ChatColor { get; init; }
     /// <summary>
@@ -73,7 +66,6 @@ public readonly struct MessageAuthor : IBanTarget, IDeletedMessageAuthor, IWhisp
     /// Whether the user has site-wide commercial free mode enabled
     /// <para>Note: This value is always <see langword="false"/></para>
     /// </summary>
-    [Obsolete("Always false")]
     public bool IsTurbo { get; init; }
 
     /// <inheritdoc/>

@@ -25,12 +25,6 @@ public sealed class IrcClient : IAsyncDisposable
     /// <para>Note: The client will attempt to rejoin all channels upon reconnection</para>
     /// </summary>
     public List<IBasicChannel> JoinedChannels { get; } = new();
-    /// <summary>
-    /// Time to wait before attempting to reconnect to TMI upon disconnection
-    /// <para>Do not use this property to change the reconnection delay. Change <see cref="ClientOptions.ReconnectionDelay"/> in the constructor instead</para>
-    /// </summary>
-    [Obsolete("Changing this value does nothing; It will be removed in the future")]
-    public TimeSpan ReconnectionDelay { get; init; } = TimeSpan.FromSeconds(30);
 
     internal ClientOptions Options { get; init; }
     #endregion
