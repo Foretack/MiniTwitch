@@ -51,6 +51,24 @@ public readonly struct HypeChat
     /// Gets the actual amount of money donated in the <see cref="PaymentCurrency"/> currency
     /// <para><c>ActualAmount = PaidAmount * 10^(-Exponent)</c></para>
     /// </summary>
-    /// <returns></returns>
+    /// <returns>A <see langword="double"/> representing the actual paid amount</returns>
     public double GetActualAmount() => this.PaidAmount * Math.Pow(10, -this.Exponent);
+    /// <summary>
+    /// Gets how long the HypeChat message will be pinned for
+    /// </summary>
+    /// <returns>A <see cref="TimeSpan"/> containing the duration of the pin</returns>
+    public TimeSpan GetPinDuration() => this.Level switch
+    {
+        HypeChatLevel.ONE => TimeSpan.FromSeconds(30),
+        HypeChatLevel.TWO => TimeSpan.FromMinutes(2.5),
+        HypeChatLevel.THREE => TimeSpan.FromMinutes(5),
+        HypeChatLevel.FOUR => TimeSpan.FromMinutes(10),
+        HypeChatLevel.FIVE => TimeSpan.FromMinutes(30),
+        HypeChatLevel.SIX => TimeSpan.FromMinutes(60),
+        HypeChatLevel.SEVEN => TimeSpan.FromHours(2),
+        HypeChatLevel.EIGHT => TimeSpan.FromHours(3),
+        HypeChatLevel.NINE => TimeSpan.FromHours(4),
+        HypeChatLevel.TEN => TimeSpan.FromHours(5),
+        _ => TimeSpan.Zero
+    };
 }
