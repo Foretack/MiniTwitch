@@ -9,7 +9,7 @@ internal readonly struct TopicInfo : IDisposable
     public readonly MessageTopic Topic { get; init; }
     public readonly long[] Ids { get; init; }
 
-    public long this[int index] => Ids[index];
+    public long this[int index] => this.Ids[index];
 
     public TopicInfo(ReadOnlySpan<byte> span)
     {
@@ -17,7 +17,7 @@ internal readonly struct TopicInfo : IDisposable
         const byte dot = (byte)'.';
         const byte zero = (byte)'0';
 
-        Ids = ArrayPool<long>.Shared.Rent(2);
+        this.Ids = ArrayPool<long>.Shared.Rent(2);
         int qCount = 0;
         int start = 0;
         while (qCount < 9)
@@ -39,8 +39,8 @@ internal readonly struct TopicInfo : IDisposable
 
             foreach (byte b in span[end..end2])
             {
-                Ids[i] *= 10L;
-                Ids[i] += b - zero;
+                this.Ids[i] *= 10L;
+                this.Ids[i] += b - zero;
             }
 
             end = end2;
@@ -49,6 +49,6 @@ internal readonly struct TopicInfo : IDisposable
 
     public void Dispose()
     {
-        ArrayPool<long>.Shared.Return(Ids, true);
+        ArrayPool<long>.Shared.Return(this.Ids, true);
     }
 }

@@ -272,7 +272,7 @@ public sealed class PubSubClient : IAsyncDisposable
     private readonly AsyncEventCoordinator<WaitableEvents> _coordinator = new();
     private readonly HashSet<Topic> _topics = new(10);
     private readonly MessageTemplates _templates;
-    private readonly string _loggingHeader;
+    private readonly string _loggingHeader = "[MiniTwitch.PubSub]";
     private readonly WebSocketClient _ws;
     private readonly ILogger? _logger;
     private CancellationTokenSource _pingerToken = new();
@@ -292,8 +292,6 @@ public sealed class PubSubClient : IAsyncDisposable
         _ws = new(TimeSpan.FromMinutes(1));
         _logger = logger;
         _templates = new(authToken);
-        Version vers = typeof(PubSubClient).Assembly.GetName().Version ?? new Version();
-        _loggingHeader = $"[MiniTwitch.PubSub {vers}]";
 
         _ws.OnData += ReceiveData;
         _ws.OnConnect += OnWsConnect;
