@@ -329,8 +329,10 @@ public sealed class IrcClient : IAsyncDisposable
     /// <param name="parentMessage">The message to reply to</param>
     /// <param name="message">The message to reply with</param>
     /// <param name="action">Prepend .me to the message</param>
+    /// <param name="replyInThread">Prefer replying to the target message in the same thread instead of creating a new one</param>
     /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
-    public async ValueTask ReplyTo(Privmsg parentMessage, string message, bool action = false, CancellationToken cancellationToken = default)
+    public async ValueTask ReplyTo(Privmsg parentMessage, string message, bool action = false,
+        bool replyInThread = false, CancellationToken cancellationToken = default)
     {
         if (!_ws.IsConnected)
         {
@@ -351,13 +353,17 @@ public sealed class IrcClient : IAsyncDisposable
                 channel, this.Options.ModMessageRateLimit, delay.TotalSeconds);
             Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
                 channel, this.Options.MessageRateLimit, this.Options.ModMessageRateLimit);
+
             await Task.Delay(delay, cancellationToken);
-            await ReplyTo(parentMessage, message, action, cancellationToken);
+            await ReplyTo(parentMessage, message, action, replyInThread, cancellationToken);
             return;
         }
 
-        string outMsg = $"@reply-parent-msg-id={parentMessage.Id} PRIVMSG #{channel} :{(action ? $".me {message}" : message)}";
+        string target = replyInThread && !string.IsNullOrEmpty(parentMessage.Reply.ParentThreadMessageId)
+            ? parentMessage.Reply.ParentThreadMessageId
+            : parentMessage.Id;
 
+        string outMsg = $"@reply-parent-msg-id={target} PRIVMSG #{channel} :{(action ? $".me {message}" : message)}";
         await _ws.SendAsync(outMsg, cancellationToken: cancellationToken);
     }
     /// <summary>
