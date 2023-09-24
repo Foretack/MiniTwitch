@@ -47,6 +47,11 @@ public class TagHelperTests
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
         bool result = TagHelper.GetBool(span);
         Assert.True(result);
+
+        string raw2 = "0";
+        ReadOnlySpan<byte> span2 = Encoding.UTF8.GetBytes(raw2).AsSpan();
+        bool result2 = TagHelper.GetBool(span2);
+        Assert.False(result2);
     }
 
     [Fact]
@@ -56,6 +61,11 @@ public class TagHelperTests
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
         bool result = TagHelper.GetBool(span, nonBinary: true);
         Assert.True(result);
+
+        string raw2 = "false";
+        ReadOnlySpan<byte> span2 = Encoding.UTF8.GetBytes(raw2).AsSpan();
+        bool result2 = TagHelper.GetBool(span2, nonBinary: true);
+        Assert.False(result2);
     }
 
     [Fact]

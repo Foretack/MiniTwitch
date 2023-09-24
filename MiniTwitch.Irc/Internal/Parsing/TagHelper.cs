@@ -34,10 +34,9 @@ internal static class TagHelper
         const byte zero = (byte)'0';
         if (nonBinary)
         {
-            string value = Encoding.UTF8.GetString(span);
-            string interned = string.IsInterned(value) ?? string.Intern(value);
-
-            return bool.Parse(interned);
+            Span<char> charSpan = stackalloc char[span.Length];
+            int charsWritten = Encoding.UTF8.GetChars(span, charSpan);
+            return bool.Parse(charSpan[..charsWritten]);
         }
 
         return span[0] != zero;
