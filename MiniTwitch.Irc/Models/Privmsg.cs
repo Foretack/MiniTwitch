@@ -111,7 +111,6 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
 
         //HypeChat
         int paidAmount = 0;
-        int cPaidAmount = 0;
         string currency = string.Empty;
         int exponent = 0;
         bool isSystemMessage = false;
@@ -290,11 +289,6 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
                     threadParentUsername = TagHelper.GetString(tagValue);
                     break;
 
-                //pinned-chat-paid-canonical-amount
-                case 3244:
-                    cPaidAmount = TagHelper.GetInt(tagValue);
-                    break;
-
                 //pinned-chat-paid-is-system-message
                 case 3331:
                     isSystemMessage = TagHelper.GetBool(tagValue);
@@ -329,7 +323,6 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
         this.HypeChat = new HypeChat()
         {
             PaidAmount = paidAmount,
-            CanonicalPaidAmount = cPaidAmount,
             PaymentCurrency = currency,
             Exponent = exponent,
             IsSystemMessage = isSystemMessage,

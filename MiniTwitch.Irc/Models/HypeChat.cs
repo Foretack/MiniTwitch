@@ -3,48 +3,32 @@
 namespace MiniTwitch.Irc.Models;
 
 /// <summary>
-/// Represents data about HypeChat messages
+/// Represents data about Hype Chat messages
 /// </summary>
 public readonly struct HypeChat
 {
     /// <summary>
-    /// The <c>pinned-chat-paid-amount</c> tag
-    /// <para>Example: <c>pinned-chat-paid-amount=100</c></para>
-    /// <para>This tag is not officially documented</para>
+    /// The value of the Hype Chat sent by the user
     /// </summary>
     public int PaidAmount { get; init; }
     /// <summary>
-    /// The <c>pinned-chat-paid-canonical-amount</c> tag
-    /// <para>Example: <c>pinned-chat-paid-canonical-amount=100</c></para>
-    /// <para>This tag is not officially documented</para>
-    /// </summary>
-    public int CanonicalPaidAmount { get; init; }
-    /// <summary>
-    /// The <c>pinned-chat-paid-currency</c> tag
-    /// <para>Example: <c>pinned-chat-paid-currency=GBP</c></para>
-    /// <para>This tag is not officially documented</para>
+    /// The <see href="https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes">ISO 4217</see> alphabetic currency code the user has sent the Hype Chat in
     /// </summary>
     public string PaymentCurrency { get; init; }
     /// <summary>
-    /// The <c>pinned-chat-paid-exponent</c> tag
-    /// <para>Example: <c>pinned-chat-paid-exponent=2</c></para>
-    /// <para>This tag is not officially documented</para>
+    /// Indicates how many decimal points this currency represents partial amounts in. Decimal points start from the right side of the value defined in <see cref="PaidAmount"/>.
     /// </summary>
     public int Exponent { get; init; }
     /// <summary>
-    /// The <c>pinned-chat-paid-is-system-message</c> tag
-    /// <para>Example: <c>pinned-chat-paid-is-system-message=0</c></para>
-    /// <para>This tag is not officially documented</para>
+    /// A Boolean value that determines if the message sent with the Hype Chat was filled in by the system
     /// </summary>
     public bool IsSystemMessage { get; init; }
     /// <summary>
-    /// The <c>pinned-chat-paid-level</c> tag
-    /// <para>Example: <c>pinned-chat-paid-level=ONE</c></para>
-    /// <para>This tag is not officially documented</para>
+    /// The level of the Hype Chat, in English. Possible values range from <see cref="HypeChatLevel.ONE"/> to <see cref="HypeChatLevel.TEN"/>
     /// </summary>
     public HypeChatLevel Level { get; init; }
     /// <summary>
-    /// Whether the message is a HypeChat message or not
+    /// Whether the message is a Hype Chat message or not
     /// </summary>
     public bool HasContent => this.PaidAmount != 0;
     /// <summary>
@@ -54,7 +38,7 @@ public readonly struct HypeChat
     /// <returns>A <see langword="double"/> representing the actual paid amount</returns>
     public double GetActualAmount() => this.PaidAmount * Math.Pow(10, -this.Exponent);
     /// <summary>
-    /// Gets how long the HypeChat message will be pinned for
+    /// Gets how long the Hype Chat message will be pinned for
     /// </summary>
     /// <returns>A <see cref="TimeSpan"/> containing the duration of the pin</returns>
     public TimeSpan GetPinDuration() => this.Level switch

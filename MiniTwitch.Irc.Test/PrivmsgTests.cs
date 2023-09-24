@@ -41,7 +41,6 @@ public class PrivmsgTests
         Assert.Equal(HypeChatLevel.None, privmsg.HypeChat.Level);
         Assert.Equal(string.Empty, privmsg.HypeChat.PaymentCurrency);
         Assert.Equal(0, privmsg.HypeChat.Exponent);
-        Assert.Equal(0, privmsg.HypeChat.CanonicalPaidAmount);
         Assert.Equal(0, privmsg.HypeChat.PaidAmount);
         Assert.False(privmsg.HypeChat.IsSystemMessage);
 
@@ -99,7 +98,6 @@ public class PrivmsgTests
         Assert.Equal(HypeChatLevel.None, privmsg.HypeChat.Level);
         Assert.Equal(string.Empty, privmsg.HypeChat.PaymentCurrency);
         Assert.Equal(0, privmsg.HypeChat.Exponent);
-        Assert.Equal(0, privmsg.HypeChat.CanonicalPaidAmount);
         Assert.Equal(0, privmsg.HypeChat.PaidAmount);
         Assert.False(privmsg.HypeChat.IsSystemMessage);
 
@@ -157,7 +155,6 @@ public class PrivmsgTests
         Assert.Equal(HypeChatLevel.None, privmsg.HypeChat.Level);
         Assert.Equal(string.Empty, privmsg.HypeChat.PaymentCurrency);
         Assert.Equal(0, privmsg.HypeChat.Exponent);
-        Assert.Equal(0, privmsg.HypeChat.CanonicalPaidAmount);
         Assert.Equal(0, privmsg.HypeChat.PaidAmount);
         Assert.False(privmsg.HypeChat.IsSystemMessage);
 
@@ -214,7 +211,6 @@ public class PrivmsgTests
         Assert.Equal(HypeChatLevel.ONE, privmsg.HypeChat.Level);
         Assert.Equal("GBP", privmsg.HypeChat.PaymentCurrency);
         Assert.Equal(2, privmsg.HypeChat.Exponent);
-        Assert.Equal(100, privmsg.HypeChat.CanonicalPaidAmount);
         Assert.Equal(100, privmsg.HypeChat.PaidAmount);
         Assert.False(privmsg.HypeChat.IsSystemMessage);
 
@@ -271,7 +267,6 @@ public class PrivmsgTests
         Assert.Equal(HypeChatLevel.None, privmsg.HypeChat.Level);
         Assert.Equal(string.Empty, privmsg.HypeChat.PaymentCurrency);
         Assert.Equal(0, privmsg.HypeChat.Exponent);
-        Assert.Equal(0, privmsg.HypeChat.CanonicalPaidAmount);
         Assert.Equal(0, privmsg.HypeChat.PaidAmount);
         Assert.False(privmsg.HypeChat.IsSystemMessage);
 
