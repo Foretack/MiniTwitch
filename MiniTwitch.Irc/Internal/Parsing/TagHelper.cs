@@ -58,12 +58,11 @@ internal static class TagHelper
     public static TEnum GetEnum<TEnum>(ReadOnlySpan<byte> span, bool useTry = true)
     where TEnum : struct
     {
-        string value = Encoding.UTF8.GetString(span);
-        string interned = string.IsInterned(value) ?? string.Intern(value);
-
+        Span<char> charSpan = stackalloc char[span.Length];
+        int charsWritten = Encoding.UTF8.GetChars(span, charSpan);
         if (useTry)
         {
-            if (Enum.TryParse(interned, true, out TEnum result))
+            if (Enum.TryParse(charSpan[..charsWritten], true, out TEnum result))
             {
                 return result;
             }
@@ -71,7 +70,7 @@ internal static class TagHelper
             return default;
         }
 
-        return Enum.Parse<TEnum>(interned, true);
+        return Enum.Parse<TEnum>(charSpan[..charsWritten], true);
     }
 
     public static Color GetColor(ReadOnlySpan<byte> hexBytes)

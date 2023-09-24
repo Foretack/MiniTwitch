@@ -101,6 +101,10 @@ public class TagHelperTests
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
         UserType result = TagHelper.GetEnum<UserType>(span);
         Assert.Equal(UserType.Admin, result);
+        //No try
+        ReadOnlySpan<byte> span2 = Encoding.UTF8.GetBytes(raw).AsSpan();
+        UserType result2 = TagHelper.GetEnum<UserType>(span2, useTry: false);
+        Assert.Equal(UserType.Admin, result2);
     }
 
     [Fact]
