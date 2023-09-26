@@ -25,6 +25,11 @@ public sealed class IrcClient : IAsyncDisposable
     /// <para>Note: The client will attempt to rejoin all channels upon reconnection</para>
     /// </summary>
     public List<IBasicChannel> JoinedChannels { get; } = new();
+    /// <summary>
+    /// The default logger for <see cref="IrcChannel"/>, only used when <see cref="ILogger"/> is not provided in client options
+    /// <para>Can be toggled with <see cref="DefaultMiniTwitchLogger{T}.Enabled"/></para>
+    /// </summary>
+    public DefaultMiniTwitchLogger<IrcChannel> DefaultLogger { get; } = new();
 
     internal ClientOptions Options { get; init; }
     #endregion
@@ -721,11 +726,13 @@ public sealed class IrcClient : IAsyncDisposable
     #endregion
 
     #region Utils
+    private ILogger GetLogger() => this.Options.Logger ?? DefaultLogger;
+
     private void LogEventException(Exception ex) => LogException(ex, "🚨 Exception caught in an event:");
 
-    private void Log(LogLevel level, string template, params object[] properties) => this.Options.Logger?.Log(level, $"{_loggingHeader} " + template, properties);
+    private void Log(LogLevel level, string template, params object[] properties) => GetLogger().Log(level, $"{_loggingHeader} " + template, properties);
 
-    private void LogException(Exception ex, string template, params object[] properties) => this.Options.Logger?.LogError(ex, $"{_loggingHeader} " + template, properties);
+    private void LogException(Exception ex, string template, params object[] properties) => GetLogger().LogError(ex, $"{_loggingHeader} " + template, properties);
     #endregion
 
     /// <inheritdoc/>
