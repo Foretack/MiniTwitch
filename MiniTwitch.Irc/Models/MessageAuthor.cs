@@ -8,7 +8,8 @@ namespace MiniTwitch.Irc.Models;
 /// Represents an author of a message or a certain event
 /// </summary>
 public readonly struct MessageAuthor : IBanTarget, IDeletedMessageAuthor, IWhisperAuthor,
-    IGiftSubRecipient, IUserstateSelf, IMembershipUser
+    IGiftSubRecipient, IUserstateSelf, IMembershipUser, IGazatuChannel, IPartedChannel,
+    IBasicChannel, IEquatable<MessageAuthor>, IEquatable<IrcChannel>
 {
     /// <summary>
     /// Contains metadata related to the chat badges in the badges tag
@@ -67,6 +68,34 @@ public readonly struct MessageAuthor : IBanTarget, IDeletedMessageAuthor, IWhisp
     /// <para>Note: This value is always <see langword="false"/></para>
     /// </summary>
     public bool IsTurbo { get; init; }
+
+#pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+    /// <inheritdoc/>
+    public bool Equals(IrcChannel other) => this.Name == other.Name;
+    /// <inheritdoc/>
+    public override bool Equals(object obj) => (obj is MessageAuthor && Equals((MessageAuthor)obj)) || (obj is IrcChannel && Equals((IrcChannel)obj));
+    /// <inheritdoc/>
+    public bool Equals(MessageAuthor other) => this.Name == other.Name || (this.Id != 0 && this.Id == other.Id);
+#pragma warning restore CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+
+    /// <inheritdoc/>
+    public static bool operator ==(MessageAuthor left, MessageAuthor right) => left.Equals(right);
+    /// <inheritdoc/>
+    public static bool operator !=(MessageAuthor left, MessageAuthor right) => !(left == right);
+
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        var code = new HashCode();
+        code.Add(this.Name);
+        code.Add(this.Id);
+        return code.ToHashCode();
+    }
+
+    /// <summary>
+    /// Returns the author's name
+    /// </summary>
+    public override string ToString() => this.Name;
 
     /// <inheritdoc/>
     public static implicit operator string(MessageAuthor messageAuthor) => messageAuthor.Name;

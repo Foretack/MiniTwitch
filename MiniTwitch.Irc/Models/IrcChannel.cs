@@ -12,7 +12,7 @@ namespace MiniTwitch.Irc.Models;
 /// </summary>
 public readonly struct IrcChannel : IGazatuChannel, IPartedChannel, IBasicChannel,
     IEmoteOnlyModified, IFollowersOnlyModified, IR9KModified, ISlowModeModified, ISubOnlyModified,
-    IEquatable<IrcChannel>, IEquatable<MessageAuthor>
+    IEquatable<IrcChannel>, IEquatable<MessageAuthor>, IBanTarget, IDeletedMessageAuthor
 {
     /// <inheritdoc/>
     public TimeSpan FollowerModeDuration { get; init; }
@@ -165,6 +165,11 @@ public readonly struct IrcChannel : IGazatuChannel, IPartedChannel, IBasicChanne
         code.Add(this.Id);
         return code.ToHashCode();
     }
+
+    /// <summary>
+    /// Returns the channel's name
+    /// </summary>
+    public override string ToString() => this.Name;
 
     /// <inheritdoc/>
     public static implicit operator string(IrcChannel channel) => channel.Name;
