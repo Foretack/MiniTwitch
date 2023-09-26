@@ -419,6 +419,32 @@ public sealed class IrcClient : IAsyncDisposable
     /// <summary>
     /// Used for joining a channel
     /// </summary>
+    /// <param name="channel">The channel to join</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    /// <returns><see langword="true"/> if the join is successful; Otherwise, after 10 seconds: <see langword="false"/></returns>
+    public Task<bool> JoinChannel(IBasicChannel channel, CancellationToken cancellationToken = default)
+        => JoinChannel(channel.Name, cancellationToken: cancellationToken);
+
+    /// <summary>
+    /// Used for joining multiple channels
+    /// </summary>
+    /// <param name="channels">The channels to join</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    /// <returns><see langword="true"/> if all joins are successful; Otherwise, <see langword="false"/></returns>
+    public Task<bool> JoinChannels(IEnumerable<IBasicChannel> channels, CancellationToken cancellationToken = default)
+        => JoinChannels(channels.Select(x => x.Name), cancellationToken: cancellationToken);
+
+    /// <summary>
+    /// Used for leaving/parting a joined channel
+    /// </summary>
+    /// <param name="channel">The channel to part</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    public Task PartChannel(IBasicChannel channel, CancellationToken cancellationToken = default)
+        => PartChannel(channel.Name, cancellationToken: cancellationToken);
+
+    /// <summary>
+    /// Used for joining a channel
+    /// </summary>
     /// <param name="channel">Username of the channel to join</param>
     /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
     /// <returns><see langword="true"/> if the join is successful; Otherwise, after 10 seconds: <see langword="false"/></returns>
@@ -454,12 +480,10 @@ public sealed class IrcClient : IAsyncDisposable
     /// Used for joining multiple channels
     /// </summary>
     /// <param name="channels">Usernames of channels to join</param>
-    /// /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
     /// <returns><see langword="true"/> if all joins are successful; Otherwise, <see langword="false"/></returns>
     public async Task<bool> JoinChannels(IEnumerable<string> channels, CancellationToken cancellationToken = default)
     {
-        // TODO: add a non-params JoinChannels method to support CancellationToken passing
-        // params isn't ideal when you're potentially receiving a list from an external store - not hardcoding
         if (!_ws.IsConnected)
         {
             Log(LogLevel.Error, "Failed to join channels {channels}:  Not connected.", string.Join(',', channels));
