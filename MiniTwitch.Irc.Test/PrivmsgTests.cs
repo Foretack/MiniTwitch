@@ -43,6 +43,8 @@ public class PrivmsgTests
         Assert.Equal(0, privmsg.HypeChat.Exponent);
         Assert.Equal(0, privmsg.HypeChat.PaidAmount);
         Assert.False(privmsg.HypeChat.IsSystemMessage);
+        Assert.Equal(0, privmsg.HypeChat.GetActualAmount());
+        Assert.Equal(TimeSpan.Zero, privmsg.HypeChat.GetPinDuration());
 
         // Channel
         Assert.Equal("pajlada", privmsg.Channel.Name);
@@ -100,6 +102,8 @@ public class PrivmsgTests
         Assert.Equal(0, privmsg.HypeChat.Exponent);
         Assert.Equal(0, privmsg.HypeChat.PaidAmount);
         Assert.False(privmsg.HypeChat.IsSystemMessage);
+        Assert.Equal(0, privmsg.HypeChat.GetActualAmount());
+        Assert.Equal(TimeSpan.Zero, privmsg.HypeChat.GetPinDuration());
 
         // Channel
         Assert.Equal("pajlada", privmsg.Channel.Name);
@@ -157,6 +161,8 @@ public class PrivmsgTests
         Assert.Equal(0, privmsg.HypeChat.Exponent);
         Assert.Equal(0, privmsg.HypeChat.PaidAmount);
         Assert.False(privmsg.HypeChat.IsSystemMessage);
+        Assert.Equal(0, privmsg.HypeChat.GetActualAmount());
+        Assert.Equal(TimeSpan.Zero, privmsg.HypeChat.GetPinDuration());
 
         // Channel
         Assert.Equal("pajlada", privmsg.Channel.Name);
@@ -213,6 +219,8 @@ public class PrivmsgTests
         Assert.Equal(2, privmsg.HypeChat.Exponent);
         Assert.Equal(100, privmsg.HypeChat.PaidAmount);
         Assert.False(privmsg.HypeChat.IsSystemMessage);
+        Assert.Equal(1, privmsg.HypeChat.GetActualAmount());
+        Assert.Equal(TimeSpan.FromSeconds(30), privmsg.HypeChat.GetPinDuration());
 
         // Channel
         Assert.Equal("forsen", privmsg.Channel.Name);
@@ -269,6 +277,8 @@ public class PrivmsgTests
         Assert.Equal(0, privmsg.HypeChat.Exponent);
         Assert.Equal(0, privmsg.HypeChat.PaidAmount);
         Assert.False(privmsg.HypeChat.IsSystemMessage);
+        Assert.Equal(0, privmsg.HypeChat.GetActualAmount());
+        Assert.Equal(TimeSpan.Zero, privmsg.HypeChat.GetPinDuration());
 
         // Channel
         Assert.Equal("pajlada", privmsg.Channel.Name);
