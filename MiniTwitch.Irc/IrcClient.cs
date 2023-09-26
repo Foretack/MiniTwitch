@@ -26,11 +26,10 @@ public sealed class IrcClient : IAsyncDisposable
     /// </summary>
     public List<IBasicChannel> JoinedChannels { get; } = new();
     /// <summary>
-    /// Time to wait before attempting to reconnect to TMI upon disconnection
-    /// <para>Do not use this property to change the reconnection delay. Change <see cref="ClientOptions.ReconnectionDelay"/> in the constructor instead</para>
+    /// The default logger for <see cref="IrcChannel"/>, only used when <see cref="ILogger"/> is not provided in client options
+    /// <para>Can be toggled with <see cref="DefaultMiniTwitchLogger{T}.Enabled"/></para>
     /// </summary>
-    [Obsolete("Changing this value does nothing; It will be removed in the future")]
-    public TimeSpan ReconnectionDelay { get; init; } = TimeSpan.FromSeconds(30);
+    public DefaultMiniTwitchLogger<IrcChannel> DefaultLogger { get; } = new();
 
     internal ClientOptions Options { get; init; }
     #endregion
@@ -147,8 +146,12 @@ public sealed class IrcClient : IAsyncDisposable
     #endregion
 
     #region Fields
+    private static readonly WaitableEvents[] _channelJoinEvents = new[] 
+    {
+        WaitableEvents.JoinedChannel, WaitableEvents.ChannelSuspended
+    };
     private readonly AsyncEventCoordinator<WaitableEvents> _coordinator = new();
-    private readonly List<string> _moderated = new();
+    private readonly HashSet<string> _moderated = new();
     private readonly RateLimitManager _manager;
     private readonly WebSocketClient _ws;
     private Uri _targetUrl = default!;
@@ -253,7 +256,7 @@ public sealed class IrcClient : IAsyncDisposable
         foreach (string channel in this.JoinedChannels.Select(c => c.Name))
         {
             bool res = await JoinChannel(channel);
-            Log(LogLevel.Information, $"{(res ? "Rejoined" : "Failed to rejoin")} channel: {{channel}}", channel);
+            Log(LogLevel.Information, $"{(res ? "Rejoined" : "Failed to rejoin")} channel: #{{channel}}", channel);
             await Task.Delay(joinInterval);
         }
     }
@@ -331,8 +334,10 @@ public sealed class IrcClient : IAsyncDisposable
     /// <param name="parentMessage">The message to reply to</param>
     /// <param name="message">The message to reply with</param>
     /// <param name="action">Prepend .me to the message</param>
+    /// <param name="replyInThread">Prefer replying to the target message in the same thread instead of creating a new one</param>
     /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
-    public async ValueTask ReplyTo(Privmsg parentMessage, string message, bool action = false, CancellationToken cancellationToken = default)
+    public async ValueTask ReplyTo(Privmsg parentMessage, string message, bool action = false,
+        bool replyInThread = false, CancellationToken cancellationToken = default)
     {
         if (!_ws.IsConnected)
         {
@@ -353,13 +358,17 @@ public sealed class IrcClient : IAsyncDisposable
                 channel, this.Options.ModMessageRateLimit, delay.TotalSeconds);
             Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
                 channel, this.Options.MessageRateLimit, this.Options.ModMessageRateLimit);
+
             await Task.Delay(delay, cancellationToken);
-            await ReplyTo(parentMessage, message, action, cancellationToken);
+            await ReplyTo(parentMessage, message, action, replyInThread, cancellationToken);
             return;
         }
 
-        string outMsg = $"@reply-parent-msg-id={parentMessage.Id} PRIVMSG #{channel} :{(action ? $".me {message}" : message)}";
+        string target = replyInThread && !string.IsNullOrEmpty(parentMessage.Reply.ParentThreadMessageId)
+            ? parentMessage.Reply.ParentThreadMessageId
+            : parentMessage.Id;
 
+        string outMsg = $"@reply-parent-msg-id={target} PRIVMSG #{channel} :{(action ? $".me {message}" : message)}";
         await _ws.SendAsync(outMsg, cancellationToken: cancellationToken);
     }
     /// <summary>
@@ -415,6 +424,32 @@ public sealed class IrcClient : IAsyncDisposable
     /// <summary>
     /// Used for joining a channel
     /// </summary>
+    /// <param name="channel">The channel to join</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    /// <returns><see langword="true"/> if the join is successful; Otherwise, after 10 seconds: <see langword="false"/></returns>
+    public Task<bool> JoinChannel(IBasicChannel channel, CancellationToken cancellationToken = default)
+        => JoinChannel(channel.Name, cancellationToken: cancellationToken);
+
+    /// <summary>
+    /// Used for joining multiple channels
+    /// </summary>
+    /// <param name="channels">The channels to join</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    /// <returns><see langword="true"/> if all joins are successful; Otherwise, <see langword="false"/></returns>
+    public Task<bool> JoinChannels(IEnumerable<IBasicChannel> channels, CancellationToken cancellationToken = default)
+        => JoinChannels(channels.Select(x => x.Name), cancellationToken: cancellationToken);
+
+    /// <summary>
+    /// Used for leaving/parting a joined channel
+    /// </summary>
+    /// <param name="channel">The channel to part</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    public Task PartChannel(IBasicChannel channel, CancellationToken cancellationToken = default)
+        => PartChannel(channel.Name, cancellationToken: cancellationToken);
+
+    /// <summary>
+    /// Used for joining a channel
+    /// </summary>
     /// <param name="channel">Username of the channel to join</param>
     /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
     /// <returns><see langword="true"/> if the join is successful; Otherwise, after 10 seconds: <see langword="false"/></returns>
@@ -434,19 +469,26 @@ public sealed class IrcClient : IAsyncDisposable
         }
 
         await _ws.SendAsync($"JOIN #{channel}", cancellationToken: cancellationToken);
-        return await _coordinator.WaitFor(WaitableEvents.JoinedChannel, TimeSpan.FromSeconds(10), cancellationToken);
+        try
+        {
+            WaitableEvents ev = await _coordinator.WaitForAny(_channelJoinEvents, TimeSpan.FromSeconds(10), cancellationToken);
+            return ev == WaitableEvents.JoinedChannel;
+        }
+        catch
+        {
+            Log(LogLevel.Error, "Failed to join channel #{channel}: Timed out. (Does the channel exist?)", channel);
+            return false;
+        }
     }
 
     /// <summary>
     /// Used for joining multiple channels
     /// </summary>
     /// <param name="channels">Usernames of channels to join</param>
-    /// /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
     /// <returns><see langword="true"/> if all joins are successful; Otherwise, <see langword="false"/></returns>
     public async Task<bool> JoinChannels(IEnumerable<string> channels, CancellationToken cancellationToken = default)
     {
-        // TODO: add a non-params JoinChannels method to support CancellationToken passing
-        // params isn't ideal when you're potentially receiving a list from an external store - not hardcoding
         if (!_ws.IsConnected)
         {
             Log(LogLevel.Error, "Failed to join channels {channels}:  Not connected.", string.Join(',', channels));
@@ -472,7 +514,7 @@ public sealed class IrcClient : IAsyncDisposable
     {
         if (!_ws.IsConnected)
         {
-            Log(LogLevel.Error, "Failed to part channel {channel}: Not connected.", channel);
+            Log(LogLevel.Error, "Failed to part channel #{channel}: Not connected.", channel);
             return Task.CompletedTask;
         }
 
@@ -643,7 +685,11 @@ public sealed class IrcClient : IAsyncDisposable
             case IrcCommand.PART:
                 IrcChannel channel = new(data);
                 if (this.JoinedChannels.Remove(channel))
+                {
+                    Log(LogLevel.Information, "Parted #{channel}", channel.Name);
                     Log(LogLevel.Debug, "Removed #{channel} from joined channels list.", channel.Name);
+
+                }
 
                 OnChannelPart?.Invoke(channel).StepOver(this.ExceptionHandler);
                 break;
@@ -651,9 +697,14 @@ public sealed class IrcClient : IAsyncDisposable
             case IrcCommand.NOTICE:
                 Notice notice = new(data);
                 if (notice.Type == NoticeType.Msg_channel_suspended)
+                {
                     Log(LogLevel.Error, "Tried joining suspended channel: #{channel}", notice.Channel.Name);
+                    _coordinator.ReleaseIfLocked(WaitableEvents.ChannelSuspended);
+                }
                 else if (notice.Type == NoticeType.Bad_auth)
+                {
                     Log(LogLevel.Critical, "Authentication failed: {message}", notice.SystemMessage);
+                }
 
                 OnNotice?.Invoke(notice).StepOver(this.ExceptionHandler);
                 break;
@@ -661,7 +712,7 @@ public sealed class IrcClient : IAsyncDisposable
             case IrcCommand.USERSTATE or IrcCommand.GLOBALUSERSTATE:
                 Userstate state = new(data);
                 if (state.Self.IsMod && !_moderated.Contains(state.Channel.Name))
-                    _moderated.Add(state.Channel.Name);
+                    _ = _moderated.Add(state.Channel.Name);
 
                 OnUserstate?.Invoke(state).StepOver(this.ExceptionHandler);
                 break;
@@ -675,11 +726,13 @@ public sealed class IrcClient : IAsyncDisposable
     #endregion
 
     #region Utils
+    private ILogger GetLogger() => this.Options.Logger ?? DefaultLogger;
+
     private void LogEventException(Exception ex) => LogException(ex, "🚨 Exception caught in an event:");
 
-    private void Log(LogLevel level, string template, params object[] properties) => this.Options.Logger?.Log(level, $"{_loggingHeader} " + template, properties);
+    private void Log(LogLevel level, string template, params object[] properties) => GetLogger().Log(level, $"{_loggingHeader} " + template, properties);
 
-    private void LogException(Exception ex, string template, params object[] properties) => this.Options.Logger?.LogError(ex, $"{_loggingHeader} " + template, properties);
+    private void LogException(Exception ex, string template, params object[] properties) => GetLogger().LogError(ex, $"{_loggingHeader} " + template, properties);
     #endregion
 
     /// <inheritdoc/>

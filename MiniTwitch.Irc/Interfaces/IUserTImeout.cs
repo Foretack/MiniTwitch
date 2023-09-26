@@ -3,7 +3,7 @@
 /// <summary>
 /// Contains information about a user timeout
 /// </summary>
-public interface IUserTimeout
+public interface IUserTimeout : IUnixTimestamped
 {
     /// <summary>
     /// The duration of the timeout
@@ -17,8 +17,4 @@ public interface IUserTimeout
     /// The channel where the event occurred
     /// </summary>
     IBasicChannel Channel { get; }
-    /// <summary>
-    /// Milliseconds Unix timestamp of when the event occurred
-    /// </summary>
-    long TmiSentTs { get; }
 }

@@ -8,7 +8,8 @@ namespace MiniTwitch.Irc.Models;
 /// Represents an author of a message or a certain event
 /// </summary>
 public readonly struct MessageAuthor : IBanTarget, IDeletedMessageAuthor, IWhisperAuthor,
-    IGiftSubRecipient, IUserstateSelf, IMembershipUser
+    IGiftSubRecipient, IUserstateSelf, IMembershipUser, IGazatuChannel, IPartedChannel,
+    IBasicChannel, IEquatable<MessageAuthor>, IEquatable<IrcChannel>
 {
     /// <summary>
     /// Contains metadata related to the chat badges in the badges tag
@@ -29,13 +30,6 @@ public readonly struct MessageAuthor : IBanTarget, IDeletedMessageAuthor, IWhisp
     /// <para>To get the badge, use the <see href="https://dev.twitch.tv/docs/api/reference#get-global-chat-badges">Get Global Chat Badges</see> and <see href="https://dev.twitch.tv/docs/api/reference#get-channel-chat-badges">Get Channel Chat Badges</see> APIs. Match the badge to the <c>set-id</c> field’s value in the response. Then, match the version to the <c>id</c> field in the list of versions</para>
     /// </summary>
     public string Badges { get; init; }
-    /// <summary>
-    /// The color of the user’s name in the chat room
-    /// <para>This property is deprecated and will be removed in a future version</para>
-    /// <para>Use <see cref="ChatColor"/> instead</para>
-    /// </summary>
-    [Obsolete("Use the 'ChatColor' property instead. This property will be removed in a future version")]
-    public string ColorCode => ChatColor.Name;
     /// <summary>
     /// The color of the user’s name in the chat room
     /// </summary>
@@ -73,8 +67,35 @@ public readonly struct MessageAuthor : IBanTarget, IDeletedMessageAuthor, IWhisp
     /// Whether the user has site-wide commercial free mode enabled
     /// <para>Note: This value is always <see langword="false"/></para>
     /// </summary>
-    [Obsolete("Always false")]
     public bool IsTurbo { get; init; }
+
+#pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+    /// <inheritdoc/>
+    public bool Equals(IrcChannel other) => this.Name == other.Name;
+    /// <inheritdoc/>
+    public override bool Equals(object obj) => (obj is MessageAuthor && Equals((MessageAuthor)obj)) || (obj is IrcChannel && Equals((IrcChannel)obj));
+    /// <inheritdoc/>
+    public bool Equals(MessageAuthor other) => this.Name == other.Name || (this.Id != 0 && this.Id == other.Id);
+#pragma warning restore CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+
+    /// <inheritdoc/>
+    public static bool operator ==(MessageAuthor left, MessageAuthor right) => left.Equals(right);
+    /// <inheritdoc/>
+    public static bool operator !=(MessageAuthor left, MessageAuthor right) => !(left == right);
+
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        var code = new HashCode();
+        code.Add(this.Name);
+        code.Add(this.Id);
+        return code.ToHashCode();
+    }
+
+    /// <summary>
+    /// Returns the author's name
+    /// </summary>
+    public override string ToString() => this.Name;
 
     /// <inheritdoc/>
     public static implicit operator string(MessageAuthor messageAuthor) => messageAuthor.Name;

@@ -29,6 +29,11 @@ public readonly struct Userstate
     /// The emote sets you have
     /// </summary>
     public string EmoteSets { get; init; }
+    /// <summary>
+    /// Client nonce that of the corresponding message
+    /// <para>Note: Can be <see cref="string.Empty"/></para>
+    /// </summary>
+    public string Nonce { get; init; }
 
     internal IrcClient? Source { get; init; }
 
@@ -47,6 +52,7 @@ public readonly struct Userstate
         UserType type = UserType.None;
         string channel = memory.Span.FindChannel(true);
         string emoteSets = string.Empty;
+        string nonce = string.Empty;
 
         using IrcTags tags = IrcParsing.ParseTags(memory);
         foreach (IrcTag tag in tags)
@@ -106,6 +112,11 @@ public readonly struct Userstate
                     subscriber = TagHelper.GetBool(tagValue);
                     break;
 
+                //client-nonce
+                case 1215:
+                    nonce = TagHelper.GetString(tagValue);
+                    break;
+
                 //display-name
                 case 1220:
                     displayName = TagHelper.GetString(tagValue);
@@ -131,6 +142,7 @@ public readonly struct Userstate
             Name = channel
         };
         this.EmoteSets = emoteSets;
+        this.Nonce = nonce;
     }
 
     /// <summary>

@@ -38,12 +38,13 @@ public class PrivmsgTests
 
         // No hypechat
         Assert.False(privmsg.HypeChat.HasContent);
-        Assert.Equal(string.Empty, privmsg.HypeChat.Level);
+        Assert.Equal(HypeChatLevel.None, privmsg.HypeChat.Level);
         Assert.Equal(string.Empty, privmsg.HypeChat.PaymentCurrency);
         Assert.Equal(0, privmsg.HypeChat.Exponent);
-        Assert.Equal(0, privmsg.HypeChat.CanonicalPaidAmount);
         Assert.Equal(0, privmsg.HypeChat.PaidAmount);
         Assert.False(privmsg.HypeChat.IsSystemMessage);
+        Assert.Equal(0, privmsg.HypeChat.GetActualAmount());
+        Assert.Equal(TimeSpan.Zero, privmsg.HypeChat.GetPinDuration());
 
         // Channel
         Assert.Equal("pajlada", privmsg.Channel.Name);
@@ -96,12 +97,13 @@ public class PrivmsgTests
 
         // No hypechat
         Assert.False(privmsg.HypeChat.HasContent);
-        Assert.Equal(string.Empty, privmsg.HypeChat.Level);
+        Assert.Equal(HypeChatLevel.None, privmsg.HypeChat.Level);
         Assert.Equal(string.Empty, privmsg.HypeChat.PaymentCurrency);
         Assert.Equal(0, privmsg.HypeChat.Exponent);
-        Assert.Equal(0, privmsg.HypeChat.CanonicalPaidAmount);
         Assert.Equal(0, privmsg.HypeChat.PaidAmount);
         Assert.False(privmsg.HypeChat.IsSystemMessage);
+        Assert.Equal(0, privmsg.HypeChat.GetActualAmount());
+        Assert.Equal(TimeSpan.Zero, privmsg.HypeChat.GetPinDuration());
 
         // Channel
         Assert.Equal("pajlada", privmsg.Channel.Name);
@@ -154,12 +156,13 @@ public class PrivmsgTests
 
         // No hypechat
         Assert.False(privmsg.HypeChat.HasContent);
-        Assert.Equal(string.Empty, privmsg.HypeChat.Level);
+        Assert.Equal(HypeChatLevel.None, privmsg.HypeChat.Level);
         Assert.Equal(string.Empty, privmsg.HypeChat.PaymentCurrency);
         Assert.Equal(0, privmsg.HypeChat.Exponent);
-        Assert.Equal(0, privmsg.HypeChat.CanonicalPaidAmount);
         Assert.Equal(0, privmsg.HypeChat.PaidAmount);
         Assert.False(privmsg.HypeChat.IsSystemMessage);
+        Assert.Equal(0, privmsg.HypeChat.GetActualAmount());
+        Assert.Equal(TimeSpan.Zero, privmsg.HypeChat.GetPinDuration());
 
         // Channel
         Assert.Equal("pajlada", privmsg.Channel.Name);
@@ -211,12 +214,13 @@ public class PrivmsgTests
 
         // Is hypechat message
         Assert.True(privmsg.HypeChat.HasContent);
-        Assert.Equal("ONE", privmsg.HypeChat.Level);
+        Assert.Equal(HypeChatLevel.ONE, privmsg.HypeChat.Level);
         Assert.Equal("GBP", privmsg.HypeChat.PaymentCurrency);
         Assert.Equal(2, privmsg.HypeChat.Exponent);
-        Assert.Equal(100, privmsg.HypeChat.CanonicalPaidAmount);
         Assert.Equal(100, privmsg.HypeChat.PaidAmount);
         Assert.False(privmsg.HypeChat.IsSystemMessage);
+        Assert.Equal(1, privmsg.HypeChat.GetActualAmount());
+        Assert.Equal(TimeSpan.FromSeconds(30), privmsg.HypeChat.GetPinDuration());
 
         // Channel
         Assert.Equal("forsen", privmsg.Channel.Name);
@@ -268,12 +272,13 @@ public class PrivmsgTests
 
         // No hypechat
         Assert.False(privmsg.HypeChat.HasContent);
-        Assert.Equal(string.Empty, privmsg.HypeChat.Level);
+        Assert.Equal(HypeChatLevel.None, privmsg.HypeChat.Level);
         Assert.Equal(string.Empty, privmsg.HypeChat.PaymentCurrency);
         Assert.Equal(0, privmsg.HypeChat.Exponent);
-        Assert.Equal(0, privmsg.HypeChat.CanonicalPaidAmount);
         Assert.Equal(0, privmsg.HypeChat.PaidAmount);
         Assert.False(privmsg.HypeChat.IsSystemMessage);
+        Assert.Equal(0, privmsg.HypeChat.GetActualAmount());
+        Assert.Equal(TimeSpan.Zero, privmsg.HypeChat.GetPinDuration());
 
         // Channel
         Assert.Equal("pajlada", privmsg.Channel.Name);

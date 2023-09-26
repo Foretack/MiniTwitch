@@ -11,9 +11,6 @@ public interface IWhisperAuthor
 {
     /// <inheritdoc cref="MessageAuthor.Badges"/>
     string Badges { get; }
-    /// <inheritdoc cref="MessageAuthor.ColorCode"/>
-    [Obsolete("Use the 'ChatColor' property instead. This property will be removed in a future version")]
-    string ColorCode { get; }
     /// <inheritdoc cref="MessageAuthor.ChatColor"/>
     Color ChatColor { get; }
     /// <inheritdoc cref="MessageAuthor.DisplayName"/>
@@ -25,6 +22,5 @@ public interface IWhisperAuthor
     /// <inheritdoc cref="MessageAuthor.Type"/>
     UserType Type { get; }
     /// <inheritdoc cref="MessageAuthor.IsTurbo"/>
-    [Obsolete("This is always false")]
     bool IsTurbo { get; }
 }

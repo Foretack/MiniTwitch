@@ -111,11 +111,10 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
 
         //HypeChat
         int paidAmount = 0;
-        int cPaidAmount = 0;
         string currency = string.Empty;
         int exponent = 0;
         bool isSystemMessage = false;
-        string level = string.Empty;
+        HypeChatLevel level = HypeChatLevel.None;
 
         // IBasicChannel
         string channelName = memory.Span.FindChannel();
@@ -152,7 +151,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
 
                 //vip
                 case 335:
-                    vip = TagHelper.GetBool(tagValue);
+                    vip = true;
                     break;
 
                 //bits
@@ -252,7 +251,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
 
                 //pinned-chat-paid-level
                 case 2139:
-                    level = TagHelper.GetString(tagValue, intern: true);
+                    level = TagHelper.GetEnum<HypeChatLevel>(tagValue);
                     break;
 
                 //pinned-chat-paid-amount
@@ -290,11 +289,6 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
                     threadParentUsername = TagHelper.GetString(tagValue);
                     break;
 
-                //pinned-chat-paid-canonical-amount
-                case 3244:
-                    cPaidAmount = TagHelper.GetInt(tagValue);
-                    break;
-
                 //pinned-chat-paid-is-system-message
                 case 3331:
                     isSystemMessage = TagHelper.GetBool(tagValue);
@@ -329,7 +323,6 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
         this.HypeChat = new HypeChat()
         {
             PaidAmount = paidAmount,
-            CanonicalPaidAmount = cPaidAmount,
             PaymentCurrency = currency,
             Exponent = exponent,
             IsSystemMessage = isSystemMessage,
@@ -355,8 +348,10 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
     /// </summary>
     /// <param name="reply">The reply to send</param>
     /// <param name="action">Prepend .me</param>
-    /// <returns></returns>
-    public ValueTask ReplyWith(string reply, bool action = false) => this.Source?.ReplyTo(this, reply, action) ?? ValueTask.CompletedTask;
+    /// <param name="replyInThread">Prefer replying to the target message in the same thread instead of creating a new one</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    public ValueTask ReplyWith(string reply, bool action = false, bool replyInThread = false, CancellationToken cancellationToken = default) => 
+        this.Source?.ReplyTo(this, reply, action, replyInThread, cancellationToken) ?? ValueTask.CompletedTask;
 
     /// <summary>
     /// Construct a message from a string. Useful for testing

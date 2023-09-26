@@ -13,9 +13,6 @@ public interface IUserstateSelf
     string BadgeInfo { get; }
     /// <inheritdoc cref="MessageAuthor.Badges"/>
     string Badges { get; }
-    /// <inheritdoc cref="MessageAuthor.ColorCode"/>
-    [Obsolete("Use the 'ChatColor' property instead. This property will be removed in a future version")]
-    string ColorCode { get; }
     /// <inheritdoc cref="MessageAuthor.ChatColor"/>
     Color ChatColor { get; }
     /// <summary>
@@ -46,6 +43,5 @@ public interface IUserstateSelf
     /// Whether you have site-wide commercial free mode enabled
     /// <para>Note: This value is always <see langword="false"/></para>
     /// </summary>
-    [Obsolete("Always false")]
     bool IsTurbo { get; }
 }
