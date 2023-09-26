@@ -141,11 +141,11 @@ public sealed class IrcClient : IAsyncDisposable
     #endregion
 
     #region Fields
-    private readonly AsyncEventCoordinator<WaitableEvents> _coordinator = new();
-    private readonly WaitableEvents[] _channelJoinEvents = new[] 
+    private static readonly WaitableEvents[] _channelJoinEvents = new[] 
     {
         WaitableEvents.JoinedChannel, WaitableEvents.ChannelSuspended
     };
+    private readonly AsyncEventCoordinator<WaitableEvents> _coordinator = new();
     private readonly HashSet<string> _moderated = new();
     private readonly RateLimitManager _manager;
     private readonly WebSocketClient _ws;
