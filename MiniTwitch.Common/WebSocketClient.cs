@@ -1,4 +1,5 @@
-﻿using System.Net.WebSockets;
+﻿using System.Buffers;
+using System.Net.WebSockets;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using MiniTwitch.Common.Internal.Models;
@@ -120,7 +121,7 @@ public sealed class WebSocketClient : IAsyncDisposable
         // Attempt to start the client again
         await Start(_uri, cancellationToken);
         Log(LogLevel.Trace, "If the WebSocket doesn't reconnect in 10 seconds you will see a warning");
-        
+
         // Keep trying until you reconnect
         if (!await _reconnectionLock.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken))
         {
@@ -184,7 +185,7 @@ public sealed class WebSocketClient : IAsyncDisposable
 
     public async ValueTask SendAsync(string data, bool sensitive = false, CancellationToken cancellationToken = default)
     {
-        ReadOnlyMemory<byte> bytes = Encoding.UTF8.GetBytes(data);
+        var (written, mem) = StringToBytes(data);
         if (!await _sendLock.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken).ConfigureAwait(false))
         {
             Log(LogLevel.Warning, "{method} timed out after 10 seconds.", nameof(SendAsync));
@@ -200,7 +201,7 @@ public sealed class WebSocketClient : IAsyncDisposable
 
         try
         {
-            await _client!.SendAsync(bytes, WebSocketMessageType.Text, true, cancellationToken);
+            await _client!.SendAsync(mem.Memory[..written], WebSocketMessageType.Text, true, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -208,6 +209,7 @@ public sealed class WebSocketClient : IAsyncDisposable
         }
         finally
         {
+            mem.Dispose();
             _ = _sendLock.Release();
         }
     }
@@ -217,6 +219,14 @@ public sealed class WebSocketClient : IAsyncDisposable
     private void Log(LogLevel level, string template, params object[] properties) => OnLog?.Invoke(level, template, properties);
 
     private void LogException(Exception ex, string template, params object[] properties) => OnLogEx?.Invoke(ex, template, properties);
+
+    private static (int, IMemoryOwner<byte>) StringToBytes(string s)
+    {
+        ReadOnlySpan<char> chars = s;
+        IMemoryOwner<byte> bytes = MemoryPool<byte>.Shared.Rent(chars.Length * sizeof(char));
+        int written = Encoding.UTF8.GetBytes(chars, bytes.Memory.Span);
+        return (written, bytes);
+    }
     #endregion
 
     public async ValueTask DisposeAsync()
