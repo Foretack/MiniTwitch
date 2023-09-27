@@ -233,11 +233,13 @@ public sealed class IrcClient : IAsyncDisposable
 
     /// <summary>
     /// Disconnects from TMI in a "fire and forget" style
+    /// <para>Note: To reconnect, you must use <see cref="ReconnectAsync(CancellationToken)"/></para>
     /// </summary>
     public void Disconnect() => _ws.Disconnect().StepOver();
 
     /// <summary>
     /// Disconnects from TMI
+    /// <para>Note: To reconnect, you must use <see cref="ReconnectAsync(CancellationToken)"/></para>
     /// </summary>
     public Task DisconnectAsync(CancellationToken cancellationToken = default) => _ws.Disconnect(cancellationToken);
 

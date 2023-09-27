@@ -422,11 +422,13 @@ public sealed class PubSubClient : IAsyncDisposable
 
     /// <summary>
     /// Fire-and-forget a disconnection attempt to the Twitch PubSub service
+    /// <para>Note: To reconnect, you must use <see cref="ReconnectAsync(CancellationToken)"/></para>
     /// </summary>
     public void Disconnect() => _ws.Disconnect().StepOver();
 
     /// <summary>
     /// Asynchronously disconnect from the Twitch PubSub service
+    /// <para>Note: To reconnect, you must use <see cref="ReconnectAsync(CancellationToken)"/></para>
     /// </summary>
     public Task DisconnectAsync(CancellationToken cancellationToken = default) => _ws.Disconnect(cancellationToken);
 
