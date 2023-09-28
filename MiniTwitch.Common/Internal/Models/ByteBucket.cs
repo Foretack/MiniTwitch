@@ -10,7 +10,7 @@ internal sealed class ByteBucket
     // Keep this bad boy big, because it doesn't need to be cleared
     private readonly Memory<byte> _bucket = new(new byte[short.MaxValue]);
     private readonly Memory<byte> _temp;
-    private int _filled = 0;
+    private int _reached = 0;
 
     public ByteBucket(short tempBufferSize = 2048)
     {
@@ -27,15 +27,17 @@ internal sealed class ByteBucket
         // This overwrites previous data
         ValueWebSocketReceiveResult result = await source.ReceiveAsync(_temp, cToken);
         // Copy the received bytes into the bucket
-        _temp[..result.Count].CopyTo(_bucket[_filled..(result.Count + _filled)]);
-        _filled += result.Count;
+        _temp[..result.Count].CopyTo(_bucket[_reached..(result.Count + _reached)]);
+        _reached += result.Count;
         return result.EndOfMessage;
     }
 
     public ReadOnlyMemory<byte> Drain()
     {
-        ReadOnlyMemory<byte> result = _bucket[..(_filled - 2)];
-        _filled = 0;
+        const byte lf = (byte)'\n';
+        ReadOnlyMemory<byte> filled = _bucket[.._reached];
+        ReadOnlyMemory<byte> result = (filled.Span[^1] == lf) ? filled[..^2] : filled;
+        _reached = 0;
         return result;
     }
 }
