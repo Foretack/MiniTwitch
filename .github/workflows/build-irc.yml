@@ -1,4 +1,4 @@
-name: Build (Common)
+name: Build (Irc)
 
 on:
   push:
@@ -25,6 +25,6 @@ jobs:
 
     - name: Build
       run: |
-          cd .\MiniTwitch.Common\
+          cd .\MiniTwitch.Irc\
           dotnet build -c Release
           
