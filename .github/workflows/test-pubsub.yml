@@ -23,7 +23,7 @@ jobs:
       with:
         dotnet-version: 6.0.x
 
-    - name: Build
+    - name: Run tests
       run: |
           cd .\MiniTwitch.PubSub.Test\
           dotnet test
