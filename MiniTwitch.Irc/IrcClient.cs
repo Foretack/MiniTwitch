@@ -5,6 +5,7 @@ using MiniTwitch.Irc.Enums;
 using MiniTwitch.Irc.Interfaces;
 using MiniTwitch.Irc.Internal;
 using MiniTwitch.Irc.Internal.Enums;
+using MiniTwitch.Irc.Internal.Models;
 using MiniTwitch.Irc.Internal.Parsing;
 using MiniTwitch.Irc.Models;
 
@@ -527,22 +528,18 @@ public sealed class IrcClient : IAsyncDisposable
     #region Parsing
     internal void Parse(ReadOnlyMemory<byte> data)
     {
-        (IrcCommand command, int lfIndex) = IrcParsing.ParseCommand(data.Span);
-        int accumulatedIndex = lfIndex;
-        ReceiveData(command, data[..(lfIndex == 0 ? ^0 : lfIndex - 2)]);
-        // Go over data if it has multiple messages
-        while (lfIndex != 0 && data.Length - accumulatedIndex > 0)
+        IrcMessage message = new(data);
+        HandleMessage(message);
+        if (message.IsMultipleMessages)
         {
-            (command, lfIndex) = IrcParsing.ParseCommand(data.Span[accumulatedIndex..]);
-            ReceiveData(command, data[accumulatedIndex..(lfIndex == 0 ? ^0 : lfIndex + accumulatedIndex - 2)]);
-            accumulatedIndex += lfIndex;
+            Parse(data[message.NextMessageStartIndex..]);
         }
     }
 
-    private void ReceiveData(IrcCommand command, ReadOnlyMemory<byte> data)
+    private void HandleMessage(IrcMessage message)
     {
         // Return if user decides to ignore the command
-        if (this.Options.IgnoreCommands != IgnoreCommand.None && command switch
+        if (this.Options.IgnoreCommands != IgnoreCommand.None && message.Command switch
         {
             IrcCommand.PRIVMSG => this.Options.IgnoreCommands.HasFlag(IgnoreCommand.PRIVMSG),
             IrcCommand.USERNOTICE => this.Options.IgnoreCommands.HasFlag(IgnoreCommand.USERNOTICE),
@@ -560,10 +557,10 @@ public sealed class IrcClient : IAsyncDisposable
             return;
         }
 
-        switch (command)
+        switch (message.Command)
         {
             case IrcCommand.PRIVMSG:
-                Privmsg ircMessage = new(data, this);
+                Privmsg ircMessage = new(message, this);
                 OnMessage?.Invoke(ircMessage).StepOver(this.ExceptionHandler);
                 break;
 
@@ -591,7 +588,7 @@ public sealed class IrcClient : IAsyncDisposable
                 break;
 
             case IrcCommand.USERNOTICE:
-                Usernotice usernotice = new(data);
+                Usernotice usernotice = new(message);
                 switch (usernotice.MsgId)
                 {
                     case UsernoticeType.Sub
@@ -628,7 +625,7 @@ public sealed class IrcClient : IAsyncDisposable
                 break;
 
             case IrcCommand.CLEARCHAT:
-                Clearchat clearchat = new(data);
+                Clearchat clearchat = new(message);
                 if (clearchat.IsClearChat)
                     OnChatClear?.Invoke(clearchat).StepOver(this.ExceptionHandler);
                 else if (clearchat.IsBan)
@@ -639,12 +636,12 @@ public sealed class IrcClient : IAsyncDisposable
                 break;
 
             case IrcCommand.CLEARMSG:
-                Clearmsg clearmsg = new(data);
+                Clearmsg clearmsg = new(message);
                 OnMessageDelete?.Invoke(clearmsg).StepOver(this.ExceptionHandler);
                 break;
 
             case IrcCommand.ROOMSTATE:
-                IrcChannel ircChannel = new(data);
+                IrcChannel ircChannel = new(message);
                 if (ircChannel.Roomstate == RoomstateType.All)
                 {
                     _coordinator.ReleaseIfLocked(WaitableEvents.JoinedChannel);
@@ -685,7 +682,7 @@ public sealed class IrcClient : IAsyncDisposable
                 break;
 
             case IrcCommand.PART:
-                IrcChannel channel = new(data);
+                IrcChannel channel = new(message);
                 if (this.JoinedChannels.Remove(channel))
                 {
                     Log(LogLevel.Information, "Parted #{channel}", channel.Name);
@@ -697,7 +694,7 @@ public sealed class IrcClient : IAsyncDisposable
                 break;
 
             case IrcCommand.NOTICE:
-                Notice notice = new(data);
+                Notice notice = new(message);
                 if (notice.Type == NoticeType.Msg_channel_suspended)
                 {
                     Log(LogLevel.Error, "Tried joining suspended channel: #{channel}", notice.Channel.Name);
@@ -712,7 +709,7 @@ public sealed class IrcClient : IAsyncDisposable
                 break;
 
             case IrcCommand.USERSTATE or IrcCommand.GLOBALUSERSTATE:
-                Userstate state = new(data);
+                Userstate state = new(message);
                 if (state.Self.IsMod && !_moderated.Contains(state.Channel.Name))
                     _ = _moderated.Add(state.Channel.Name);
 
@@ -720,7 +717,7 @@ public sealed class IrcClient : IAsyncDisposable
                 break;
 
             case IrcCommand.WHISPER:
-                Whisper whisper = new(data);
+                Whisper whisper = new(message);
                 OnWhisper?.Invoke(whisper).StepOver(this.ExceptionHandler);
                 break;
         }

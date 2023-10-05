@@ -1,7 +1,9 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using MiniTwitch.Common.Extensions;
 using MiniTwitch.Irc.Enums;
 using MiniTwitch.Irc.Interfaces;
+using MiniTwitch.Irc.Internal.Enums;
 using MiniTwitch.Irc.Internal.Models;
 using MiniTwitch.Irc.Internal.Parsing;
 
@@ -25,10 +27,10 @@ public readonly struct Notice : IEquatable<Notice>
     /// </summary>
     public NoticeType Type { get; init; } = NoticeType.Unknown;
 
-    internal Notice(ReadOnlyMemory<byte> memory)
+    internal Notice(IrcMessage message)
     {
-        this.SystemMessage = memory.Span.FindContent().Content;
-        using IrcTags ircTags = IrcParsing.ParseTags(memory);
+        this.SystemMessage = message.GetContent().Content;
+        using IrcTags ircTags = IrcParsing.ParseTags(message.Memory);
         foreach (IrcTag tag in ircTags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
@@ -38,24 +40,16 @@ public readonly struct Notice : IEquatable<Notice>
             switch (tagKey.Sum())
             {
                 //msg-id
-                case 577:
-                    // I do not like this. But because some of its values would have the same sum, I'm forced to do this
+                case (int)Tags.MsgId:
                     this.Type = TagHelper.GetEnum<NoticeType>(tagValue);
                     break;
             }
         }
 
-        try
+        this.Channel = new IrcChannel()
         {
-            this.Channel = new IrcChannel()
-            {
-                Name = memory.Span.FindChannel()
-            };
-        }
-        catch
-        {
-            this.Type = NoticeType.Bad_auth;
-        }
+            Name = message.IsGlobalChannel ? "*" : message.GetChannel()
+        };
     }
 
     /// <summary>
@@ -66,7 +60,7 @@ public readonly struct Notice : IEquatable<Notice>
     public static Notice Construct(string rawData)
     {
         ReadOnlyMemory<byte> memory = new(Encoding.UTF8.GetBytes(rawData));
-        return new(memory);
+        return new(new IrcMessage(memory));
     }
 
 #pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).

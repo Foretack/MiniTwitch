@@ -37,12 +37,12 @@ public readonly struct IrcChannel : IGazatuChannel, IPartedChannel, IBasicChanne
 
     private static readonly TimeSpan _followersOnlyOffTimeSpan = TimeSpan.FromMinutes(-1);
 
-    internal IrcChannel(ReadOnlyMemory<byte> memory)
+    internal IrcChannel(IrcMessage message)
     {
         int followerModeDuration = -1;
         int slowModeDuration = 0;
         // do this otherwise it will include '\r\n' in the name
-        string name = memory.Span.FindChannel(anySeparator: true);
+        string name = message.GetChannel();
         long id = 0;
 
         bool emoteOnlyModified = false;
@@ -51,7 +51,7 @@ public readonly struct IrcChannel : IGazatuChannel, IPartedChannel, IBasicChanne
         bool followerModeModified = false;
         bool slowModeModified = false;
 
-        using IrcTags tags = IrcParsing.ParseTags(memory);
+        using IrcTags tags = IrcParsing.ParseTags(message.Memory);
         foreach (IrcTag tag in tags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
@@ -59,36 +59,36 @@ public readonly struct IrcChannel : IGazatuChannel, IPartedChannel, IBasicChanne
             switch (tagKey.Sum())
             {
                 //r9k
-                case 278:
+                case (int)Tags.R9K:
                     this.UniqueModeEnabled = TagHelper.GetBool(tagValue);
                     uniqueModeModified = true;
                     break;
 
                 //slow
-                case 453:
+                case (int)Tags.Slow:
                     slowModeDuration = TagHelper.GetInt(tagValue);
                     slowModeModified = true;
                     break;
 
                 //room-id
-                case 695:
+                case (int)Tags.RoomId:
                     id = TagHelper.GetLong(tagValue);
                     break;
 
                 //subs-only
-                case 940:
+                case (int)Tags.SubsOnly:
                     this.SubOnlyEnabled = TagHelper.GetBool(tagValue);
                     subModeModified = true;
                     break;
 
                 //emote-only
-                case 1033:
+                case (int)Tags.EmoteOnly:
                     this.EmoteOnlyEnabled = TagHelper.GetBool(tagValue);
                     emoteOnlyModified = true;
                     break;
 
                 //followers-only
-                case 1484:
+                case (int)Tags.FollowersOnly:
                     followerModeDuration = TagHelper.GetInt(tagValue);
                     followerModeModified = true;
                     break;
@@ -140,7 +140,7 @@ public readonly struct IrcChannel : IGazatuChannel, IPartedChannel, IBasicChanne
     public static IrcChannel Construct(string rawData)
     {
         ReadOnlyMemory<byte> memory = new(Encoding.UTF8.GetBytes(rawData));
-        return new(memory);
+        return new(new IrcMessage(memory));
     }
 
 #pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).

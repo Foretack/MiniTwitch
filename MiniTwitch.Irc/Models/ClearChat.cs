@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using MiniTwitch.Common.Extensions;
 using MiniTwitch.Irc.Interfaces;
+using MiniTwitch.Irc.Internal.Enums;
 using MiniTwitch.Irc.Internal.Models;
 using MiniTwitch.Irc.Internal.Parsing;
 
@@ -30,7 +31,7 @@ public readonly struct Clearchat : IUserTimeout, IUserBan, IChatClear
     internal bool IsClearChat { get; init; }
     internal bool IsBan { get; init; }
 
-    internal Clearchat(ReadOnlyMemory<byte> memory)
+    internal Clearchat(IrcMessage message)
     {
         int duration = 0;
         long targetId = 0;
@@ -38,7 +39,7 @@ public readonly struct Clearchat : IUserTimeout, IUserBan, IChatClear
 
         long tmiSentTs = 0;
 
-        using IrcTags tags = IrcParsing.ParseTags(memory);
+        using IrcTags tags = IrcParsing.ParseTags(message.Memory);
         foreach (IrcTag tag in tags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
@@ -47,22 +48,22 @@ public readonly struct Clearchat : IUserTimeout, IUserBan, IChatClear
             switch (tagKey.Sum())
             {
                 //room-id
-                case 695:
+                case (int)Tags.RoomId:
                     channelId = TagHelper.GetLong(tagValue);
                     break;
 
                 //tmi-sent-ts
-                case 1093:
+                case (int)Tags.TmiSentTs:
                     tmiSentTs = TagHelper.GetLong(tagValue);
                     break;
 
                 //ban-duration
-                case 1220:
+                case (int)Tags.BanDuration:
                     duration = TagHelper.GetInt(tagValue);
                     break;
 
                 //target-user-id
-                case 1389:
+                case (int)Tags.TargetUserId:
                     targetId = TagHelper.GetLong(tagValue);
                     break;
             }
@@ -71,12 +72,12 @@ public readonly struct Clearchat : IUserTimeout, IUserBan, IChatClear
         this.Duration = duration == 0 ? TimeSpan.Zero : TimeSpan.FromSeconds(duration);
         this.Target = new MessageAuthor()
         {
-            Name = memory.Span.FindContent().Content,
+            Name = message.HasMessageContent ? message.GetContent().Content : string.Empty,
             Id = targetId
         };
         this.Channel = new IrcChannel()
         {
-            Name = memory.Span.FindChannel(),
+            Name = message.GetChannel(),
             Id = channelId
         };
         this.TmiSentTs = tmiSentTs;
@@ -92,6 +93,6 @@ public readonly struct Clearchat : IUserTimeout, IUserBan, IChatClear
     public static Clearchat Construct(string rawData)
     {
         ReadOnlyMemory<byte> memory = new(Encoding.UTF8.GetBytes(rawData));
-        return new(memory);
+        return new(new IrcMessage(memory));
     }
 }
