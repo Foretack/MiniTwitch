@@ -55,7 +55,7 @@ public readonly struct Userstate
         string emoteSets = string.Empty;
         string nonce = string.Empty;
 
-        using IrcTags tags = IrcParsing.ParseTags(message.Memory);
+        using IrcTags tags = message.ParseTags();
         foreach (IrcTag tag in tags)
         {
             if (tag.Key.Length == 0)

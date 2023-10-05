@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using MiniTwitch.Common.Extensions;
 using MiniTwitch.Irc.Internal.Enums;
+using MiniTwitch.Irc.Internal.Parsing;
 
 namespace MiniTwitch.Irc.Internal.Models;
 
@@ -17,7 +19,6 @@ internal ref struct IrcMessage
     public readonly Range MessageContentRange { get; init; } = default;
     public readonly bool IsMultipleMessages { get; init; } = default;
     public readonly int NextMessageStartIndex { get; init; } = default;
-    public readonly ReadOnlySpan<byte> Span { get; init; } = default;
     public readonly ReadOnlyMemory<byte> Memory { get; init; } = default;
 
     private static readonly Range _zeroRange = Range.EndAt(0);
@@ -31,22 +32,22 @@ internal ref struct IrcMessage
         const byte asterisk = (byte)'*';
         const byte cr = (byte)'\r';
 
-        this.Span = memory.Span;
+        ReadOnlySpan<byte> span = memory.Span;
         this.Memory = memory;
-        switch (Span[0])
+        switch (span[0])
         {
             case at:
                 this.HasTags = true;
                 // <tags> :foo!foo@foo.tmi.twitch.tv PRIVMSG #bar :asdf
                 // ----->|
-                this.TagsRange = 1..this.Span.IndexOf(space);
+                this.TagsRange = 1..span.IndexOf(space);
                 int usernameStart = this.TagsRange.End.Value + 2;
 
             AfterUsernameStart:
 
                 // <tags> :foo!foo@foo.tmi.twitch.tv PRIVMSG #bar :asdf
                 //         -->|
-                int usernameEnd = this.Span[usernameStart..].IndexOf(excl) + usernameStart;
+                int usernameEnd = span[usernameStart..].IndexOf(excl) + usernameStart;
                 if (usernameEnd - usernameStart is -1 or > 25)
                 {
                     this.UsernameRange = _zeroRange;
@@ -58,17 +59,17 @@ internal ref struct IrcMessage
                 }
 
                 int commandStartAddVal = this.HasUsername ? usernameEnd : usernameStart;
-                int commandStart = this.Span[commandStartAddVal++..].IndexOf(space) + commandStartAddVal;
-                int commandEnd = this.Span[commandStart..].IndexOf(space) + commandStart;
+                int commandStart = span[commandStartAddVal++..].IndexOf(space) + commandStartAddVal;
+                int commandEnd = span[commandStart..].IndexOf(space) + commandStart;
                 if (commandEnd - commandStart == -1)
                 {
-                    this.Command = (IrcCommand)this.Span[commandStart..this.Span.Length].Sum();
+                    this.Command = (IrcCommand)span[commandStart..span.Length].Sum();
                     return;
                 }
 
-                this.Command = (IrcCommand)this.Span[commandStart..commandEnd].Sum();
+                this.Command = (IrcCommand)span[commandStart..commandEnd].Sum();
                 int contentStart;
-                if (this.Span[commandEnd + 1] == asterisk)
+                if (span[commandEnd + 1] == asterisk)
                 {
                     this.IsGlobalChannel = true;
                     this.ChannelRange = _zeroRange;
@@ -77,11 +78,16 @@ internal ref struct IrcMessage
                 else
                 {
                     int channelStart = commandEnd + 2;
-                    int channelEnd = this.Span[channelStart..].IndexOfAny(stackalloc byte[] { space, cr }) + channelStart;
+                    int channelEnd = span[channelStart..].IndexOfAny(space, cr) + channelStart;
                     if (channelEnd - channelStart == -1)
                     {
-                        this.ChannelRange = channelStart..this.Span.Length;
+                        this.ChannelRange = channelStart..span.Length;
                         return;
+                    }
+                    else if (span[channelEnd] == cr)
+                    {
+                        this.IsMultipleMessages = true;
+                        this.NextMessageStartIndex = channelEnd + 2;
                     }
 
                     this.ChannelRange = channelStart..channelEnd;
@@ -90,18 +96,18 @@ internal ref struct IrcMessage
 
                 // Didn't end at channel so there must be content
                 this.HasMessageContent = true;
-                int contentEnd = this.Span[contentStart..].IndexOf(cr) + contentStart;
+                int contentEnd = span[contentStart..].IndexOf(cr) + contentStart;
                 if (contentEnd - contentStart == -1)
                 {
-                    this.MessageContentRange = contentStart..this.Span.Length;
+                    this.MessageContentRange = contentStart..span.Length;
                     return;
                 }
 
                 this.MessageContentRange = contentStart..contentEnd;
-                if (this.Span.Length > contentEnd + 1)
+                if (span.Length > contentEnd + 1)
                 {
                     this.IsMultipleMessages = true;
-                    this.NextMessageStartIndex = contentEnd + 3;
+                    this.NextMessageStartIndex = contentEnd + 2;
                 }
                 break;
 
@@ -112,9 +118,85 @@ internal ref struct IrcMessage
 
             default:
                 commandStart = 0;
-                commandEnd = this.Span.IndexOf(space);
-                this.Command = (IrcCommand)this.Span[commandStart..commandEnd].Sum();
+                commandEnd = span.IndexOf(space);
+                this.Command = (IrcCommand)span[commandStart..commandEnd].Sum();
+                int crIndex = span[commandEnd..].IndexOf(cr) + commandEnd;
+                if (crIndex - commandEnd != -1)
+                {
+                    this.IsMultipleMessages = true;
+                    this.NextMessageStartIndex = crIndex + 2;
+                }
+
                 break;
         }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly string GetChannel() => TagHelper.GetString(this.Memory.Span[this.ChannelRange], true);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly string GetUsername() => this.HasUsername
+        ? TagHelper.GetString(this.Memory.Span[this.UsernameRange])
+        : string.Empty;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly (string Content, bool Action) GetContent(bool maybeAction = false)
+    {
+        if (!this.HasMessageContent)
+            return (string.Empty, false);
+
+        string content = TagHelper.GetString(this.Memory.Span[this.MessageContentRange]);
+        if (maybeAction && content.Length > 9 && content[0] == '\u0001' && content[^1] == '\u0001')
+            return (content[8..^1], true);
+
+        return (content, false);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly IrcTags ParseTags()
+    {
+        const byte semiColon = (byte)';';
+        const byte equals = (byte)'=';
+
+        ReadOnlySpan<byte> span = this.Memory.Span;
+        int tagCount = 0;
+
+        // Determine the amount of tags by counting '='
+        int eqIndex;
+        ReadOnlySpan<byte> tagIndexCountSpan = span;
+        while ((eqIndex = tagIndexCountSpan.IndexOf(equals)) != -1)
+        {
+            tagCount++;
+            tagIndexCountSpan = tagIndexCountSpan[(eqIndex + 1)..];
+        }
+
+        IrcTags tags = new(tagCount);
+        Index tagsEndIndex = this.TagsRange.End;
+        Index tagStart = this.TagsRange.Start;
+        Index tagEquals;
+        Index tagEnd;
+
+        for (int i = 0; i < tagCount; i++)
+        {
+            if (tagStart.Value >= tagsEndIndex.Value)
+                break;
+
+            // Index of '=' from the start of the tag
+            tagEquals = span[tagStart..tagsEndIndex].IndexOf(equals) + tagStart.Value;
+            if (tagEquals.Value == tagStart.Value - 1)
+                break;
+
+            // Index of ';' from the equal sign of the tag
+            tagEnd = span[tagEquals..tagsEndIndex].IndexOf(semiColon) + tagEquals.Value;
+            // Account for last tag, which doesn't end with a semicolon
+            if (tagEnd.Value == tagEquals.Value - 1)
+                tagEnd = tagsEndIndex;
+
+            // Key memory slice: from index 0 until the next equal sign
+            // Value memory slice: from index 0 after the equal sign until next semicolon
+            tags.Add(i, this.Memory[tagStart..tagEquals], this.Memory[(tagEquals.Value + 1)..tagEnd]);
+            tagStart = tagEnd.Value + 1;
+        }
+
+        return tags;
     }
 }

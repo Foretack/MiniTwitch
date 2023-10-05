@@ -49,7 +49,7 @@ public readonly struct Whisper
         int id = 0;
         string threadId = string.Empty;
         (string content, bool action) = message.GetContent(maybeAction: true);
-        using IrcTags tags = IrcParsing.ParseTags(message.Memory);
+        using IrcTags tags = message.ParseTags();
         foreach (IrcTag tag in tags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;

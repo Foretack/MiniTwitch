@@ -51,7 +51,7 @@ public readonly struct IrcChannel : IGazatuChannel, IPartedChannel, IBasicChanne
         bool followerModeModified = false;
         bool slowModeModified = false;
 
-        using IrcTags tags = IrcParsing.ParseTags(message.Memory);
+        using IrcTags tags = message.ParseTags();
         foreach (IrcTag tag in tags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;

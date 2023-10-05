@@ -39,7 +39,7 @@ public readonly struct Clearchat : IUserTimeout, IUserBan, IChatClear
 
         long tmiSentTs = 0;
 
-        using IrcTags tags = IrcParsing.ParseTags(message.Memory);
+        using IrcTags tags = message.ParseTags();
         foreach (IrcTag tag in tags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;

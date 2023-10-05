@@ -30,7 +30,7 @@ public readonly struct Notice : IEquatable<Notice>
     internal Notice(IrcMessage message)
     {
         this.SystemMessage = message.GetContent().Content;
-        using IrcTags ircTags = IrcParsing.ParseTags(message.Memory);
+        using IrcTags ircTags = message.ParseTags();
         foreach (IrcTag tag in ircTags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;

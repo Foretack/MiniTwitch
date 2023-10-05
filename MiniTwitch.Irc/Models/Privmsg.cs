@@ -93,7 +93,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
         string badgeInfo = string.Empty;
         Color color = default;
         string displayName = string.Empty;
-        string username = TagHelper.GetString(message.Span[message.UsernameRange]);
+        string username = message.GetUsername();
         long uid = 0;
         bool mod = false;
         bool sub = false;
@@ -118,7 +118,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
         HypeChatLevel level = HypeChatLevel.None;
 
         // IBasicChannel
-        string channelName = TagHelper.GetString(message.Span[message.ChannelRange]);
+        string channelName = message.GetChannel();
         long channelId = 0;
 
         (this.Content, this.IsAction) = message.GetContent(maybeAction: true);
@@ -131,7 +131,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
         bool firstMsg = false;
         bool returningChatter = false;
 
-        using IrcTags tags = IrcParsing.ParseTags(message.Memory);
+        using IrcTags tags = message.ParseTags();
         foreach (IrcTag tag in tags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
