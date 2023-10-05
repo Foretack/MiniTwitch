@@ -21,8 +21,6 @@ internal ref struct IrcMessage
     public readonly int NextMessageStartIndex { get; init; } = default;
     public readonly ReadOnlyMemory<byte> Memory { get; init; } = default;
 
-    private static readonly Range _zeroRange = Range.EndAt(0);
-
     public IrcMessage(ReadOnlyMemory<byte> memory)
     {
         const byte colon = (byte)':';
@@ -48,11 +46,7 @@ internal ref struct IrcMessage
                 // <tags> :foo!foo@foo.tmi.twitch.tv PRIVMSG #bar :asdf
                 //         -->|
                 int usernameEnd = span[usernameStart..].IndexOf(excl) + usernameStart;
-                if (usernameEnd - usernameStart is -1 or > 25)
-                {
-                    this.UsernameRange = _zeroRange;
-                }
-                else
+                if (usernameEnd - usernameStart is not -1 and not > 25)
                 {
                     this.HasUsername = true;
                     this.UsernameRange = usernameStart..usernameEnd;
@@ -72,7 +66,6 @@ internal ref struct IrcMessage
                 if (span[commandEnd + 1] == asterisk)
                 {
                     this.IsGlobalChannel = true;
-                    this.ChannelRange = _zeroRange;
                     contentStart = commandEnd + 4;
                 }
                 else
@@ -112,7 +105,6 @@ internal ref struct IrcMessage
                 break;
 
             case colon:
-                this.TagsRange = _zeroRange;
                 usernameStart = 1;
                 goto AfterUsernameStart;
 
