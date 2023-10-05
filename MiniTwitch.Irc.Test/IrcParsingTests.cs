@@ -37,8 +37,7 @@ public class IrcParsingTests
     public void Find_Content_Action()
     {
         string raw = "@badge-info=subscriber/1;badges=subscriber/0;color=#9ACD32;display-name=FeelsCzechMan;emotes=425671:13-20;first-msg=0;flags=;id=0012619e-8e14-4d51-93c9-e9d6fd5a178b;mod=0;returning-chatter=0;room-id=11148817;subscriber=1;tmi-sent-ts=1679730451594;turbo=0;user-id=875745889;user-type= :feelsczechman!feelsczechman@feelsczechman.tmi.twitch.tv PRIVMSG #pajlada :\u0001ACTION FeelsDankMan PowerUpR DANK WAVE▂▃▄▅▆▇██▇▆▅▄▃▂▂▃▄▅▆▇██▇▆▅▄▃▂▂▃▄▅▆▇██▇▆▅▄▃▂▂▃▄▅▆▇██▇▆▅▄▃▂▂▃▄▅▆▇██▇▆▅▄▃▂\u0001";
-        (string content, bool action) = new IrcMessage(Encoding.UTF8.GetBytes(raw)).GetContent();
-
+        (string content, bool action) = new IrcMessage(Encoding.UTF8.GetBytes(raw)).GetContent(maybeAction: true);
         Assert.Equal("FeelsDankMan PowerUpR DANK WAVE▂▃▄▅▆▇██▇▆▅▄▃▂▂▃▄▅▆▇██▇▆▅▄▃▂▂▃▄▅▆▇██▇▆▅▄▃▂▂▃▄▅▆▇██▇▆▅▄▃▂▂▃▄▅▆▇██▇▆▅▄▃▂", content);
         Assert.True(action);
     }
