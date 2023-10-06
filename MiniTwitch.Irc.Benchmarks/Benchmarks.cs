@@ -22,7 +22,7 @@ public class Benchmarks
     [Benchmark]
     public void Create()
     {
-        foreach (var line in utf8Lines)
+        foreach (var line in utf8Lines.AsSpan())
         {
             _ = new IrcMessage(line);
         }
@@ -31,7 +31,7 @@ public class Benchmarks
     [Benchmark]
     public void Create_Parse()
     {
-        foreach (var line in utf8Lines)
+        foreach (var line in utf8Lines.AsSpan())
         {
             var msg = new IrcMessage(line);
             _ = msg.ParseTags();
@@ -44,7 +44,7 @@ public class Benchmarks
     [Benchmark]
     public void Create_Parse_Map_Send()
     {
-        foreach (var line in utf8Lines)
+        foreach (var line in utf8Lines.AsSpan())
         {
             _client.Parse(line);
         }
