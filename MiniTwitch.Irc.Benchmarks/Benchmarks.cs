@@ -16,7 +16,8 @@ public class Benchmarks
     [GlobalSetup]
     public void AddData()
     {
-        utf8Lines = File.ReadLines("data.txt").Take(LineCount).Select(Encoding.UTF8.GetBytes).ToArray();
+        utf8Lines = File.ReadAllText("data.txt").Split('\0').Take(LineCount).Select(Encoding.UTF8.GetBytes).ToArray();
+        Console.WriteLine(utf8Lines.Length);
     }
 
     [Benchmark]
