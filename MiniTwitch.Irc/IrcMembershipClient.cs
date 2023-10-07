@@ -5,7 +5,6 @@ using MiniTwitch.Irc.Interfaces;
 using MiniTwitch.Irc.Internal;
 using MiniTwitch.Irc.Internal.Enums;
 using MiniTwitch.Irc.Internal.Models;
-using MiniTwitch.Irc.Internal.Parsing;
 using MiniTwitch.Irc.Models;
 
 namespace MiniTwitch.Irc;

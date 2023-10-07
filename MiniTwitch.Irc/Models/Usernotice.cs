@@ -287,7 +287,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
 
         if (this.MsgId is UsernoticeType.Resub or UsernoticeType.Announcement)
         {
-            content = message.HasMessageContent ?  message.GetContent().Content : string.Empty;
+            content = message.HasMessageContent ? message.GetContent().Content : string.Empty;
         }
 
         this.Author = new MessageAuthor()

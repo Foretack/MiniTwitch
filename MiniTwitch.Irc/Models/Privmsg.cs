@@ -350,7 +350,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
     /// <param name="action">Prepend .me</param>
     /// <param name="replyInThread">Prefer replying to the target message in the same thread instead of creating a new one</param>
     /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
-    public ValueTask ReplyWith(string reply, bool action = false, bool replyInThread = false, CancellationToken cancellationToken = default) => 
+    public ValueTask ReplyWith(string reply, bool action = false, bool replyInThread = false, CancellationToken cancellationToken = default) =>
         this.Source?.ReplyTo(this, reply, action, replyInThread, cancellationToken) ?? ValueTask.CompletedTask;
 
     /// <summary>

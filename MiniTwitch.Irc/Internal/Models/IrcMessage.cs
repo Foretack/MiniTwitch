@@ -1,12 +1,11 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using MiniTwitch.Common.Extensions;
 using MiniTwitch.Irc.Internal.Enums;
 using MiniTwitch.Irc.Internal.Parsing;
 
 namespace MiniTwitch.Irc.Internal.Models;
 
-internal ref struct IrcMessage
+internal readonly ref struct IrcMessage
 {
     public readonly bool HasTags { get; init; } = default;
     public readonly Range TagsRange { get; init; } = default;
@@ -128,9 +127,7 @@ internal ref struct IrcMessage
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly string GetChannel() => TagHelper.GetString(this.Memory.Span[this.ChannelRange], true);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly string GetUsername() => this.HasUsername
-        ? TagHelper.GetString(this.Memory.Span[this.UsernameRange])
-        : string.Empty;
+    public readonly string GetUsername() => TagHelper.GetString(this.Memory.Span[this.UsernameRange]);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly (string Content, bool Action) GetContent(bool maybeAction = false)

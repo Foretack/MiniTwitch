@@ -6,7 +6,6 @@ using MiniTwitch.Irc.Interfaces;
 using MiniTwitch.Irc.Internal;
 using MiniTwitch.Irc.Internal.Enums;
 using MiniTwitch.Irc.Internal.Models;
-using MiniTwitch.Irc.Internal.Parsing;
 using MiniTwitch.Irc.Models;
 
 namespace MiniTwitch.Irc;
@@ -147,7 +146,7 @@ public sealed class IrcClient : IAsyncDisposable
     #endregion
 
     #region Fields
-    private static readonly WaitableEvents[] _channelJoinEvents = new[] 
+    private static readonly WaitableEvents[] _channelJoinEvents = new[]
     {
         WaitableEvents.JoinedChannel, WaitableEvents.ChannelSuspended
     };
@@ -317,7 +316,7 @@ public sealed class IrcClient : IAsyncDisposable
 
         if (!_manager.CanSend(channel, _moderated.Contains(channel)))
         {
-            TimeSpan delay = TimeSpan.FromSeconds(90 / this.Options.MessageRateLimit);
+            var delay = TimeSpan.FromSeconds(90 / this.Options.MessageRateLimit);
             Log(LogLevel.Debug, "Cannot send message to #{channel}: Rate limit of {count} hit. Retrying in {delay}s",
                 channel, this.Options.ModMessageRateLimit, delay.TotalSeconds);
             Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
@@ -356,7 +355,7 @@ public sealed class IrcClient : IAsyncDisposable
         string channel = parentMessage.Channel.Name;
         if (!_manager.CanSend(channel, _moderated.Contains(channel)))
         {
-            TimeSpan delay = TimeSpan.FromSeconds(90 / this.Options.MessageRateLimit);
+            var delay = TimeSpan.FromSeconds(90 / this.Options.MessageRateLimit);
             Log(LogLevel.Debug, "Cannot send message to #{channel}: Rate limit of {count} hit. Retrying in {delay}s",
                 channel, this.Options.ModMessageRateLimit, delay.TotalSeconds);
             Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
@@ -401,7 +400,7 @@ public sealed class IrcClient : IAsyncDisposable
 
         if (!_manager.CanSend(channel, _moderated.Contains(channel)))
         {
-            TimeSpan delay = TimeSpan.FromSeconds(90 / this.Options.MessageRateLimit);
+            var delay = TimeSpan.FromSeconds(90 / this.Options.MessageRateLimit);
             Log(LogLevel.Debug, "Cannot send message to #{channel}: Rate limit of {count} hit. Retrying in {delay}s",
                 channel, this.Options.ModMessageRateLimit, delay.TotalSeconds);
             Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
@@ -725,7 +724,7 @@ public sealed class IrcClient : IAsyncDisposable
     #endregion
 
     #region Utils
-    private ILogger GetLogger() => this.Options.Logger ?? DefaultLogger;
+    private ILogger GetLogger() => this.Options.Logger ?? this.DefaultLogger;
 
     private void LogEventException(Exception ex) => LogException(ex, "🚨 Exception caught in an event:");
 
