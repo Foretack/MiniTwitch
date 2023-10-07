@@ -528,14 +528,14 @@ public sealed class IrcClient : IAsyncDisposable
     internal void Parse(ReadOnlyMemory<byte> data)
     {
         IrcMessage message = new(data);
-        HandleMessage(message);
+        HandleMessage(ref message);
         if (message.IsMultipleMessages)
         {
             Parse(data[message.NextMessageStartIndex..]);
         }
     }
 
-    private void HandleMessage(IrcMessage message)
+    private void HandleMessage(ref IrcMessage message)
     {
         // Return if user decides to ignore the command
         if (this.Options.IgnoreCommands != IgnoreCommand.None && message.Command switch
@@ -559,7 +559,7 @@ public sealed class IrcClient : IAsyncDisposable
         switch (message.Command)
         {
             case IrcCommand.PRIVMSG:
-                Privmsg ircMessage = new(message, this);
+                Privmsg ircMessage = new(ref message, this);
                 OnMessage?.Invoke(ircMessage).StepOver(this.ExceptionHandler);
                 break;
 
@@ -587,7 +587,7 @@ public sealed class IrcClient : IAsyncDisposable
                 break;
 
             case IrcCommand.USERNOTICE:
-                Usernotice usernotice = new(message);
+                Usernotice usernotice = new(ref message);
                 switch (usernotice.MsgId)
                 {
                     case UsernoticeType.Sub
@@ -624,7 +624,7 @@ public sealed class IrcClient : IAsyncDisposable
                 break;
 
             case IrcCommand.CLEARCHAT:
-                Clearchat clearchat = new(message);
+                Clearchat clearchat = new(ref message);
                 if (clearchat.IsClearChat)
                     OnChatClear?.Invoke(clearchat).StepOver(this.ExceptionHandler);
                 else if (clearchat.IsBan)
@@ -635,12 +635,12 @@ public sealed class IrcClient : IAsyncDisposable
                 break;
 
             case IrcCommand.CLEARMSG:
-                Clearmsg clearmsg = new(message);
+                Clearmsg clearmsg = new(ref message);
                 OnMessageDelete?.Invoke(clearmsg).StepOver(this.ExceptionHandler);
                 break;
 
             case IrcCommand.ROOMSTATE:
-                IrcChannel ircChannel = new(message);
+                IrcChannel ircChannel = new(ref message);
                 if (ircChannel.Roomstate == RoomstateType.All)
                 {
                     _coordinator.ReleaseIfLocked(WaitableEvents.JoinedChannel);
@@ -681,7 +681,7 @@ public sealed class IrcClient : IAsyncDisposable
                 break;
 
             case IrcCommand.PART:
-                IrcChannel channel = new(message);
+                IrcChannel channel = new(ref message);
                 if (this.JoinedChannels.Remove(channel))
                 {
                     Log(LogLevel.Information, "Parted #{channel}", channel.Name);
@@ -693,7 +693,7 @@ public sealed class IrcClient : IAsyncDisposable
                 break;
 
             case IrcCommand.NOTICE:
-                Notice notice = new(message);
+                Notice notice = new(ref message);
                 if (notice.Type == NoticeType.Msg_channel_suspended)
                 {
                     Log(LogLevel.Error, "Tried joining suspended channel: #{channel}", notice.Channel.Name);
@@ -708,7 +708,7 @@ public sealed class IrcClient : IAsyncDisposable
                 break;
 
             case IrcCommand.USERSTATE or IrcCommand.GLOBALUSERSTATE:
-                Userstate state = new(message);
+                Userstate state = new(ref message);
                 if (state.Self.IsMod && !_moderated.Contains(state.Channel.Name))
                     _ = _moderated.Add(state.Channel.Name);
 
@@ -716,7 +716,7 @@ public sealed class IrcClient : IAsyncDisposable
                 break;
 
             case IrcCommand.WHISPER:
-                Whisper whisper = new(message);
+                Whisper whisper = new(ref message);
                 OnWhisper?.Invoke(whisper).StepOver(this.ExceptionHandler);
                 break;
         }

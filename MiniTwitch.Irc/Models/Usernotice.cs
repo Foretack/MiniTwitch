@@ -68,7 +68,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
 
     internal UsernoticeType MsgId { get; init; } = UsernoticeType.None;
 
-    internal Usernotice(IrcMessage message)
+    internal Usernotice(ref IrcMessage message)
     {
         // Author
         bool isMod = false;
@@ -343,7 +343,8 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
     public static Usernotice Construct(string rawData)
     {
         ReadOnlyMemory<byte> memory = new(Encoding.UTF8.GetBytes(rawData));
-        return new(new IrcMessage(memory));
+        var message = new IrcMessage(memory);
+        return new(ref message);
     }
 
 #pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).

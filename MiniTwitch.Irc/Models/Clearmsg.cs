@@ -32,7 +32,7 @@ public readonly struct Clearmsg : IUnixTimestamped
     /// <inheritdoc/>
     public DateTimeOffset SentTimestamp => DateTimeOffset.FromUnixTimeMilliseconds(this.TmiSentTs);
 
-    internal Clearmsg(IrcMessage message)
+    internal Clearmsg(ref IrcMessage message)
     {
         string targetUsername = string.Empty;
         string channelName = message.GetChannel();
@@ -86,7 +86,8 @@ public readonly struct Clearmsg : IUnixTimestamped
     public static Clearmsg Construct(string rawData)
     {
         ReadOnlyMemory<byte> memory = new(Encoding.UTF8.GetBytes(rawData));
-        return new(new IrcMessage(memory));
+        var message = new IrcMessage(memory);
+        return new(ref message);
     }
 
     /// <inheritdoc/>

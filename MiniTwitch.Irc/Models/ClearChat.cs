@@ -31,7 +31,7 @@ public readonly struct Clearchat : IUserTimeout, IUserBan, IChatClear
     internal bool IsClearChat { get; init; }
     internal bool IsBan { get; init; }
 
-    internal Clearchat(IrcMessage message)
+    internal Clearchat(ref IrcMessage message)
     {
         int duration = 0;
         long targetId = 0;
@@ -93,6 +93,7 @@ public readonly struct Clearchat : IUserTimeout, IUserBan, IChatClear
     public static Clearchat Construct(string rawData)
     {
         ReadOnlyMemory<byte> memory = new(Encoding.UTF8.GetBytes(rawData));
-        return new(new IrcMessage(memory));
+        var message = new IrcMessage(memory);
+        return new(ref message);
     }
 }

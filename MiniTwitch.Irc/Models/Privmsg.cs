@@ -84,7 +84,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
 
     internal IrcClient? Source { get; init; }
 
-    internal Privmsg(IrcMessage message, IrcClient? source = null)
+    internal Privmsg(ref IrcMessage message, IrcClient? source = null)
     {
         this.Source = source;
 
@@ -361,7 +361,8 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
     public static Privmsg Construct(string rawData)
     {
         ReadOnlyMemory<byte> memory = new(Encoding.UTF8.GetBytes(rawData));
-        return new(new IrcMessage(memory));
+        var message = new IrcMessage(memory);
+        return new(ref message);
     }
 
     /// <inheritdoc/>

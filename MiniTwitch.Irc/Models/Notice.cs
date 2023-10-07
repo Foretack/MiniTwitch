@@ -27,7 +27,7 @@ public readonly struct Notice : IEquatable<Notice>
     /// </summary>
     public NoticeType Type { get; init; } = NoticeType.Unknown;
 
-    internal Notice(IrcMessage message)
+    internal Notice(ref IrcMessage message)
     {
         this.SystemMessage = message.GetContent().Content;
         using IrcTags ircTags = message.ParseTags();
@@ -60,7 +60,8 @@ public readonly struct Notice : IEquatable<Notice>
     public static Notice Construct(string rawData)
     {
         ReadOnlyMemory<byte> memory = new(Encoding.UTF8.GetBytes(rawData));
-        return new(new IrcMessage(memory));
+        var message = new IrcMessage(memory);
+        return new(ref message);
     }
 
 #pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).

@@ -38,7 +38,7 @@ public readonly struct Userstate
 
     internal IrcClient? Source { get; init; }
 
-    internal Userstate(IrcMessage message, IrcClient? source = null)
+    internal Userstate(ref IrcMessage message, IrcClient? source = null)
     {
         this.Source = source;
 
@@ -154,6 +154,7 @@ public readonly struct Userstate
     public static Userstate Construct(string rawData)
     {
         ReadOnlyMemory<byte> memory = new(Encoding.UTF8.GetBytes(rawData));
-        return new(new IrcMessage(memory));
+        var message = new IrcMessage(memory);
+        return new(ref message);
     }
 }

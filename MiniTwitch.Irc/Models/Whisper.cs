@@ -35,7 +35,7 @@ public readonly struct Whisper
     /// </summary>
     public bool IsAction { get; init; }
 
-    internal Whisper(IrcMessage message)
+    internal Whisper(ref IrcMessage message)
     {
         string badges = string.Empty;
         Color color = default;
@@ -128,7 +128,8 @@ public readonly struct Whisper
     public static Whisper Construct(string rawData)
     {
         ReadOnlyMemory<byte> memory = new(Encoding.UTF8.GetBytes(rawData));
-        return new(new IrcMessage(memory));
+        var message = new IrcMessage(memory);
+        return new(ref message);
     }
 
     /// <inheritdoc/>

@@ -37,7 +37,7 @@ public readonly struct IrcChannel : IGazatuChannel, IPartedChannel, IBasicChanne
 
     private static readonly TimeSpan _followersOnlyOffTimeSpan = TimeSpan.FromMinutes(-1);
 
-    internal IrcChannel(IrcMessage message)
+    internal IrcChannel(ref IrcMessage message)
     {
         int followerModeDuration = -1;
         int slowModeDuration = 0;
@@ -140,7 +140,8 @@ public readonly struct IrcChannel : IGazatuChannel, IPartedChannel, IBasicChanne
     public static IrcChannel Construct(string rawData)
     {
         ReadOnlyMemory<byte> memory = new(Encoding.UTF8.GetBytes(rawData));
-        return new(new IrcMessage(memory));
+        var message = new IrcMessage(memory);
+        return new(ref message);
     }
 
 #pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
