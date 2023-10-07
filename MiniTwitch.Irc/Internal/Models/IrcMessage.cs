@@ -52,7 +52,7 @@ internal readonly ref struct IrcMessage
                 }
 
                 int commandStartAddVal = this.HasUsername ? usernameEnd : usernameStart;
-                int commandStart = span[commandStartAddVal++..].IndexOf(space) + commandStartAddVal;
+                int commandStart = span[commandStartAddVal..].IndexOf(space) + commandStartAddVal + 1;
                 int commandEnd = span[commandStart..].IndexOf(space) + commandStart;
                 if (commandEnd - commandStart == -1)
                 {
@@ -129,7 +129,6 @@ internal readonly ref struct IrcMessage
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly string GetUsername() => TagHelper.GetString(this.Memory.Span[this.UsernameRange]);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly (string Content, bool Action) GetContent(bool maybeAction = false)
     {
         if (!this.HasMessageContent)
