@@ -77,13 +77,15 @@ internal ref struct IrcMessage
                         this.ChannelRange = channelStart..span.Length;
                         return;
                     }
-                    else if (span[channelEnd] == cr)
+
+                    this.ChannelRange = channelStart..channelEnd;
+                    if (span[channelEnd] == cr)
                     {
                         this.IsMultipleMessages = true;
                         this.NextMessageStartIndex = channelEnd + 2;
+                        return;
                     }
 
-                    this.ChannelRange = channelStart..channelEnd;
                     contentStart = channelEnd + 2;
                 }
 
