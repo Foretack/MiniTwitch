@@ -51,6 +51,9 @@ public sealed class WebSocketClient : IAsyncDisposable
             return;
         }
 
+        // Make sure buffers are clear before starting
+        _bucket.Clear();
+
         // Set URI for reconnects
         _uri = uri;
         Log(LogLevel.Trace, "Connecting to {uri} ...", uri);

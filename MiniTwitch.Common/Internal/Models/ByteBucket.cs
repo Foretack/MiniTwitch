@@ -40,4 +40,10 @@ internal sealed class ByteBucket
         _reached = 0;
         return result;
     }
+
+    public void Clear()
+    {
+        _bucket.Span.Clear();
+        _temp.Span.Clear();
+    }
 }
