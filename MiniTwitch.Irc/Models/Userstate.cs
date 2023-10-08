@@ -3,6 +3,7 @@ using System.Text;
 using MiniTwitch.Common.Extensions;
 using MiniTwitch.Irc.Enums;
 using MiniTwitch.Irc.Interfaces;
+using MiniTwitch.Irc.Internal.Enums;
 using MiniTwitch.Irc.Internal.Models;
 using MiniTwitch.Irc.Internal.Parsing;
 
@@ -37,7 +38,7 @@ public readonly struct Userstate
 
     internal IrcClient? Source { get; init; }
 
-    internal Userstate(ReadOnlyMemory<byte> memory, IrcClient? source = null)
+    internal Userstate(ref IrcMessage message, IrcClient? source = null)
     {
         this.Source = source;
 
@@ -50,11 +51,11 @@ public readonly struct Userstate
         bool subscriber = false;
         bool turbo = false;
         UserType type = UserType.None;
-        string channel = memory.Span.FindChannel(true);
+        string channel = message.GetChannel();
         string emoteSets = string.Empty;
         string nonce = string.Empty;
 
-        using IrcTags tags = IrcParsing.ParseTags(memory);
+        using IrcTags tags = message.ParseTags();
         foreach (IrcTag tag in tags)
         {
             if (tag.Key.Length == 0)
@@ -68,57 +69,57 @@ public readonly struct Userstate
             {
 
                 //mod
-                case 320:
+                case (int)Tags.Mod:
                     mod = TagHelper.GetBool(tagValue);
                     break;
 
                 //vip
-                case 335:
+                case (int)Tags.Vip:
                     vip = TagHelper.GetBool(tagValue);
                     break;
 
                 //color
-                case 543:
+                case (int)Tags.Color:
                     color = TagHelper.GetColor(tagValue);
                     break;
 
                 //turbo
-                case 556:
+                case (int)Tags.Turbo:
                     turbo = TagHelper.GetBool(tagValue);
                     break;
 
                 //badges
-                case 614:
+                case (int)Tags.Badges:
                     badges = TagHelper.GetString(tagValue, true);
                     break;
 
                 //user-type
-                case 942 when tagValue.Length > 0:
+                case (int)Tags.UserType when tagValue.Length > 0:
                     type = (UserType)tagValue.Sum();
                     break;
 
                 //badge-info
-                case 972:
+                case (int)Tags.BadgeInfo:
                     badgeInfo = TagHelper.GetString(tagValue, true, true);
                     break;
 
                 //emote-sets
-                case 1030:
+                case (int)Tags.EmoteSets:
                     emoteSets = TagHelper.GetString(tagValue, true);
                     break;
 
                 //subscriber
-                case 1076:
+                case (int)Tags.Subscriber:
                     subscriber = TagHelper.GetBool(tagValue);
                     break;
 
                 //client-nonce
-                case 1215:
+                case (int)Tags.ClientNonce:
                     nonce = TagHelper.GetString(tagValue);
                     break;
 
                 //display-name
-                case 1220:
+                case (int)Tags.DisplayName:
                     displayName = TagHelper.GetString(tagValue);
                     break;
             }
@@ -153,6 +154,7 @@ public readonly struct Userstate
     public static Userstate Construct(string rawData)
     {
         ReadOnlyMemory<byte> memory = new(Encoding.UTF8.GetBytes(rawData));
-        return new(memory);
+        var message = new IrcMessage(memory);
+        return new(ref message);
     }
 }

@@ -4,7 +4,7 @@ using MiniTwitch.Common.Extensions;
 using MiniTwitch.Irc.Interfaces;
 using MiniTwitch.Irc.Internal;
 using MiniTwitch.Irc.Internal.Enums;
-using MiniTwitch.Irc.Internal.Parsing;
+using MiniTwitch.Irc.Internal.Models;
 using MiniTwitch.Irc.Models;
 
 namespace MiniTwitch.Irc;
@@ -234,20 +234,17 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     #region Parsing
     internal void Parse(ReadOnlyMemory<byte> data)
     {
-        (IrcCommand command, int lfIndex) = IrcParsing.ParseCommand(data.Span);
-        int accumulatedIndex = lfIndex;
-        ReceiveData(command, data);
-        while (lfIndex != 0 && data.Length - accumulatedIndex > 0)
+        IrcMessage message = new(data);
+        HandleMessage(message);
+        if (message.IsMultipleMessages)
         {
-            (command, lfIndex) = IrcParsing.ParseCommand(data.Span[accumulatedIndex..]);
-            ReceiveData(command, data[accumulatedIndex..]);
-            accumulatedIndex += lfIndex;
+            Parse(data[message.NextMessageStartIndex..]);
         }
     }
 
-    private void ReceiveData(IrcCommand command, ReadOnlyMemory<byte> data)
+    private void HandleMessage(IrcMessage message)
     {
-        switch (command)
+        switch (message.Command)
         {
             case IrcCommand.Connected:
                 if (_connectionWaiter.CurrentCount == 0)
@@ -278,11 +275,11 @@ public sealed class IrcMembershipClient : IAsyncDisposable
                 {
                     User = new MessageAuthor()
                     {
-                        Name = data.Span.FindUsername(noTags: true)
+                        Name = message.GetUsername()
                     },
                     Channel = new IrcChannel()
                     {
-                        Name = data.Span.FindChannel(anySeparator: true)
+                        Name = message.GetChannel()
                     }
                 };
                 OnUserJoin?.Invoke(joinArgs).StepOver(this.ExceptionHandler);
@@ -293,11 +290,11 @@ public sealed class IrcMembershipClient : IAsyncDisposable
                 {
                     User = new MessageAuthor()
                     {
-                        Name = data.Span.FindUsername(noTags: true)
+                        Name = message.GetUsername()
                     },
                     Channel = new IrcChannel()
                     {
-                        Name = data.Span.FindChannel(anySeparator: true)
+                        Name = message.GetChannel()
                     }
                 };
                 OnUserPart?.Invoke(partArgs).StepOver(this.ExceptionHandler);

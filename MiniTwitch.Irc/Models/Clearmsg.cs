@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using MiniTwitch.Common.Extensions;
 using MiniTwitch.Irc.Interfaces;
+using MiniTwitch.Irc.Internal.Enums;
 using MiniTwitch.Irc.Internal.Models;
 using MiniTwitch.Irc.Internal.Parsing;
 
@@ -31,14 +32,14 @@ public readonly struct Clearmsg : IUnixTimestamped
     /// <inheritdoc/>
     public DateTimeOffset SentTimestamp => DateTimeOffset.FromUnixTimeMilliseconds(this.TmiSentTs);
 
-    internal Clearmsg(ReadOnlyMemory<byte> memory)
+    internal Clearmsg(ref IrcMessage message)
     {
         string targetUsername = string.Empty;
-        string channelName = memory.Span.FindChannel();
+        string channelName = message.GetChannel();
         string messageId = string.Empty;
         long tmiSentTs = 0;
 
-        using IrcTags tags = IrcParsing.ParseTags(memory);
+        using IrcTags tags = message.ParseTags();
         foreach (IrcTag tag in tags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
@@ -47,17 +48,17 @@ public readonly struct Clearmsg : IUnixTimestamped
             switch (tagKey.Sum())
             {
                 //login
-                case 537:
+                case (int)Tags.Login:
                     targetUsername = TagHelper.GetString(tagValue);
                     break;
 
                 //tmi-sent-ts
-                case 1093:
+                case (int)Tags.TmiSentTs:
                     tmiSentTs = TagHelper.GetLong(tagValue);
                     break;
 
                 //target-msg-id
-                case 1269:
+                case (int)Tags.TargetMsgId:
                     messageId = TagHelper.GetString(tagValue);
                     break;
 
@@ -73,7 +74,7 @@ public readonly struct Clearmsg : IUnixTimestamped
             Name = channelName
         };
         this.MessageId = messageId;
-        this.MessageContent = memory.Span.FindContent(maybeAction: true).Content;
+        this.MessageContent = message.GetContent(maybeAction: true).Content;
         this.TmiSentTs = tmiSentTs;
     }
 
@@ -85,7 +86,8 @@ public readonly struct Clearmsg : IUnixTimestamped
     public static Clearmsg Construct(string rawData)
     {
         ReadOnlyMemory<byte> memory = new(Encoding.UTF8.GetBytes(rawData));
-        return new(memory);
+        var message = new IrcMessage(memory);
+        return new(ref message);
     }
 
     /// <inheritdoc/>

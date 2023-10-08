@@ -4,6 +4,7 @@ using System.Text;
 using MiniTwitch.Common.Extensions;
 using MiniTwitch.Irc.Enums;
 using MiniTwitch.Irc.Interfaces;
+using MiniTwitch.Irc.Internal.Enums;
 using MiniTwitch.Irc.Internal.Models;
 using MiniTwitch.Irc.Internal.Parsing;
 
@@ -83,7 +84,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
 
     internal IrcClient? Source { get; init; }
 
-    internal Privmsg(ReadOnlyMemory<byte> memory, IrcClient? source = null)
+    internal Privmsg(ref IrcMessage message, IrcClient? source = null)
     {
         this.Source = source;
 
@@ -92,7 +93,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
         string badgeInfo = string.Empty;
         Color color = default;
         string displayName = string.Empty;
-        string username = memory.Span.FindUsername();
+        string username = message.GetUsername();
         long uid = 0;
         bool mod = false;
         bool sub = false;
@@ -117,11 +118,10 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
         HypeChatLevel level = HypeChatLevel.None;
 
         // IBasicChannel
-        string channelName = memory.Span.FindChannel();
+        string channelName = message.GetChannel();
         long channelId = 0;
 
-        (this.Content, this.IsAction) = memory.Span.FindContent(maybeAction: true);
-
+        (this.Content, this.IsAction) = message.GetContent(maybeAction: true);
         string emotes = string.Empty;
         string flags = string.Empty;
         string id = string.Empty;
@@ -131,7 +131,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
         bool firstMsg = false;
         bool returningChatter = false;
 
-        using IrcTags tags = IrcParsing.ParseTags(memory);
+        using IrcTags tags = message.ParseTags();
         foreach (IrcTag tag in tags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
@@ -140,157 +140,157 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
             switch (tagKey.Sum())
             {
                 //id
-                case 205:
+                case (int)Tags.Id:
                     id = TagHelper.GetString(tagValue);
                     break;
 
                 //mod
-                case 320:
+                case (int)Tags.Mod:
                     mod = TagHelper.GetBool(tagValue);
                     break;
 
                 //vip
-                case 335:
+                case (int)Tags.Vip:
                     vip = true;
                     break;
 
                 //bits
-                case 434:
+                case (int)Tags.Bits:
                     bits = TagHelper.GetInt(tagValue);
                     break;
 
                 //flags
-                case 525:
+                case (int)Tags.Flags:
                     flags = TagHelper.GetString(tagValue);
                     break;
 
                 //color
-                case 543:
+                case (int)Tags.Color:
                     color = TagHelper.GetColor(tagValue);
                     break;
 
                 //turbo
-                case 556:
+                case (int)Tags.Turbo:
                     turbo = TagHelper.GetBool(tagValue);
                     break;
 
                 //badges
-                case 614:
+                case (int)Tags.Badges:
                     badges = TagHelper.GetString(tagValue, true);
                     break;
 
                 //emotes
-                case 653:
+                case (int)Tags.Emotes:
                     emotes = TagHelper.GetString(tagValue);
                     break;
 
                 //room-id
-                case 695:
+                case (int)Tags.RoomId:
                     channelId = TagHelper.GetLong(tagValue);
                     break;
 
                 //user-id
-                case 697:
+                case (int)Tags.UserId:
                     uid = TagHelper.GetLong(tagValue);
                     break;
 
                 //first-msg
-                case 924:
+                case (int)Tags.FirstMsg:
                     firstMsg = TagHelper.GetBool(tagValue);
                     break;
 
                 //user-type
-                case 942 when tagValue.Length > 0:
+                case (int)Tags.UserType when tagValue.Length > 0:
                     userType = (UserType)tagValue.Sum();
                     break;
 
                 //badge-info
-                case 972:
+                case (int)Tags.BadgeInfo:
                     badgeInfo = TagHelper.GetString(tagValue, true, true);
                     break;
 
                 //subscriber
-                case 1076:
+                case (int)Tags.Subscriber:
                     sub = TagHelper.GetBool(tagValue);
                     break;
 
                 //tmi-sent-ts
-                case 1093:
+                case (int)Tags.TmiSentTs:
                     tmiSentTs = TagHelper.GetLong(tagValue);
                     break;
 
                 //client-nonce
-                case 1215:
+                case (int)Tags.ClientNonce:
                     nonce = TagHelper.GetString(tagValue);
                     break;
 
                 //display-name
-                case 1220:
+                case (int)Tags.DisplayName:
                     displayName = TagHelper.GetString(tagValue);
                     break;
 
                 //returning-chatter
-                case 1782:
+                case (int)Tags.ReturningChatter:
                     returningChatter = TagHelper.GetBool(tagValue);
                     break;
 
                 //reply-parent-msg-id
-                case 1873:
+                case (int)Tags.ReplyParentMsgId:
                     replyMessageId = TagHelper.GetString(tagValue);
                     break;
 
                 //reply-parent-user-id
-                case 1993:
+                case (int)Tags.ReplyParentUserId:
                     replyUserId = TagHelper.GetLong(tagValue);
                     break;
 
                 //reply-parent-msg-body
-                case 2098:
+                case (int)Tags.ReplyParentMsgBody:
                     replyMessageBody = TagHelper.GetString(tagValue, unescape: true);
                     break;
 
                 //pinned-chat-paid-level
-                case 2139:
+                case (int)Tags.PinnedChatPaidLevel:
                     level = TagHelper.GetEnum<HypeChatLevel>(tagValue);
                     break;
 
                 //pinned-chat-paid-amount
-                case 2263:
+                case (int)Tags.PinnedChatPaidAmount:
                     paidAmount = TagHelper.GetInt(tagValue);
                     break;
 
                 //reply-parent-user-login
-                case 2325:
+                case (int)Tags.ReplyParentUserLogin:
                     replyUsername = TagHelper.GetString(tagValue);
                     break;
 
                 //pinned-chat-paid-currency
-                case 2478:
+                case (int)Tags.PinnedChatPaidCurrency:
                     currency = TagHelper.GetString(tagValue, intern: true);
                     break;
 
                 //pinned-chat-paid-exponent
-                case 2484:
+                case (int)Tags.PinnedChatPaidExponent:
                     exponent = TagHelper.GetInt(tagValue);
                     break;
 
                 //reply-parent-display-name
-                case 2516:
+                case (int)Tags.ReplyParentDisplayName:
                     replyDisplayName = TagHelper.GetString(tagValue);
                     break;
 
                 //reply-thread-parent-msg-id
-                case 2550:
+                case (int)Tags.ReplyThreadParentMsgId:
                     threadParentMessageid = TagHelper.GetString(tagValue);
                     break;
 
                 //reply-thread-parent-user-login
-                case 3002:
+                case (int)Tags.ReplyThreadParentUserLogin:
                     threadParentUsername = TagHelper.GetString(tagValue);
                     break;
 
                 //pinned-chat-paid-is-system-message
-                case 3331:
+                case (int)Tags.PinnedChatPaidIsSystemMessage:
                     isSystemMessage = TagHelper.GetBool(tagValue);
                     break;
             }
@@ -350,7 +350,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
     /// <param name="action">Prepend .me</param>
     /// <param name="replyInThread">Prefer replying to the target message in the same thread instead of creating a new one</param>
     /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
-    public ValueTask ReplyWith(string reply, bool action = false, bool replyInThread = false, CancellationToken cancellationToken = default) => 
+    public ValueTask ReplyWith(string reply, bool action = false, bool replyInThread = false, CancellationToken cancellationToken = default) =>
         this.Source?.ReplyTo(this, reply, action, replyInThread, cancellationToken) ?? ValueTask.CompletedTask;
 
     /// <summary>
@@ -361,7 +361,8 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
     public static Privmsg Construct(string rawData)
     {
         ReadOnlyMemory<byte> memory = new(Encoding.UTF8.GetBytes(rawData));
-        return new(memory);
+        var message = new IrcMessage(memory);
+        return new(ref message);
     }
 
     /// <inheritdoc/>
