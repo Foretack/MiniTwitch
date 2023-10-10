@@ -59,12 +59,19 @@ public class AsyncEventCoordinator<TEnum> : IDisposable
             tasks[i] = WaitFor(valuesArr[i], timeout, tokenSource.Token);
         }
 
-        _ = await Task.WhenAny(tasks);
-        tokenSource.Cancel();
+        Task<bool> completedTask = await Task.WhenAny(tasks);
+        try
+        {
+            tokenSource.Cancel();
+        }
+        catch { }
+
         for (int i = 0; i < tasks.Length; i++)
         {
-            if (tasks[i].IsCompleted && tasks[i].Result == true)
+            if (ReferenceEquals(completedTask, tasks[i]) && tasks[i] is { IsCanceled: false, IsCompleted: true, Result: true })
+            {
                 return valuesArr[i];
+            }
         }
 
         throw new TimeoutException("Timeout: No reference to a completed task was found");
