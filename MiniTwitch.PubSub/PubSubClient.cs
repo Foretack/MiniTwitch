@@ -363,6 +363,24 @@ public sealed class PubSubClient : IAsyncDisposable
     }
 
     /// <summary>
+    /// Unlisten to multiple PubSub topics
+    /// </summary>
+    /// <param name="topics">A collection of the topics to unlisten to</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    /// <returns>An array of responses for all unlisten requests</returns>
+    public async Task<ListenResponse[]> UnlistenTo(IEnumerable<Topic> topics, CancellationToken cancellationToken = default)
+    {
+        IReadOnlyList<Topic> arr = topics is IReadOnlyList<Topic> listImpl ? listImpl : topics.ToArray();
+        var results = new ListenResponse[arr.Count];
+        for (int i = 0; i < arr.Count && !cancellationToken.IsCancellationRequested; i++)
+        {
+            results[i] = await UnlistenTo(arr[i], cancellationToken);
+        }
+
+        return results;
+    }
+
+    /// <summary>
     /// Unlisten to a PubSub topic
     /// </summary>
     /// <param name="topic">The topic to unlisten to</param>
