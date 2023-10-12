@@ -50,13 +50,16 @@ public class AsyncEventCoordinator<TEnum> : IDisposable
     /// <exception cref="TimeoutException"></exception>
     public async Task<TEnum> WaitForAny(IEnumerable<TEnum> values, TimeSpan timeout, CancellationToken cancellationToken = default)
     {
-        TEnum[] valuesArr = values.ToArray();
-        var tasks = new Task<bool>[valuesArr.Length];
+        IReadOnlyList<TEnum> valueList = values is IReadOnlyList<TEnum> list
+            ? list
+            : values.ToArray();
+
+        var tasks = new Task<bool>[valueList.Count];
         CancellationToken token = new(false);
         CancellationTokenSource tokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, cancellationToken);
-        for (int i = 0; i < valuesArr.Length; i++)
+        for (int i = 0; i < valueList.Count; i++)
         {
-            tasks[i] = WaitFor(valuesArr[i], timeout, tokenSource.Token);
+            tasks[i] = WaitFor(valueList[i], timeout, tokenSource.Token);
         }
 
         Task<bool> completedTask = await Task.WhenAny(tasks);
@@ -70,7 +73,7 @@ public class AsyncEventCoordinator<TEnum> : IDisposable
         {
             if (ReferenceEquals(completedTask, tasks[i]) && tasks[i] is { IsCanceled: false, IsCompleted: true, Result: true })
             {
-                return valuesArr[i];
+                return valueList[i];
             }
         }
 
@@ -86,11 +89,14 @@ public class AsyncEventCoordinator<TEnum> : IDisposable
     /// <returns><see langword="true"/> if the wait was successful, otherwise <see langword="false"/></returns>
     public async Task<bool> WaitForAll(IEnumerable<TEnum> values, TimeSpan timeout, CancellationToken cancellationToken = default)
     {
-        TEnum[] valuesArr = values.ToArray();
-        var tasks = new Task<bool>[valuesArr.Length];
-        for (int i = 0; i < valuesArr.Length; i++)
+        IReadOnlyList<TEnum> valueList = values is IReadOnlyList<TEnum> list
+            ? list
+            : values.ToArray();
+
+        var tasks = new Task<bool>[valueList.Count];
+        for (int i = 0; i < valueList.Count; i++)
         {
-            tasks[i] = WaitFor(valuesArr[i], timeout, cancellationToken);
+            tasks[i] = WaitFor(valueList[i], timeout, cancellationToken);
         }
 
         if ((await Task.WhenAll(tasks)).Contains(false))
