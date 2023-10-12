@@ -14,7 +14,7 @@ MiniTwitch.Irc is the component responsible for Twitch chat services. The usage 
 
 * Package code is fully documented with XML comments
 * Full coverage of chatroom messages and events with convenient APIs
-* Built with performance and memory in mind. Nanosecond speeds, with low memory allocation
+* Built with performance and memory in mind. [Nanosecond speeds](https://github.com/Foretack/MiniTwitch/blob/master/MiniTwitch.Irc.Benchmarks/README.md), with low memory allocation
 * Exposes events as `ValueTask`, making for efficient & concurrent usage
 * Automatically reconnects upon disconnection & automatically rejoins channels
 * Simple & customizable ratelimiting of sending messages and joining channels
