@@ -122,7 +122,7 @@ public enum CurrencyCode
     /// </summary>
     CDF,
     /// <summary>
-    /// complementary currency)
+    ///  WIR euro (complementary currency)
     /// </summary>
     CHE,
     /// <summary>
@@ -130,7 +130,7 @@ public enum CurrencyCode
     /// </summary>
     CHF,
     /// <summary>
-    /// complementary currency)
+    ///  WIR franc (complementary currency)
     /// </summary>
     CHW,
     /// <summary>
@@ -450,7 +450,7 @@ public enum CurrencyCode
     /// </summary>
     PGK,
     /// <summary>
-    /// [10]</sup>
+    /// Philippine peso
     /// </summary>
     PHP,
     /// <summary>
@@ -478,7 +478,7 @@ public enum CurrencyCode
     /// </summary>
     RSD,
     /// <summary>
-    /// [11]</sup>
+    ///  Renminbi
     /// </summary>
     CNY,
     /// <summary>
@@ -518,11 +518,11 @@ public enum CurrencyCode
     /// </summary>
     SHP,
     /// <summary>
-    /// [14]</sup>
+    /// Sierra Leonean leone (new leone)
     /// </summary>
     SLE,
     /// <summary>
-    /// [15]</sup>
+    /// Sierra Leonean leone (old leone)
     /// </summary>
     SLL,
     /// <summary>
@@ -622,11 +622,11 @@ public enum CurrencyCode
     /// </summary>
     UZS,
     /// <summary>
-    /// [18]</sup>
+    ///  Venezuelan digital bolívar
     /// </summary>
     VED,
     /// <summary>
-    /// [10]</sup>
+    /// Venezuelan sovereign bolívar
     /// </summary>
     VES,
     /// <summary>
@@ -722,7 +722,7 @@ public enum CurrencyCode
     /// </summary>
     ZMW,
     /// <summary>
-    /// [g]</sup>
+    ///  Zimbabwean dollar (fifth)
     /// </summary>
     ZWL,
 }
