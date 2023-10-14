@@ -112,7 +112,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
 
         //HypeChat
         int paidAmount = 0;
-        string currency = string.Empty;
+        CurrencyCode currency = CurrencyCode.None;
         int exponent = 0;
         bool isSystemMessage = false;
         HypeChatLevel level = HypeChatLevel.None;
@@ -266,7 +266,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
 
                 //pinned-chat-paid-currency
                 case (int)Tags.PinnedChatPaidCurrency:
-                    currency = TagHelper.GetString(tagValue, intern: true);
+                    currency = TagHelper.GetEnum<CurrencyCode>(tagValue);
                     break;
 
                 //pinned-chat-paid-exponent
@@ -323,7 +323,7 @@ public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
         this.HypeChat = new HypeChat()
         {
             PaidAmount = paidAmount,
-            PaymentCurrency = currency,
+            Currency = currency,
             Exponent = exponent,
             IsSystemMessage = isSystemMessage,
             Level = level

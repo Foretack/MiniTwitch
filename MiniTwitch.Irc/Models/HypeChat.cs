@@ -14,7 +14,12 @@ public readonly struct HypeChat
     /// <summary>
     /// The <see href="https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes">ISO 4217</see> alphabetic currency code the user has sent the Hype Chat in
     /// </summary>
-    public string PaymentCurrency { get; init; }
+    [Obsolete("Use the 'Currency' property instead. This property will be removed in a future version.")]
+    public string PaymentCurrency => this.Currency.ToString();
+    /// <summary>
+    /// Currency used in the Hype Chat message
+    /// </summary>
+    public CurrencyCode Currency {  get; init; }
     /// <summary>
     /// Indicates how many decimal points this currency represents partial amounts in. Decimal points start from the right side of the value defined in <see cref="PaidAmount"/>.
     /// </summary>
