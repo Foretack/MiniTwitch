@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using MiniTwitch.Helix.Enums;
 using MiniTwitch.Helix.Internal;
-using MiniTwitch.Helix.Internal.Interfaces;
 using MiniTwitch.Helix.Internal.Models;
 using MiniTwitch.Helix.Models;
 using MiniTwitch.Helix.Requests;
@@ -29,7 +28,7 @@ public class HelixWrapper
         HelixEndpoint endpoint = Endpoints.StartCommercial;
         var request = new RequestData(_baseUrl + endpoint.Route, endpoint.Method)
         {
-            Body = (body as IJsonObject).ToJsonObject()
+            Body = body
         };
 
         return HelixResultFactory.Create<Responses.StartCommercial>(_client, request, endpoint, cancellationToken);
@@ -136,7 +135,7 @@ public class HelixWrapper
         var request = new RequestData(_baseUrl + endpoint.Route, endpoint.Method)
             .AddParam(QueryParams.BroadcasterId, broadcasterId);
 
-        request.Body = (body as IJsonObject).ToJsonObject();
+        request.Body = body;
         return HelixResultFactory.Create(_client, request, endpoint, cancellationToken);
     }
 
@@ -190,7 +189,7 @@ public class HelixWrapper
         var request = new RequestData(_baseUrl + endpoint.Route, endpoint.Method)
             .AddParam(QueryParams.BroadcasterId, broadcasterId);
 
-        request.Body = (body as IJsonObject).ToJsonObject();
+        request.Body = body;
         return HelixResultFactory.Create<Responses.CreateCustomRewards>(_client, request, endpoint, cancellationToken);
     }
 
@@ -254,7 +253,7 @@ public class HelixWrapper
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
             .AddParam(QueryParams.Id, id);
 
-        request.Body = (body as IJsonObject).ToJsonObject();
+        request.Body = body;
         return HelixResultFactory.Create<Responses.UpdateCustomReward>(_client, request, endpoint, cancellationToken);
     }
 
@@ -371,7 +370,7 @@ public class HelixWrapper
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
             .AddParam(QueryParams.ModeratorId, moderatorId);
 
-        request.Body = (body as IJsonObject).ToJsonObject();
+        request.Body = body;
         return HelixResultFactory.Create<Responses.UpdateChatSettings>(_client, request, endpoint, cancellationToken);
     }
 
@@ -399,7 +398,7 @@ public class HelixWrapper
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
             .AddParam(QueryParams.ModeratorId, moderatorId);
 
-        request.Body = (body as IJsonObject).ToJsonObject();
+        request.Body = body;
         return HelixResultFactory.Create(_client, request, endpoint, cancellationToken);
     }
 
@@ -557,7 +556,7 @@ public class HelixWrapper
     {
         HelixEndpoint endpoint = Endpoints.SetExtensionConfigurationSegment;
         var request = new RequestData(_baseUrl + endpoint.Route, endpoint.Method);
-        request.Body = (body as IJsonObject).ToJsonObject();
+        request.Body = body;
         return HelixResultFactory.Create(_client, request, endpoint, cancellationToken);
     }
 
@@ -568,7 +567,7 @@ public class HelixWrapper
     {
         HelixEndpoint endpoint = Endpoints.SetExtensionRequiredConfiguration;
         var request = new RequestData(_baseUrl + endpoint.Route, endpoint.Method);
-        request.Body = (body as IJsonObject).ToJsonObject();
+        request.Body = body;
         return HelixResultFactory.Create(_client, request, endpoint, cancellationToken);
     }
 
@@ -578,7 +577,7 @@ public class HelixWrapper
     {
         HelixEndpoint endpoint = Endpoints.SendExtensionPubSubMessage;
         var request = new RequestData(_baseUrl + endpoint.Route, endpoint.Method);
-        request.Body = (body as IJsonObject).ToJsonObject();
+        request.Body = body;
         return HelixResultFactory.Create(_client, request, endpoint, cancellationToken);
     }
 
@@ -628,7 +627,7 @@ public class HelixWrapper
         var request = new RequestData(_baseUrl + endpoint.Route, endpoint.Method)
             .AddParam(QueryParams.BroadcasterId, broadcasterId);
 
-        request.Body = (body as IJsonObject).ToJsonObject();
+        request.Body = body;
         return HelixResultFactory.Create(_client, request, endpoint, cancellationToken);
     }
 
@@ -675,7 +674,7 @@ public class HelixWrapper
     {
         HelixEndpoint endpoint = Endpoints.UpdateExtensionBitsProduct;
         var request = new RequestData(_baseUrl + endpoint.Route, endpoint.Method);
-        request.Body = (body as IJsonObject).ToJsonObject();
+        request.Body = body;
         return HelixResultFactory.Create<Responses.UpdateExtensionBitsProduct>(_client, request, endpoint, cancellationToken);
     }
 
@@ -685,7 +684,7 @@ public class HelixWrapper
     {
         HelixEndpoint endpoint = Endpoints.CreateEventSubSubscription;
         var request = new RequestData(_baseUrl + endpoint.Route, endpoint.Method);
-        request.Body = (body as IJsonObject).ToJsonObject();
+        request.Body = body;
         return HelixResultFactory.Create<Responses.CreateEventSubSubscription>(_client, request, endpoint, cancellationToken);
     }
 
@@ -771,7 +770,7 @@ public class HelixWrapper
     {
         HelixEndpoint endpoint = Endpoints.UpdateChannelGuestStarSettings;
         var request = new RequestData(_baseUrl + endpoint.Route, endpoint.Method);
-        request.Body = (body as IJsonObject).ToJsonObject();
+        request.Body = body;
         return HelixResultFactory.Create(_client, request, endpoint, cancellationToken);
     }
 
@@ -966,7 +965,7 @@ public class HelixWrapper
         var request = new RequestData(_baseUrl + endpoint.Route, endpoint.Method)
             .AddParam(QueryParams.BroadcasterId, broadcasterId);
 
-        request.Body = (body as IJsonObject).ToJsonObject();
+        request.Body = body;
         return HelixResultFactory.Create<Responses.CheckAutoModStatus>(_client, request, endpoint, cancellationToken);
     }
 

@@ -1,8 +1,6 @@
-﻿using MiniTwitch.Helix.Internal.Interfaces;
+﻿namespace MiniTwitch.Helix.Requests;
 
-namespace MiniTwitch.Helix.Requests;
-
-public readonly struct UpdateChatSettingsBody : IJsonObject
+public readonly struct UpdateChatSettingsBody
 {
     public bool? EmoteMode { get; init; }
     public bool? FollowerMode { get; init; }
@@ -12,18 +10,5 @@ public readonly struct UpdateChatSettingsBody : IJsonObject
     public bool? UniqueChatMode { get; init; }
     public int? FollowerModeDuration { get; init; }
     public int? NonModeratorChatDelayDuration { get; init; }
-    public int? SlowModeDuration { get; init; }
-
-    object IJsonObject.ToJsonObject() => new
-    {
-        emote_mode = EmoteMode,
-        follower_mode = FollowerMode,
-        follower_mode_duration = FollowerModeDuration,
-        non_moderator_chat_delay = NonModeratorChatDelay,
-        non_moderator_chat_delay_duration = NonModeratorChatDelayDuration,
-        slow_mode = SlowMode,
-        slow_mode_wait_time = SlowModeDuration,
-        subscriber_mode = SubscriberMode,
-        unique_chat_mode = UniqueChatMode,
-    };
+    public int? SlowModeWaitTime { get; init; }
 }

@@ -13,10 +13,7 @@ public readonly struct EndPredictionBody
     [JsonInclude, JsonPropertyName("broadcaster_id")]
     private readonly string _broadcasterId;
 
-    [JsonPropertyName("id")]
     public required string Id { get; init; }
-    [JsonPropertyName("status")]
     public required string Status { get; init; }
-    [JsonPropertyName("winning_outcome_id")]
     public string WinningOutcomeId { get; init; }
 }

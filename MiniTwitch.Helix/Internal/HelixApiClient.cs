@@ -13,7 +13,8 @@ internal sealed class HelixApiClient
     public JsonSerializerOptions SerializerOptions { get; init; } = new()
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        NumberHandling = JsonNumberHandling.AllowReadingFromString
+        NumberHandling = JsonNumberHandling.AllowReadingFromString,
+        PropertyNamingPolicy = new SnakeCaseNamingPolicy()
     };
 
     private readonly HttpClient _httpClient = new();

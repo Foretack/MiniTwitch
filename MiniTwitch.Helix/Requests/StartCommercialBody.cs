@@ -1,19 +1,12 @@
-﻿using MiniTwitch.Helix.Internal.Interfaces;
+﻿using System.Text.Json.Serialization;
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct StartCommercialBody : IJsonObject
+public readonly struct StartCommercialBody
 {
+    [JsonIgnore]
     public required long BroadcasterId { get; init; }
+    [JsonInclude]
+    private string broadcaster_id => BroadcasterId.ToString();
     public required int Length { get; init; }
-
-
-    object IJsonObject.ToJsonObject()
-    {
-        return new
-        {
-            broadcaster_id = BroadcasterId.ToString(),
-            length = Length > 180 ? 180 : Length,
-        };
-    }
 }

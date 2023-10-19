@@ -1,26 +1,21 @@
-﻿using MiniTwitch.Helix.Internal.Interfaces;
+﻿using System.Text.Json.Serialization;
+using MiniTwitch.Helix.Internal.Models;
 using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct ModifyChannelInformationBody : IJsonObject
+public readonly struct ModifyChannelInformationBody
 {
+    [JsonPropertyName(QueryParams.GameId)]
     public string GameId { get; init; }
     public string BroadcasterLanguage { get; init; }
     public string Title { get; init; }
-    public TimeSpan Delay { get; init; }
+    [JsonIgnore]
+    public TimeSpan? Delay { get; init; }
+    [JsonInclude, JsonPropertyName("delay")]
+    private int? Delay_ => (int?)Delay?.TotalSeconds;
     public IEnumerable<string> Tags { get; init; }
+    [JsonPropertyName("content_classification_labels")]
     public IEnumerable<ContentClassificationLabel> ClassificationLabels { get; init; }
-    public bool IsBrandedContent { get; init; }
-
-    object IJsonObject.ToJsonObject() => new
-    {
-        game_id = GameId,
-        broadcaster_language = BroadcasterLanguage,
-        title = Title,
-        delay = (int)Delay.TotalSeconds > 900 ? 900 : (int)Delay.TotalSeconds,
-        tags = Tags.ToArray(),
-        content_classification_labels = ClassificationLabels.ToArray(),
-        is_branded_content = IsBrandedContent
-    };
+    public bool? IsBrandedContent { get; init; }
 }

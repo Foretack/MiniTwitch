@@ -1,24 +1,12 @@
-﻿using MiniTwitch.Helix.Internal.Interfaces;
+﻿using System.Text.Json.Serialization;
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct CreateEventSubSubscriptionBody : IJsonObject
+public readonly struct CreateEventSubSubscriptionBody
 {
     public required string Type { get; init; }
     public required string Version { get; init; }
     public required EventsubTransport Transport { get; init; }
-
-    object IJsonObject.ToJsonObject() => new
-    {
-        type = Type,
-        version = Version,
-        transport = new
-        {
-            method = Transport.Method,
-            secret = Transport.Secret,
-            session_id = Transport.SessionId,
-        }
-    };
 
     public readonly struct EventsubTransport
     {

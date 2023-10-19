@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using MiniTwitch.Helix.Enums;
 using MiniTwitch.Helix.Interfaces;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MiniTwitch.Helix.Models;
 

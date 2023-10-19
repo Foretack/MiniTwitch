@@ -1,16 +1,14 @@
-﻿using MiniTwitch.Helix.Enums;
-using MiniTwitch.Helix.Internal.Interfaces;
+﻿using System.Text.Json.Serialization;
+using MiniTwitch.Helix.Enums;
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct SendChatAnnouncementBody : IJsonObject
+public readonly struct SendChatAnnouncementBody
 {
-    public required string Message { get; init; }
-    public AnnouncementColor Color { get; init; }
 
-    object IJsonObject.ToJsonObject() => new
-    {
-        message = Message,
-        color = Color.ToString(),
-    };
+    public required string Message { get; init; }
+    [JsonIgnore]
+    public AnnouncementColor Color { get; init; }
+    [JsonInclude, JsonPropertyName("color")]
+    private string Color_ => Color.ToString();
 }
