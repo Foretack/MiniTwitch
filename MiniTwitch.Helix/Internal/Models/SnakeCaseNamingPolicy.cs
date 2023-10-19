@@ -2,7 +2,7 @@
 
 namespace MiniTwitch.Helix.Internal.Models;
 
-public class SnakeCaseNamingPolicy : JsonNamingPolicy
+internal class SnakeCaseNamingPolicy : JsonNamingPolicy
 {
     public override string ConvertName(string name)
     {
