@@ -1871,4 +1871,31 @@ internal static class Endpoints
             _ => "Unknown response code"
         }
     };
+
+    // TODO: check if this is fixed
+    public static readonly HelixEndpoint SnoozeNextAd = new()
+    {
+        Method = HttpMethod.Post,
+        Route = "/channels/ads/schedule/snooze",
+        SuccessStatusCode = HttpStatusCode.OK,
+        GetResponseMessage = code => code switch
+        {
+            HttpStatusCode.OK => "User’s next ad is successfully snoozed. Their snooze_count is decremented and snooze_refresh_time and next_ad_at are both updated.",
+            HttpStatusCode.BadRequest => "The channel is not currently live.\r\nThe broadcaster ID is not valid.\r\nChannel does not have an upcoming scheduled ad break.",
+            _ => "Unknown response code"
+        }
+    };
+
+    public static readonly HelixEndpoint GetAdSchedule = new()
+    {
+        Method = HttpMethod.Get,
+        Route = "/channels/ads",
+        SuccessStatusCode = HttpStatusCode.OK,
+        GetResponseMessage = code => code switch
+        {
+            HttpStatusCode.OK => "Returns the ad schedule information for the channel.",
+            HttpStatusCode.BadRequest => "The broadcaster ID is not valid.",
+            _ => "Unknown response code"
+        }
+    };
 }
