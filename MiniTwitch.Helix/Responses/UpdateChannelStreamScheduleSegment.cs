@@ -5,7 +5,7 @@ using MiniTwitch.Helix.Interfaces;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class UpdateChannelStreamScheduleSegment : asdf
+public class UpdateChannelStreamScheduleSegment
 {
 
    [JsonPropertyName("data")]

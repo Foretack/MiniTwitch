@@ -5,7 +5,7 @@ using MiniTwitch.Helix.Interfaces;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class GetUserActiveExtensions : asdf
+public class GetUserActiveExtensions
 {
    [JsonPropertyName("data")]
    public ExtensionsData Data { get; init; }

@@ -5,7 +5,7 @@ using MiniTwitch.Helix.Interfaces;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class GetTeams : asdf
+public class GetTeams
 {
    public record Datum(
        [property: JsonPropertyName("users")] IReadOnlyList<User> Users,
