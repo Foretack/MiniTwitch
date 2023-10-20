@@ -25,6 +25,7 @@ internal sealed class HelixApiClient
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
         _httpClient.DefaultRequestHeaders.Add("Client-Id", $"{clientId}");
         _logger = logger;
+        var m = new HttpClient();
     }
 
     public Task<(HttpResponseMessage, long)> RequestAsync(RequestData requestObject, CancellationToken ct) => requestObject._method switch

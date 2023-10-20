@@ -32,7 +32,7 @@ public readonly struct HelixResult<TResult> : IHelixResult
         if (!this.CanPaginate)
             return Task.FromResult(this);
 
-        _ = this.HelixTask!.Value.Request.AddParam("after", (this.Value as IPaginable)!.Pagination.Cursor!);
+        this.HelixTask!.Value.Request.AddParam(QueryParams.First, ((IPaginable)this.Value!).Pagination.Cursor!);
         return HelixResultFactory.Create<TResult>(
             this.HelixTask.Value.Client,
             this.HelixTask.Value.Request,

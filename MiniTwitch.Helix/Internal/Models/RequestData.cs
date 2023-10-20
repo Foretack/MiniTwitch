@@ -20,16 +20,15 @@ internal class RequestData
 
     public RequestData AddParam(string key, object? value)
     {
-        const char question = '?';
-        const char ampersand = '&';
         if (value is null)
             return this;
 
-        _ = _paramBuilder.Length == 0
-            ? _paramBuilder.Append(question)
-            : _paramBuilder.Append(ampersand);
+        if (_paramBuilder.Length == 0)
+            _paramBuilder.Append('?');
+        else
+            _paramBuilder.Append('&');
 
-        _ = _paramBuilder.Append($"{key}={value}");
+        _paramBuilder.Append($"{key}={value}");
         return this;
     }
 
@@ -42,11 +41,11 @@ internal class RequestData
         {
             if (_paramBuilder.Length == 0)
             {
-                _ = _paramBuilder.Append($"?{key}={obj}");
+                _paramBuilder.Append($"?{key}={obj}");
                 continue;
             }
 
-            _ = _paramBuilder.Append($"&{key}={obj}");
+            _paramBuilder.Append($"&{key}={obj}");
         }
 
         return this;
@@ -61,11 +60,11 @@ internal class RequestData
         {
             if (_paramBuilder.Length == 0)
             {
-                _ = _paramBuilder.Append($"?{key}={obj}");
+                _paramBuilder.Append($"?{key}={obj}");
                 continue;
             }
 
-            _ = _paramBuilder.Append($"&{key}={obj}");
+            _paramBuilder.Append($"&{key}={obj}");
         }
 
         return this;

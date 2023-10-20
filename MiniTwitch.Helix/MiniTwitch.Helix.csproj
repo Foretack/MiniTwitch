@@ -9,7 +9,7 @@
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <NoWarn>CS8618</NoWarn>
+	  <NoWarn>CS8618,IDE0058</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

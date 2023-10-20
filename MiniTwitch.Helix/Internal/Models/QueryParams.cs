@@ -61,4 +61,5 @@ internal static class QueryParams
     public const string Reason = "reason";
     public const string FromUserId = "from_user_id";
     public const string ToUserId = "to_user_id";
+    public const string After = "after";
 }
