@@ -2,7 +2,7 @@
 
 namespace MiniTwitch.Helix.Internal.Models;
 
-internal struct RequestData
+internal class RequestData
 {
     public object Body { get; set; } = default!;
 
@@ -16,9 +16,9 @@ internal struct RequestData
         _method = endpoint.Method.Method;
     }
 
-    public readonly string GetUrl() => _url + _paramBuilder.ToString();
+    public string GetUrl() => _url + _paramBuilder.ToString();
 
-    public readonly RequestData AddParam(string key, object? value)
+    public RequestData AddParam(string key, object? value)
     {
         const char question = '?';
         const char ampersand = '&';
@@ -33,7 +33,7 @@ internal struct RequestData
         return this;
     }
 
-    public readonly RequestData AddMultiParam(string key, IEnumerable<object>? value)
+    public RequestData AddMultiParam(string key, IEnumerable<object>? value)
     {
         if (value is null)
             return this;
@@ -52,7 +52,7 @@ internal struct RequestData
         return this;
     }
 
-    public readonly RequestData AddMultiParam<T>(string key, IEnumerable<T>? value)
+    public RequestData AddMultiParam<T>(string key, IEnumerable<T>? value)
     {
         if (value is null)
             return this;
