@@ -38,13 +38,11 @@ internal struct RequestData
         if (value is null)
             return this;
 
-        bool first = true;
         foreach (var obj in value)
         {
-            if (first)
+            if (_paramBuilder.Length == 0)
             {
                 _ = _paramBuilder.Append($"?{key}={obj}");
-                first = false;
                 continue;
             }
 
@@ -59,13 +57,11 @@ internal struct RequestData
         if (value is null)
             return this;
 
-        bool first = _paramBuilder.Length == 0;
         foreach (var obj in value)
         {
-            if (first)
+            if (_paramBuilder.Length == 0)
             {
                 _ = _paramBuilder.Append($"?{key}={obj}");
-                first = false;
                 continue;
             }
 
