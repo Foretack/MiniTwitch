@@ -1923,7 +1923,9 @@ public class HelixWrapper
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.UpdateUser;
-        var request = new RequestData(_baseUrl, endpoint);
+        var request = new RequestData(_baseUrl, endpoint)
+            .AddParam("description", description);
+
         return HelixResultFactory.Create<UpdatedUser>(_client, request, endpoint, cancellationToken);
     }
 

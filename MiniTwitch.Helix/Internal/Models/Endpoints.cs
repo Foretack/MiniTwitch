@@ -793,7 +793,7 @@ internal static class Endpoints
     {
         Method = HttpMethod.Get,
         Route = "/guest_star/channel_settings",
-        SuccessStatusCode = HttpStatusCode.BadRequest,
+        SuccessStatusCode = HttpStatusCode.OK,
         GetResponseMessage = code => code switch
         {
             HttpStatusCode.BadRequest => "Missing broadcaster_id Missing moderator_id",
@@ -819,7 +819,7 @@ internal static class Endpoints
     {
         Method = HttpMethod.Get,
         Route = "/guest_star/session",
-        SuccessStatusCode = HttpStatusCode.BadRequest,
+        SuccessStatusCode = HttpStatusCode.OK,
         GetResponseMessage = code => code switch
         {
             HttpStatusCode.BadRequest => "Missing broadcaster_id Missing moderator_id",
@@ -832,7 +832,7 @@ internal static class Endpoints
     {
         Method = HttpMethod.Post,
         Route = "/guest_star/session",
-        SuccessStatusCode = HttpStatusCode.BadRequest,
+        SuccessStatusCode = HttpStatusCode.OK,
         GetResponseMessage = code => code switch
         {
             HttpStatusCode.BadRequest => "Missing broadcaster_id Session limit reached (1 active call)",
@@ -846,7 +846,7 @@ internal static class Endpoints
     {
         Method = HttpMethod.Delete,
         Route = "/guest_star/session",
-        SuccessStatusCode = HttpStatusCode.BadRequest,
+        SuccessStatusCode = HttpStatusCode.OK,
         GetResponseMessage = code => code switch
         {
             HttpStatusCode.BadRequest => "Missing or invalid broadcaster_id Missing or invalid session_id Session has already been ended",
@@ -859,7 +859,7 @@ internal static class Endpoints
     {
         Method = HttpMethod.Get,
         Route = "/guest_star/invites",
-        SuccessStatusCode = HttpStatusCode.BadRequest,
+        SuccessStatusCode = HttpStatusCode.OK,
         GetResponseMessage = code => code switch
         {
             HttpStatusCode.BadRequest => "Missing broadcaster_id Missing session_id",
@@ -883,7 +883,7 @@ internal static class Endpoints
     {
         Method = HttpMethod.Delete,
         Route = "/guest_star/invites",
-        SuccessStatusCode = HttpStatusCode.BadRequest,
+        SuccessStatusCode = HttpStatusCode.OK,
         GetResponseMessage = code => code switch
         {
             HttpStatusCode.BadRequest => "Missing broadcaster_id Missing session_id Missing guest_id Invalid session_id",
