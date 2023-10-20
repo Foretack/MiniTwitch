@@ -6,6 +6,6 @@ public interface IHelixResult
 {
     HttpStatusCode StatusCode { get; }
     string Message { get; }
-    long ElapsedMs { get; }
+    TimeSpan Elapsed { get; }
     bool Success { get; }
 }

@@ -9,7 +9,7 @@ public readonly struct HelixResult : IHelixResult
 {
     public HttpStatusCode StatusCode { get; init; }
     public string Message { get; init; }
-    public long ElapsedMs { get; init; }
+    public TimeSpan Elapsed { get; init; }
     public bool Success { get; init; }
 }
 
@@ -18,7 +18,7 @@ public readonly struct HelixResult<TResult> : IHelixResult
     public TResult Value { get; init; }
     public HttpStatusCode StatusCode { get; init; }
     public string Message { get; init; }
-    public long ElapsedMs { get; init; }
+    public TimeSpan Elapsed { get; init; }
     public bool Success { get; init; }
     public bool CanPaginate =>
         this.Value is IPaginable p

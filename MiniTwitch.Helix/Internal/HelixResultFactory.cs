@@ -17,7 +17,7 @@ internal static class HelixResultFactory
                 Success = false,
                 Message = endpoint.GetResponseMessage(response.StatusCode),
                 StatusCode = response.StatusCode,
-                ElapsedMs = elapsedMs,
+                Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
                 Value = default!
             };
         }
@@ -30,7 +30,7 @@ internal static class HelixResultFactory
                 Success = false,
                 Message = "Deserialization failure",
                 StatusCode = response.StatusCode,
-                ElapsedMs = elapsedMs,
+                Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
                 Value = toObject!
             };
         }
@@ -40,7 +40,7 @@ internal static class HelixResultFactory
             Success = true,
             Message = endpoint.GetResponseMessage(response.StatusCode),
             StatusCode = response.StatusCode,
-            ElapsedMs = elapsedMs,
+            Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
             Value = toObject,
             HelixTask = new() { Endpoint = endpoint, Client = client, Request = request },
         };
@@ -55,7 +55,7 @@ internal static class HelixResultFactory
             Success = response.StatusCode == endpoint.SuccessStatusCode,
             Message = endpoint.GetResponseMessage(response.StatusCode),
             StatusCode = response.StatusCode,
-            ElapsedMs = elapsedMs
+            Elapsed = TimeSpan.FromMilliseconds(elapsedMs)
         };
     }
 }
