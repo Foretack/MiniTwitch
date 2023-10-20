@@ -1,6 +1,6 @@
 ﻿namespace MiniTwitch.Helix.Requests;
 
-public readonly struct SendExtensionPubSubMessageBody
+public readonly struct ExtensionPubSubMessage
 {
     public required IEnumerable<string> Target { get; init; }
 

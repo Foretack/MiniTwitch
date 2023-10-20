@@ -2,7 +2,7 @@
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct CreatePredictionBody
+public readonly struct NewPrediction
 {
     [JsonIgnore]
     public required long BroadcasterId

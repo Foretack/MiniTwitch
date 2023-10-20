@@ -1,9 +1,9 @@
 ﻿namespace MiniTwitch.Helix.Requests;
 
-public readonly struct UpdateCustomRewardBody
+public readonly struct NewCustomReward
 {
-    public string Title { get; init; }
-    public long? Cost { get; init; }
+    public required string Title { get; init; }
+    public required long Cost { get; init; }
     public string Prompt { get; init; }
     public bool? IsEnabled { get; init; }
     public string BackgroundColor { get; init; }
@@ -15,5 +15,4 @@ public readonly struct UpdateCustomRewardBody
     public bool? IsGlobalCooldownEnabled { get; init; }
     public int? GlobalCooldownSeconds { get; init; }
     public bool? ShouldRedemptionsSkipRequestQueue { get; init; }
-    public bool? IsPaused { get; init; }
 }

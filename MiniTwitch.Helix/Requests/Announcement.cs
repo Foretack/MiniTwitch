@@ -3,9 +3,8 @@ using MiniTwitch.Helix.Enums;
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct SendChatAnnouncementBody
+public readonly struct Announcement
 {
-
     public required string Message { get; init; }
     [JsonIgnore]
     public AnnouncementColor Color { get; init; }

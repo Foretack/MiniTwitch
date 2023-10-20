@@ -1,6 +1,6 @@
 ﻿namespace MiniTwitch.Helix.Requests;
 
-public readonly struct UpdateChatSettingsBody
+public readonly struct NewChatSettings
 {
     public bool? EmoteMode { get; init; }
     public bool? FollowerMode { get; init; }

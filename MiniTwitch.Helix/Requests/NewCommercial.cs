@@ -2,7 +2,7 @@
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct StartCommercialBody
+public readonly struct NewCommercial
 {
     [JsonIgnore]
     public required long BroadcasterId { get; init; }

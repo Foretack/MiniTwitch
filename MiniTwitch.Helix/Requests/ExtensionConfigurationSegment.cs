@@ -1,6 +1,6 @@
 ﻿namespace MiniTwitch.Helix.Requests;
 
-public readonly struct SetExtensionConfigurationSegmentBody
+public readonly struct ExtensionConfigurationSegment
 {
 
     public required string ExtensionId { get; init; }

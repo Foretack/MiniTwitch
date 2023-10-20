@@ -2,7 +2,7 @@
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct UpdateExtensionBitsProductBody
+public readonly struct UpdatedBitsProduct
 {
     [JsonPropertyName("sku")]
     public required string SKU { get; init; }

@@ -23,7 +23,7 @@ public class HelixWrapper
     // TODO: find suitable overloads
 
     public Task<HelixResult<Commercial>> StartCommercial(
-        StartCommercialBody body,
+        NewCommercial body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.StartCommercial;
@@ -155,7 +155,7 @@ public class HelixWrapper
 
     public Task<HelixResult> ModifyChannelInformation(
         long broadcasterId,
-        ModifyChannelInformationBody body,
+        NewChannelInformation body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.ModifyChannelInformation;
@@ -209,7 +209,7 @@ public class HelixWrapper
 
     public Task<HelixResult<CustomReward>> CreateCustomReward(
         long broadcasterId,
-        CreateCustomRewardBody body,
+        NewCustomReward body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.CreateCustomRewards;
@@ -308,7 +308,7 @@ public class HelixWrapper
     public Task<HelixResult<CustomReward>> UpdateCustomReward(
         long broadcasterId,
         string id,
-        UpdateCustomRewardBody body,
+        UpdatedCustomReward body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.UpdateCustomReward;
@@ -457,7 +457,7 @@ public class HelixWrapper
     public Task<HelixResult<ChatSettings>> UpdateChatSettings(
         long broadcasterId,
         long moderatorId,
-        UpdateChatSettingsBody body,
+        NewChatSettings body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.UpdateChatSettings;
@@ -485,7 +485,7 @@ public class HelixWrapper
     public Task<HelixResult> SendChatAnnouncement(
         long broadcasterId,
         long moderatorId,
-        SendChatAnnouncementBody body,
+        Announcement body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.SendChatAnnouncement;
@@ -682,7 +682,7 @@ public class HelixWrapper
         return HelixResultFactory.Create<UpdatedDropsEntitlements>(_client, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<ExtensionConfigurationSegment>> GetExtensionConfigurationSegment(
+    public Task<HelixResult<Responses.ExtensionConfigurationSegment>> GetExtensionConfigurationSegment(
         string extensionId,
         string segment,
         long? broadcasterId = null,
@@ -695,10 +695,10 @@ public class HelixWrapper
             .AddParam(QueryParams.BroadcasterId, broadcasterId);
 
 
-        return HelixResultFactory.Create<ExtensionConfigurationSegment>(_client, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<Responses.ExtensionConfigurationSegment>(_client, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<ExtensionConfigurationSegment>> GetExtensionConfigurationSegment(
+    public Task<HelixResult<Responses.ExtensionConfigurationSegment>> GetExtensionConfigurationSegment(
         string extensionId,
         IEnumerable<string> segments,
         long? broadcasterId = null,
@@ -711,11 +711,11 @@ public class HelixWrapper
             .AddParam(QueryParams.BroadcasterId, broadcasterId);
 
 
-        return HelixResultFactory.Create<ExtensionConfigurationSegment>(_client, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<Responses.ExtensionConfigurationSegment>(_client, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult> SetExtensionConfigurationSegment(
-        SetExtensionConfigurationSegmentBody body,
+        Requests.ExtensionConfigurationSegment body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.SetExtensionConfigurationSegment;
@@ -728,7 +728,7 @@ public class HelixWrapper
 
     public Task<HelixResult> SetExtensionRequiredConfiguration(
         long broadcasterId,
-        SetExtensionRequiredConfigurationBody body,
+        ExtensionRequiredConfiguration body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.SetExtensionRequiredConfiguration;
@@ -740,7 +740,7 @@ public class HelixWrapper
     }
 
     public Task<HelixResult> SendExtensionPubSubMessage(
-        SendExtensionPubSubMessageBody body,
+        ExtensionPubSubMessage body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.SendExtensionPubSubMessage;
@@ -790,7 +790,7 @@ public class HelixWrapper
 
     public Task<HelixResult> SendExtensionChatMessage(
         long broadcasterId,
-        SendExtensionChatMessageBody body,
+        ExtensionChatMessage body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.SendExtensionChatMessage;
@@ -839,7 +839,7 @@ public class HelixWrapper
     }
 
     public Task<HelixResult<ExtensionBitsProducts>> UpdateExtensionBitsProduct(
-        UpdateExtensionBitsProductBody body,
+        UpdatedBitsProduct body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.UpdateExtensionBitsProduct;
@@ -851,7 +851,7 @@ public class HelixWrapper
     }
 
     public Task<HelixResult<CreatedSubscription>> CreateEventSubSubscription(
-        CreateEventSubSubscriptionBody body,
+        NewSubscription body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.CreateEventSubSubscription;
@@ -954,7 +954,7 @@ public class HelixWrapper
     }
 
     public Task<HelixResult> UpdateChannelGuestStarSettings(
-        UpdateChannelGuestStarSettingsBody body,
+        NewGuestStarSettings body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.UpdateChannelGuestStarSettings;
@@ -1149,7 +1149,7 @@ public class HelixWrapper
 
     public Task<HelixResult<AutoModStatus>> CheckAutoModStatus(
         long broadcasterId,
-        CheckAutoModStatusBody body,
+        MessageToCheck body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.CheckAutoModStatus;
@@ -1191,7 +1191,7 @@ public class HelixWrapper
     public Task<HelixResult<AutoModSettings>> UpdateAutoModSettings(
         long broadcasterId,
         long moderatorId,
-        UpdateAutoModSettingsBody body,
+        NewAutoModSettings body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.UpdateAutoModSettings;
@@ -1506,7 +1506,7 @@ public class HelixWrapper
     }
 
     public Task<HelixResult<Poll>> CreatePoll(
-        CreatePollBody body,
+        NewPoll body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.CreatePoll;
@@ -1564,7 +1564,7 @@ public class HelixWrapper
     }
 
     public Task<HelixResult<Prediction>> CreatePrediction(
-        CreatePredictionBody body,
+        NewPrediction body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.CreatePrediction;
@@ -1577,7 +1577,7 @@ public class HelixWrapper
     }
 
     public Task<HelixResult<Prediction>> EndPrediction(
-        EndPredictionBody body,
+        PredictionToEnd body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.EndPrediction;
@@ -1668,7 +1668,7 @@ public class HelixWrapper
 
     public Task<HelixResult<ScheduleSegment>> CreateChannelStreamScheduleSegment(
         long broadcasterId,
-        ChannelStreamScheduleSegmentBody body,
+        NewScheduleSegment body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.CreateChannelStreamScheduleSegment;
@@ -1680,10 +1680,10 @@ public class HelixWrapper
         return HelixResultFactory.Create<ScheduleSegment>(_client, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<UpdatedScheduleSegment>> UpdateChannelStreamScheduleSegment(
+    public Task<HelixResult<Responses.UpdatedScheduleSegment>> UpdateChannelStreamScheduleSegment(
         long broadcasterId,
         string id,
-        UpdateChannelStreamScheduleSegmentBody Body,
+        Requests.UpdatedScheduleSegment Body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.UpdateChannelStreamScheduleSegment;
@@ -1694,7 +1694,7 @@ public class HelixWrapper
         .AddParam(QueryParams.BroadcasterId, broadcasterId)
         .AddParam(QueryParams.Id, id);
 
-        return HelixResultFactory.Create<UpdatedScheduleSegment>(_client, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<Responses.UpdatedScheduleSegment>(_client, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult> DeleteChannelStreamScheduleSegment(

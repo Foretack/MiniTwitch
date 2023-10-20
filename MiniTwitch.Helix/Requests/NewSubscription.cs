@@ -1,6 +1,6 @@
 ﻿namespace MiniTwitch.Helix.Requests;
 
-public readonly struct CreateEventSubSubscriptionBody
+public readonly struct NewSubscription
 {
     public required string Type { get; init; }
     public required string Version { get; init; }

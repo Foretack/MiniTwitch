@@ -2,7 +2,7 @@
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct CreatePollBody
+public readonly struct NewPoll
 {
     [JsonIgnore]
     public required long BroadcasterId
@@ -15,8 +15,8 @@ public readonly struct CreatePollBody
     public required string Title { get; init; }
     public required IEnumerable<Choice> Choices { get; init; }
     public required int Duration { get; init; }
-    public bool ChannelPointsVotingEnabled { get; init; }
-    public int ChannelPointsPerVote { get; init; }
+    public bool? ChannelPointsVotingEnabled { get; init; }
+    public int? ChannelPointsPerVote { get; init; }
 
     public class Choice
     {

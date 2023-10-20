@@ -4,7 +4,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct ModifyChannelInformationBody
+public readonly struct NewChannelInformation
 {
     [JsonPropertyName(QueryParams.GameId)]
     public string GameId { get; init; }

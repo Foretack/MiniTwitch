@@ -2,7 +2,7 @@
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct CheckAutoModStatusBody
+public readonly struct MessageToCheck
 {
     public required IEnumerable<Message> Data { get; init; }
 
