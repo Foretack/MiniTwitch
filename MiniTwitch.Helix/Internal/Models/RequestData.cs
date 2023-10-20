@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using MiniTwitch.Helix.Internal.Enums;
 
 namespace MiniTwitch.Helix.Internal.Models;
 
@@ -11,10 +10,10 @@ internal struct RequestData
     private readonly string _url;
     private readonly StringBuilder _paramBuilder = new();
 
-    public RequestData(string requestUrl, HttpMethod method)
+    public RequestData(string requestUrl, HelixEndpoint endpoint)
     {
-        _url = requestUrl;
-        _method = method.Method;
+        _url = requestUrl + endpoint.Route;
+        _method = endpoint.Method.Method;
     }
 
     public readonly string GetUrl() => _url + _paramBuilder.ToString();
