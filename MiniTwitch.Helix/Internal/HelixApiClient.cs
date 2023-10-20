@@ -40,7 +40,7 @@ internal sealed class HelixApiClient
     private async Task<(HttpResponseMessage, long)> PostAsync(RequestData requestObject, CancellationToken ct)
     {
         string url = requestObject.GetUrl();
-        Stopwatch sw = Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url, requestObject.Body, this.SerializerOptions, ct);
         sw.Stop();
         long elapsedMs = sw.ElapsedMilliseconds;
@@ -52,7 +52,7 @@ internal sealed class HelixApiClient
     private async Task<(HttpResponseMessage, long)> GetAsync(RequestData requestObject, CancellationToken ct)
     {
         string url = requestObject.GetUrl();
-        Stopwatch sw = Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.GetAsync(url, ct);
         sw.Stop();
         long elapsedMs = sw.ElapsedMilliseconds;
@@ -64,7 +64,7 @@ internal sealed class HelixApiClient
     private async Task<(HttpResponseMessage, long)> PutAsync(RequestData requestObject, CancellationToken ct)
     {
         string url = requestObject.GetUrl();
-        Stopwatch sw = Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.PutAsJsonAsync(url, requestObject.Body, this.SerializerOptions, ct);
         sw.Stop();
         long elapsedMs = sw.ElapsedMilliseconds;
@@ -76,7 +76,7 @@ internal sealed class HelixApiClient
     private async Task<(HttpResponseMessage, long)> DeleteAsync(RequestData requestObject, CancellationToken ct)
     {
         string url = requestObject.GetUrl();
-        Stopwatch sw = Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.DeleteAsync(url, ct);
         sw.Stop();
         long elapsedMs = sw.ElapsedMilliseconds;
@@ -89,8 +89,8 @@ internal sealed class HelixApiClient
     {
         string url = requestObject.GetUrl();
         string rawContent = JsonSerializer.Serialize(requestObject.Body, this.SerializerOptions);
-        StringContent content = new StringContent(rawContent, Encoding.UTF8, "application/json");
-        Stopwatch sw = Stopwatch.StartNew();
+        var content = new StringContent(rawContent, Encoding.UTF8, "application/json");
+        var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.PatchAsync(url, content, ct);
         sw.Stop();
         long elapsedMs = sw.ElapsedMilliseconds;

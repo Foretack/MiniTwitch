@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace MiniTwitch.Helix.Requests;
+﻿namespace MiniTwitch.Helix.Requests;
 
 public readonly record struct UpdateAutoModSettingsBody
 {
@@ -12,5 +10,5 @@ public readonly record struct UpdateAutoModSettingsBody
     public int RaceEthnicityOrReligion { get; init; }
     public int SexBasedTerms { get; init; }
     public int SexualitySexOrGender { get; init; }
-    public int Swearing {  get; init; }
+    public int Swearing { get; init; }
 }

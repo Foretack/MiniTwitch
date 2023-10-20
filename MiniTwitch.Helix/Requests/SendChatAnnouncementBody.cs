@@ -10,5 +10,5 @@ public readonly struct SendChatAnnouncementBody
     [JsonIgnore]
     public AnnouncementColor Color { get; init; }
     [JsonInclude, JsonPropertyName("color")]
-    private string Color_ => Color.ToString();
+    private string Color_ => this.Color.ToString();
 }

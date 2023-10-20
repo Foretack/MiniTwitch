@@ -1,7 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using MiniTwitch.Helix.Internal.Models;
-
-namespace MiniTwitch.Helix.Requests;
+﻿namespace MiniTwitch.Helix.Requests;
 
 public readonly struct UpdateChannelStreamScheduleSegmentBody
 {

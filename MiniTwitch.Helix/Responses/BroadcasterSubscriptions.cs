@@ -1,33 +1,31 @@
 using System.Text.Json.Serialization;
-using MiniTwitch.Helix.Enums;
 using MiniTwitch.Helix.Models;
-using MiniTwitch.Helix.Interfaces;
 
 namespace MiniTwitch.Helix.Responses;
 
 public class BroadcasterSubscriptions : PaginableResponse<BroadcasterSubscriptions.Subscription>
 {
-   [property: JsonPropertyName("total")]
-   public int Total { get; init; }
-   [property: JsonPropertyName("points")]
-   public int Points { get; init; }
+    [property: JsonPropertyName("total")]
+    public int Total { get; init; }
+    [property: JsonPropertyName("points")]
+    public int Points { get; init; }
 
-   public record Subscription(
-       [property: JsonPropertyName("broadcaster_id")] long BroadcasterId,
-       [property: JsonPropertyName("broadcaster_login")] string BroadcasterName,
-       [property: JsonPropertyName("broadcaster_name")] string BroadcasterDisplayName,
-       [property: JsonPropertyName("gifter_login")] string GifterName,
-       [property: JsonPropertyName("gifter_name")] string GifterDisplayName,
-       [property: JsonPropertyName("is_gift")] bool IsGift,
-       [property: JsonPropertyName("tier")] string Tier,
-       [property: JsonPropertyName("plan_name")] string PlanName,
-       [property: JsonPropertyName("user_id")] long UserId,
-       [property: JsonPropertyName("user_name")] string UserDisplayName,
-       [property: JsonPropertyName("user_login")] string Username
-   )
+    public record Subscription(
+        [property: JsonPropertyName("broadcaster_id")] long BroadcasterId,
+        [property: JsonPropertyName("broadcaster_login")] string BroadcasterName,
+        [property: JsonPropertyName("broadcaster_name")] string BroadcasterDisplayName,
+        [property: JsonPropertyName("gifter_login")] string GifterName,
+        [property: JsonPropertyName("gifter_name")] string GifterDisplayName,
+        [property: JsonPropertyName("is_gift")] bool IsGift,
+        [property: JsonPropertyName("tier")] string Tier,
+        [property: JsonPropertyName("plan_name")] string PlanName,
+        [property: JsonPropertyName("user_id")] long UserId,
+        [property: JsonPropertyName("user_name")] string UserDisplayName,
+        [property: JsonPropertyName("user_login")] string Username
+    )
     {
         [JsonInclude, JsonPropertyName("gifter_id")]
-        private string _gifterId = default!;
+        private readonly string _gifterId = default!;
         [JsonIgnore]
         public long GifterId => _gifterId is { Length: > 0 } ? long.Parse(_gifterId) : 0;
     };

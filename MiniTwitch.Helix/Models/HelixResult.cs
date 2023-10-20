@@ -20,8 +20,8 @@ public readonly struct HelixResult<TResult> : IHelixResult
     public string Message { get; init; }
     public long ElapsedMs { get; init; }
     public bool Success { get; init; }
-    public bool CanPaginate => 
-        this.Value is IPaginable p 
+    public bool CanPaginate =>
+        this.Value is IPaginable p
         && p.Pagination.Cursor is { Length: > 0 }
         && this.HelixTask is not null;
 
@@ -36,7 +36,7 @@ public readonly struct HelixResult<TResult> : IHelixResult
         return HelixResultFactory.Create<TResult>(
             this.HelixTask.Value.Client,
             this.HelixTask.Value.Request,
-            this.HelixTask.Value.Endpoint, 
+            this.HelixTask.Value.Endpoint,
             cancellationToken
         );
     }

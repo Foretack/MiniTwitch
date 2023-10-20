@@ -9,7 +9,7 @@ public readonly struct UpdateExtensionBitsProductBody
     [JsonIgnore]
     public required int CostBits { get; init; }
     [JsonInclude]
-    private object cost => new { amount = CostBits, type = "bits" };
+    private object cost => new { amount = this.CostBits, type = "bits" };
     public required string DisplayName { get; init; }
     public bool? InDevelopment { get; init; }
     public DateTime? Expiration { get; init; }

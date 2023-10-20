@@ -38,7 +38,7 @@ internal class RequestData
         if (value is null)
             return this;
 
-        foreach (var obj in value)
+        foreach (object obj in value)
         {
             if (_paramBuilder.Length == 0)
             {
@@ -57,7 +57,7 @@ internal class RequestData
         if (value is null)
             return this;
 
-        foreach (var obj in value)
+        foreach (T? obj in value)
         {
             if (_paramBuilder.Length == 0)
             {

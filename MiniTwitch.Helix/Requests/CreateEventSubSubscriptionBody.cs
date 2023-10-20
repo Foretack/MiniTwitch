@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace MiniTwitch.Helix.Requests;
+﻿namespace MiniTwitch.Helix.Requests;
 
 public readonly struct CreateEventSubSubscriptionBody
 {

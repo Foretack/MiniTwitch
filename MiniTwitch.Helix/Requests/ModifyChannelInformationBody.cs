@@ -13,7 +13,7 @@ public readonly struct ModifyChannelInformationBody
     [JsonIgnore]
     public TimeSpan? Delay { get; init; }
     [JsonInclude, JsonPropertyName("delay")]
-    private int? Delay_ => (int?)Delay?.TotalSeconds;
+    private int? Delay_ => (int?)this.Delay?.TotalSeconds;
     public IEnumerable<string> Tags { get; init; }
     [JsonPropertyName("content_classification_labels")]
     public IEnumerable<ContentClassificationLabel> ClassificationLabels { get; init; }

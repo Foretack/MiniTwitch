@@ -1,17 +1,15 @@
 using System.Text.Json.Serialization;
-using MiniTwitch.Helix.Enums;
 using MiniTwitch.Helix.Models;
-using MiniTwitch.Helix.Interfaces;
 
 namespace MiniTwitch.Helix.Responses;
 
 public class ShieldModeStatus : SingleResponse<ShieldModeStatus.Status>
 {
-   public record Status(
-      [property: JsonPropertyName("is_active")] bool IsActive,
-      [property: JsonPropertyName("moderator_id")] long ModeratorId,
-      [property: JsonPropertyName("moderator_name")] string ModeratorDisplayName,
-      [property: JsonPropertyName("moderator_login")] string ModeratorName,
-      [property: JsonPropertyName("last_activated_at")] DateTime LastActivatedAt
-  );
+    public record Status(
+       [property: JsonPropertyName("is_active")] bool IsActive,
+       [property: JsonPropertyName("moderator_id")] long ModeratorId,
+       [property: JsonPropertyName("moderator_name")] string ModeratorDisplayName,
+       [property: JsonPropertyName("moderator_login")] string ModeratorName,
+       [property: JsonPropertyName("last_activated_at")] DateTime LastActivatedAt
+   );
 }
