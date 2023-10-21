@@ -485,16 +485,13 @@ public sealed class PubSubClient : IAsyncDisposable
         OnReconnect?.Invoke().StepOver(GetExceptionHandler());
     }
 
-    private Task PingerTask()
+    private async Task PingerTask()
     {
-        return Task.Run(async () =>
+        while (_ws.IsConnected && !_pingerToken.IsCancellationRequested)
         {
-            while (_ws.IsConnected && !_pingerToken.IsCancellationRequested)
-            {
-                await Ping();
-                await Task.Delay(TimeSpan.FromMinutes(4), _pingerToken.Token);
-            }
-        }, _pingerToken.Token);
+            await Ping();
+            await Task.Delay(TimeSpan.FromMinutes(4), _pingerToken.Token);
+        }
     }
     #endregion
 
