@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
+using MiniTwitch.Helix.Internal.Json;
 using MiniTwitch.Helix.Internal.Models;
 
 namespace MiniTwitch.Helix.Internal;
@@ -25,7 +26,6 @@ internal sealed class HelixApiClient
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
         _httpClient.DefaultRequestHeaders.Add("Client-Id", $"{clientId}");
         _logger = logger;
-        var m = new HttpClient();
     }
 
     public Task<(HttpResponseMessage, long)> RequestAsync(RequestData requestObject, CancellationToken ct) => requestObject._method switch
