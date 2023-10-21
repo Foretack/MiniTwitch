@@ -469,7 +469,6 @@ public sealed class PubSubClient : IAsyncDisposable
     {
         Log(LogLevel.Warning, "Disconnected");
         _pingerToken.Cancel();
-        Log(LogLevel.Trace, "Pinger task disposed");
         OnDisconnect?.Invoke().StepOver(GetExceptionHandler());
         return Task.CompletedTask;
     }
