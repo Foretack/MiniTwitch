@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace MiniTwitch.Helix.Internal.Models;
+namespace MiniTwitch.Helix.Internal.Json;
 
 internal class SnakeCaseNamingPolicy : JsonNamingPolicy
 {

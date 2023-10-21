@@ -2,9 +2,9 @@
 
 public enum AnnouncementColor
 {
-    primary,
-    blue,
-    green,
-    orange,
-    purple
+    Primary,
+    Blue,
+    Green,
+    Orange,
+    Purple
 }

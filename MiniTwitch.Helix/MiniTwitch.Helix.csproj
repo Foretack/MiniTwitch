@@ -1,15 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <LangVersion>latest</LangVersion>
-	  
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-	  <PackageVersion>1.1.1</PackageVersion>
-	  <PackageId>MiniTwitch.Helix</PackageId>
-	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-	  <NoWarn>CS8618,IDE0058</NoWarn>
+      <LangVersion>latest</LangVersion>
+      <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+      <PackageVersion>1.1.1</PackageVersion>
+      <PackageId>MiniTwitch.Helix</PackageId>
+      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <ImplicitUsings>enable</ImplicitUsings>
+      <Nullable>enable</Nullable>
+      <NoWarn>CS8618,IDE0058</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

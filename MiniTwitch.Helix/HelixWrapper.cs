@@ -1233,13 +1233,10 @@ public class HelixWrapper
         return HelixResultFactory.Create<BannedUsers>(_client, request, endpoint, cancellationToken);
     }
 
-    // TODO: fix this
     public Task<HelixResult<BannedUser>> BanUser(
         long broadcasterId,
         long moderatorId,
-        long userId,
-        TimeSpan? duration = null,
-        string? reason = null,
+        UserToBan body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.BanUser;
@@ -1247,16 +1244,7 @@ public class HelixWrapper
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
             .AddParam(QueryParams.ModeratorId, moderatorId);
 
-        request.Body = new
-        {
-            data = new
-            {
-                user_id = userId.ToString(),
-                duration = duration?.TotalSeconds,
-                reason
-            }
-        };
-
+        request.Body = body;
         return HelixResultFactory.Create<BannedUser>(_client, request, endpoint, cancellationToken);
     }
 

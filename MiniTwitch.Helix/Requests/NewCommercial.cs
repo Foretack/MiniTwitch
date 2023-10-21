@@ -1,12 +1,11 @@
 ﻿using System.Text.Json.Serialization;
+using MiniTwitch.Helix.Internal.Json;
 
 namespace MiniTwitch.Helix.Requests;
 
 public readonly struct NewCommercial
 {
-    [JsonIgnore]
+    [JsonConverter(typeof(LongToString))]
     public required long BroadcasterId { get; init; }
-    [JsonInclude]
-    private string broadcaster_id => this.BroadcasterId.ToString();
     public required int Length { get; init; }
 }
