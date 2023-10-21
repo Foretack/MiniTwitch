@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 using MiniTwitch.Common;
@@ -469,7 +469,6 @@ public sealed class PubSubClient : IAsyncDisposable
     {
         Log(LogLevel.Warning, "Disconnected");
         _pingerToken.Cancel();
-        _pinger.Dispose();
         Log(LogLevel.Trace, "Pinger task disposed");
         _pingerToken.Dispose();
         OnDisconnect?.Invoke().StepOver(GetExceptionHandler());
