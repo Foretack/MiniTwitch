@@ -492,7 +492,7 @@ public sealed class PubSubClient : IAsyncDisposable
             while (_ws.IsConnected && !_pingerToken.IsCancellationRequested)
             {
                 await Ping();
-                await Task.Delay(TimeSpan.FromMinutes(4));
+                await Task.Delay(TimeSpan.FromMinutes(4), _pingerToken.Token);
             }
         }, _pingerToken.Token);
     }
