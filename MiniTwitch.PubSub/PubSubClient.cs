@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 using MiniTwitch.Common;
@@ -469,9 +469,6 @@ public sealed class PubSubClient : IAsyncDisposable
     {
         Log(LogLevel.Warning, "Disconnected");
         _pingerToken.Cancel();
-        _pinger.Dispose();
-        Log(LogLevel.Trace, "Pinger task disposed");
-        _pingerToken.Dispose();
         OnDisconnect?.Invoke().StepOver(GetExceptionHandler());
         return Task.CompletedTask;
     }
@@ -487,16 +484,13 @@ public sealed class PubSubClient : IAsyncDisposable
         OnReconnect?.Invoke().StepOver(GetExceptionHandler());
     }
 
-    private Task PingerTask()
+    private async Task PingerTask()
     {
-        return Task.Run(async () =>
+        while (_ws.IsConnected && !_pingerToken.IsCancellationRequested)
         {
-            while (_ws.IsConnected && !_pingerToken.IsCancellationRequested)
-            {
-                await Ping();
-                await Task.Delay(TimeSpan.FromMinutes(4));
-            }
-        }, _pingerToken.Token);
+            await Ping();
+            await Task.Delay(TimeSpan.FromMinutes(4), _pingerToken.Token);
+        }
     }
     #endregion
 
