@@ -22,16 +22,36 @@ internal static class HelixResultFactory
             };
         }
 
-        T? toObject = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
-        if (toObject is null)
+        T? toObject;
+
+        try
+        {
+            toObject = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
+            if (toObject is null)
+            {
+                return new HelixResult<T>()
+                {
+                    Success = false,
+                    Message = "Unknown deserialization failure.\n\n" +
+                        await response.Content.ReadAsStringAsync(cancellationToken),
+                    StatusCode = response.StatusCode,
+                    Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
+                    Value = toObject!
+                };
+            }
+        }
+        catch (Exception ex)
         {
             return new HelixResult<T>()
             {
                 Success = false,
-                Message = "Deserialization failure",
+                Message = $"Deserialization failure.\n" +
+                    $"{ex.Message}\n" +
+                    $"{ex.StackTrace}\n\n" +
+                    await response.Content.ReadAsStringAsync(cancellationToken),
                 StatusCode = response.StatusCode,
                 Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
-                Value = toObject!
+                Value = default!
             };
         }
 
