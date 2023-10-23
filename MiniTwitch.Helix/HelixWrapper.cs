@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using MiniTwitch.Helix.Enums;
 using MiniTwitch.Helix.Internal;
+using MiniTwitch.Helix.Internal.Json;
 using MiniTwitch.Helix.Internal.Models;
 using MiniTwitch.Helix.Models;
 using MiniTwitch.Helix.Requests;
@@ -20,8 +21,6 @@ public class HelixWrapper
         _baseUrl = helixBaseUrl;
     }
 
-    // TODO: find suitable overloads
-
     public Task<HelixResult<Commercial>> StartCommercial(
         NewCommercial body,
         CancellationToken cancellationToken = default)
@@ -37,7 +36,7 @@ public class HelixWrapper
 
     public Task<HelixResult<ExtensionAnalytics>> GetExtensionAnalytics(
         string? extensionId = null,
-        string? type = null,
+        AnalyticsType? type = null,
         DateTime? startedAt = null,
         DateTime? endedAt = null,
         int? first = null,
@@ -46,7 +45,7 @@ public class HelixWrapper
         HelixEndpoint endpoint = Endpoints.GetExtensionAnalytics;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.ExtensionId, extensionId)
-            .AddParam(QueryParams.Type, type)
+            .AddParam(QueryParams.Type, type?.ToString().ToLower())
             .AddParam(QueryParams.StartedAt, startedAt)
             .AddParam(QueryParams.EndedAt, endedAt)
             .AddParam(QueryParams.First, first);
@@ -56,7 +55,7 @@ public class HelixWrapper
 
     public Task<HelixResult<GameAnalytics>> GetGameAnalytics(
         string? gameId = null,
-        string? type = null,
+        AnalyticsType? type = null,
         DateTime? startedAt = null,
         DateTime? endedAt = null,
         int? first = null,
@@ -65,7 +64,7 @@ public class HelixWrapper
         HelixEndpoint endpoint = Endpoints.GetGameAnalytics;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.GameId, gameId)
-            .AddParam(QueryParams.Type, type)
+            .AddParam(QueryParams.Type, type?.ToString().ToLower())
             .AddParam(QueryParams.StartedAt, startedAt)
             .AddParam(QueryParams.EndedAt, endedAt)
             .AddParam(QueryParams.First, first);
@@ -83,7 +82,7 @@ public class HelixWrapper
         HelixEndpoint endpoint = Endpoints.GetBitsLeaderboard;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.Count, count)
-            .AddParam(QueryParams.Period, period?.ToString()?.ToLower())
+            .AddParam(QueryParams.Period, period?.ToString().ToLower())
             .AddParam(QueryParams.StartedAt, startedAt)
             .AddParam(QueryParams.UserId, UserId);
 
@@ -277,8 +276,8 @@ public class HelixWrapper
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
             .AddParam(QueryParams.RewardId, rewardId)
             .AddParam(QueryParams.Id, id)
-            .AddParam(QueryParams.Status, status.ToString().ToUpper())
-            .AddParam(QueryParams.Sort, sort?.ToString().ToUpper())
+            .AddParam(QueryParams.Status, status.ToString())
+            .AddParam(QueryParams.Sort, sort?.ToString())
             .AddParam(QueryParams.First, first);
 
         return HelixResultFactory.Create<CustomRewardRedemption>(_client, request, endpoint, cancellationToken);
@@ -298,8 +297,8 @@ public class HelixWrapper
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
             .AddParam(QueryParams.RewardId, rewardId)
             .AddMultiParam(QueryParams.Id, ids)
-            .AddParam(QueryParams.Status, status.ToString().ToUpper())
-            .AddParam(QueryParams.Sort, sort?.ToString().ToUpper())
+            .AddParam(QueryParams.Status, status.ToString())
+            .AddParam(QueryParams.Sort, sort?.ToString())
             .AddParam(QueryParams.First, first);
 
         return HelixResultFactory.Create<CustomRewardRedemption>(_client, request, endpoint, cancellationToken);
@@ -542,7 +541,7 @@ public class HelixWrapper
         HelixEndpoint endpoint = Endpoints.UpdateUserChatColor;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.UserId, userId)
-            .AddParam(QueryParams.Color, color.ToString());
+            .AddParam(QueryParams.Color, SnakeCase.Instance.ConvertToCase(color.ToString()));
 
         return HelixResultFactory.Create(_client, request, endpoint, cancellationToken);
     }
@@ -684,14 +683,14 @@ public class HelixWrapper
 
     public Task<HelixResult<Responses.ExtensionConfigurationSegment>> GetExtensionConfigurationSegment(
         string extensionId,
-        string segment,
+        ConfigSegmentType segment,
         long? broadcasterId = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetExtensionConfigurationSegment;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.ExtensionId, extensionId)
-            .AddParam(QueryParams.Segment, segment)
+            .AddParam(QueryParams.Segment, segment.ToString().ToLower())
             .AddParam(QueryParams.BroadcasterId, broadcasterId);
 
 
@@ -700,14 +699,14 @@ public class HelixWrapper
 
     public Task<HelixResult<Responses.ExtensionConfigurationSegment>> GetExtensionConfigurationSegment(
         string extensionId,
-        IEnumerable<string> segments,
+        IEnumerable<ConfigSegmentType> segments,
         long? broadcasterId = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetExtensionConfigurationSegment;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.ExtensionId, extensionId)
-            .AddMultiParam(QueryParams.Segment, segments)
+            .AddMultiParam(QueryParams.Segment, segments.Select(x => x.ToString().ToLower()))
             .AddParam(QueryParams.BroadcasterId, broadcasterId);
 
 
@@ -715,7 +714,7 @@ public class HelixWrapper
     }
 
     public Task<HelixResult> SetExtensionConfigurationSegment(
-        Requests.ExtensionConfigurationSegment body,
+        ConfigurationSegment body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.SetExtensionConfigurationSegment;
@@ -874,14 +873,14 @@ public class HelixWrapper
     }
 
     public Task<HelixResult<EventSubSubscriptions>> GetEventSubSubscriptions(
-        string? status = null,
+        EventSubStatus? status = null,
         string? type = null,
         long? userId = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetEventSubSubscriptions;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.Status, status)
+            .AddParam(QueryParams.Status, SnakeCase.Instance.ConvertToCase(status.ToString()))
             .AddParam(QueryParams.Type, type)
             .AddParam(QueryParams.UserId, userId);
 
@@ -1741,7 +1740,7 @@ public class HelixWrapper
         long? userId = null,
         string? userLogin = null,
         string? gameId = null,
-        string? type = null,
+        StreamTypes? type = null,
         string? language = null,
         int? first = null,
         CancellationToken cancellationToken = default)
@@ -1751,7 +1750,7 @@ public class HelixWrapper
             .AddParam(QueryParams.UserId, userId)
             .AddParam(QueryParams.UserLogin, userLogin)
             .AddParam(QueryParams.GameId, gameId)
-            .AddParam(QueryParams.Type, type)
+            .AddParam(QueryParams.Type, type?.ToString().ToLower())
             .AddParam(QueryParams.Language, language)
             .AddParam(QueryParams.First, first);
 
@@ -1762,7 +1761,7 @@ public class HelixWrapper
         IEnumerable<long>? userIds = null,
         IEnumerable<string>? userLogins = null,
         IEnumerable<string>? gameIds = null,
-        string? type = null,
+        StreamTypes? type = null,
         IEnumerable<string>? languages = null,
         int? first = null,
         CancellationToken cancellationToken = default)
@@ -1772,7 +1771,7 @@ public class HelixWrapper
             .AddMultiParam(QueryParams.UserId, userIds)
             .AddMultiParam(QueryParams.UserLogin, userLogins)
             .AddMultiParam(QueryParams.GameId, gameIds)
-            .AddParam(QueryParams.Type, type)
+            .AddParam(QueryParams.Type, type?.ToString().ToLower())
             .AddMultiParam(QueryParams.Language, languages)
             .AddParam(QueryParams.First, first);
 
@@ -1978,9 +1977,9 @@ public class HelixWrapper
         long? userId = null,
         string? gameId = null,
         string? language = null,
-        string? period = null,
-        string? sort = null,
-        string? type = null,
+        VideoPeriod? period = null,
+        VideoSortMethod? sort = null,
+        VideoType? type = null,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
@@ -1990,9 +1989,9 @@ public class HelixWrapper
             .AddParam(QueryParams.UserId, userId)
             .AddParam(QueryParams.GameId, gameId)
             .AddParam(QueryParams.Language, language)
-            .AddParam(QueryParams.Period, period)
-            .AddParam(QueryParams.Sort, sort)
-            .AddParam(QueryParams.Type, type)
+            .AddParam(QueryParams.Period, period?.ToString().ToLower())
+            .AddParam(QueryParams.Sort, sort?.ToString().ToLower())
+            .AddParam(QueryParams.Type, type?.ToString().ToLower())
             .AddParam(QueryParams.First, first);
 
         return HelixResultFactory.Create<Videos>(_client, request, endpoint, cancellationToken);
@@ -2003,9 +2002,9 @@ public class HelixWrapper
         long? userId = null,
         string? gameId = null,
         string? language = null,
-        string? period = null,
-        string? sort = null,
-        string? type = null,
+        VideoPeriod? period = null,
+        VideoSortMethod? sort = null,
+        VideoType? type = null,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
@@ -2015,9 +2014,9 @@ public class HelixWrapper
             .AddParam(QueryParams.UserId, userId)
             .AddParam(QueryParams.GameId, gameId)
             .AddParam(QueryParams.Language, language)
-            .AddParam(QueryParams.Period, period)
-            .AddParam(QueryParams.Sort, sort)
-            .AddParam(QueryParams.Type, type)
+            .AddParam(QueryParams.Period, period?.ToString().ToLower())
+            .AddParam(QueryParams.Sort, sort?.ToString().ToLower())
+            .AddParam(QueryParams.Type, type?.ToString().ToLower())
             .AddParam(QueryParams.First, first);
 
         return HelixResultFactory.Create<Videos>(_client, request, endpoint, cancellationToken);

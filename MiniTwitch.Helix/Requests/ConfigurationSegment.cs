@@ -4,7 +4,7 @@ using MiniTwitch.Helix.Internal.Json;
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct ExtensionConfigurationSegment
+public readonly struct ConfigurationSegment
 {
 
     public required string ExtensionId { get; init; }

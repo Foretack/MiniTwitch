@@ -2,6 +2,8 @@
 
 internal class SnakeCase : ICaseConverter
 {
+    public static SnakeCase Instance { get; } = new();
+
     public string? ConvertFromCase(string? str)
     {
         if (str is null)

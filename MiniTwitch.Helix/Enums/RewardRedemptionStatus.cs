@@ -2,8 +2,7 @@
 
 public enum RewardRedemptionStatus
 {
-    None,
-    Canceled,
-    Fulfilled,
-    Unfulfilled
+    CANCELED,
+    FULFILLED,
+    UNFULFILLED
 }
