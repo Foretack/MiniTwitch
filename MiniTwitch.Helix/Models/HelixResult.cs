@@ -11,6 +11,7 @@ public readonly struct HelixResult : IHelixResult
     public string Message { get; init; }
     public TimeSpan Elapsed { get; init; }
     public bool Success { get; init; }
+    public RequestRatelimit Ratelimit { get; init; }
 }
 
 public readonly struct HelixResult<TResult> : IHelixResult
@@ -20,6 +21,7 @@ public readonly struct HelixResult<TResult> : IHelixResult
     public string Message { get; init; }
     public TimeSpan Elapsed { get; init; }
     public bool Success { get; init; }
+    public RequestRatelimit Ratelimit { get; init; }
     public bool CanPaginate =>
         this.Value is IPaginable p
         && p.Pagination.Cursor is { Length: > 0 }

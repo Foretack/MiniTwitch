@@ -6,9 +6,14 @@ namespace MiniTwitch.Helix.Internal;
 
 internal static class HelixResultFactory
 {
+    private const string HEADER_RL_LIMIT = "Ratelimit-Limit";
+    private const string HEADER_RL_REMAINING = "Ratelimit-Remaining";
+    private const string HEADER_RL_RESET = "Ratelimit-Reset";
+
     public static async Task<HelixResult<T>> Create<T>(HelixApiClient client, RequestData request, HelixEndpoint endpoint,
         CancellationToken cancellationToken)
     {
+        long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         (HttpResponseMessage response, long elapsedMs) = await client.RequestAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode && response.StatusCode != endpoint.SuccessStatusCode)
         {
@@ -22,8 +27,33 @@ internal static class HelixResultFactory
             };
         }
 
-        T? toObject;
+        int limit = 0;
+        int remaining = 0;
+        int resets = 0;
+        int val;
+        foreach (var header in response.Headers)
+        {
+            switch (header.Key)
+            {
+                case HEADER_RL_LIMIT:
+                    limit = int.TryParse(header.Value.FirstOrDefault(), out val) ? val : 0;
+                    break;
 
+                case HEADER_RL_REMAINING:
+                    remaining = int.TryParse(header.Value.FirstOrDefault(), out val) ? val : 0;
+                    break;
+
+                case HEADER_RL_RESET:
+                    resets = int.TryParse(header.Value.FirstOrDefault(), out val) ? val : 0;
+                    break;
+
+                default:
+                    continue;
+            }
+        }
+
+        TimeSpan resetsIn = resets - now < 0 ? TimeSpan.Zero : TimeSpan.FromSeconds(resets - now);
+        T? toObject;
         try
         {
             toObject = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
@@ -36,7 +66,13 @@ internal static class HelixResultFactory
                         await response.Content.ReadAsStringAsync(cancellationToken),
                     StatusCode = response.StatusCode,
                     Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
-                    Value = toObject!
+                    Value = toObject!,
+                    Ratelimit = new()
+                    {
+                        Limit = limit,
+                        Remaining = remaining,
+                        ResetsIn = resetsIn
+                    }
                 };
             }
         }
@@ -63,19 +99,58 @@ internal static class HelixResultFactory
             Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
             Value = toObject,
             HelixTask = new() { Endpoint = endpoint, Client = client, Request = request },
+            Ratelimit = new()
+            {
+                Limit = limit,
+                Remaining = remaining,
+                ResetsIn = resetsIn
+            }
         };
     }
 
     public static async Task<HelixResult> Create(HelixApiClient client, RequestData request, HelixEndpoint endpoint,
         CancellationToken cancellationToken)
     {
+        long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         (HttpResponseMessage response, long elapsedMs) = await client.RequestAsync(request, cancellationToken);
+        int limit = 0;
+        int remaining = 0;
+        int resets = 0;
+        int val;
+        foreach (var header in response.Headers)
+        {
+            switch (header.Key)
+            {
+                case HEADER_RL_LIMIT:
+                    limit = int.TryParse(header.Value.FirstOrDefault(), out val) ? val : 0;
+                    break;
+
+                case HEADER_RL_REMAINING:
+                    remaining = int.TryParse(header.Value.FirstOrDefault(), out val) ? val : 0;
+                    break;
+
+                case HEADER_RL_RESET:
+                    resets = int.TryParse(header.Value.FirstOrDefault(), out val) ? val : 0;
+                    break;
+
+                default:
+                    continue;
+            }
+        }
+
+        TimeSpan resetsIn = resets - now < 0 ? TimeSpan.Zero : TimeSpan.FromSeconds(resets - now);
         return new HelixResult()
         {
             Success = response.StatusCode == endpoint.SuccessStatusCode,
             Message = endpoint.GetResponseMessage(response.StatusCode),
             StatusCode = response.StatusCode,
-            Elapsed = TimeSpan.FromMilliseconds(elapsedMs)
+            Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
+            Ratelimit = new()
+            {
+                Limit = limit,
+                Remaining = remaining,
+                ResetsIn = resetsIn
+            }
         };
     }
 }
