@@ -13,7 +13,6 @@ internal static class HelixResultFactory
     public static async Task<HelixResult<T>> Create<T>(HelixApiClient client, RequestData request, HelixEndpoint endpoint,
         CancellationToken cancellationToken)
     {
-        long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         (HttpResponseMessage response, long elapsedMs) = await client.RequestAsync(request, cancellationToken);
         if (!response.IsSuccessStatusCode && response.StatusCode != endpoint.SuccessStatusCode)
         {
@@ -27,32 +26,6 @@ internal static class HelixResultFactory
             };
         }
 
-        int limit = 0;
-        int remaining = 0;
-        int resets = 0;
-        int val;
-        foreach (var header in response.Headers)
-        {
-            switch (header.Key)
-            {
-                case HEADER_RL_LIMIT:
-                    limit = int.TryParse(header.Value.FirstOrDefault(), out val) ? val : 0;
-                    break;
-
-                case HEADER_RL_REMAINING:
-                    remaining = int.TryParse(header.Value.FirstOrDefault(), out val) ? val : 0;
-                    break;
-
-                case HEADER_RL_RESET:
-                    resets = int.TryParse(header.Value.FirstOrDefault(), out val) ? val : 0;
-                    break;
-
-                default:
-                    continue;
-            }
-        }
-
-        TimeSpan resetsIn = resets - now < 0 ? TimeSpan.Zero : TimeSpan.FromSeconds(resets - now);
         T? toObject;
         try
         {
@@ -67,12 +40,7 @@ internal static class HelixResultFactory
                     StatusCode = response.StatusCode,
                     Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
                     Value = toObject!,
-                    Ratelimit = new()
-                    {
-                        Limit = limit,
-                        Remaining = remaining,
-                        ResetsIn = resetsIn
-                    }
+                    Ratelimit = GetRateLimit(response)
                 };
             }
         }
@@ -99,20 +67,27 @@ internal static class HelixResultFactory
             Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
             Value = toObject,
             HelixTask = new() { Endpoint = endpoint, Client = client, Request = request },
-            Ratelimit = new()
-            {
-                Limit = limit,
-                Remaining = remaining,
-                ResetsIn = resetsIn
-            }
+            Ratelimit = GetRateLimit(response)
         };
     }
 
     public static async Task<HelixResult> Create(HelixApiClient client, RequestData request, HelixEndpoint endpoint,
         CancellationToken cancellationToken)
     {
-        long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         (HttpResponseMessage response, long elapsedMs) = await client.RequestAsync(request, cancellationToken);
+        return new HelixResult()
+        {
+            Success = response.StatusCode == endpoint.SuccessStatusCode,
+            Message = endpoint.GetResponseMessage(response.StatusCode),
+            StatusCode = response.StatusCode,
+            Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
+            Ratelimit = GetRateLimit(response)
+        };
+    }
+
+    private static RequestRatelimit GetRateLimit(HttpResponseMessage response)
+    {
+        long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         int limit = 0;
         int remaining = 0;
         int resets = 0;
@@ -139,18 +114,11 @@ internal static class HelixResultFactory
         }
 
         TimeSpan resetsIn = resets - now < 0 ? TimeSpan.Zero : TimeSpan.FromSeconds(resets - now);
-        return new HelixResult()
+        return new()
         {
-            Success = response.StatusCode == endpoint.SuccessStatusCode,
-            Message = endpoint.GetResponseMessage(response.StatusCode),
-            StatusCode = response.StatusCode,
-            Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
-            Ratelimit = new()
-            {
-                Limit = limit,
-                Remaining = remaining,
-                ResetsIn = resetsIn
-            }
+            Limit = limit,
+            Remaining = remaining,
+            ResetsIn = resetsIn
         };
     }
 }
