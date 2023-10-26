@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 using MiniTwitch.Helix.Internal.Json;
 using MiniTwitch.Helix.Internal.Models;
+using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Internal;
 
@@ -20,11 +21,14 @@ internal sealed class HelixApiClient
 
     private readonly HttpClient _httpClient = new();
     private readonly ILogger? _logger;
+    private readonly string _token;
+    private ValidToken? _tokenInfo;
 
     public HelixApiClient(string token, string clientId, ILogger? logger)
     {
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
         _httpClient.DefaultRequestHeaders.Add("Client-Id", $"{clientId}");
+        _token = token;
         _logger = logger;
     }
 
@@ -40,6 +44,7 @@ internal sealed class HelixApiClient
 
     private async Task<(HttpResponseMessage, long)> PostAsync(RequestData requestObject, CancellationToken ct)
     {
+        await ValidateToken();
         string url = requestObject.GetUrl();
         var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url, requestObject.Body, this.SerializerOptions, ct);
@@ -52,6 +57,7 @@ internal sealed class HelixApiClient
 
     private async Task<(HttpResponseMessage, long)> GetAsync(RequestData requestObject, CancellationToken ct)
     {
+        await ValidateToken();
         string url = requestObject.GetUrl();
         var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.GetAsync(url, ct);
@@ -64,6 +70,7 @@ internal sealed class HelixApiClient
 
     private async Task<(HttpResponseMessage, long)> PutAsync(RequestData requestObject, CancellationToken ct)
     {
+        await ValidateToken();
         string url = requestObject.GetUrl();
         var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.PutAsJsonAsync(url, requestObject.Body, this.SerializerOptions, ct);
@@ -76,6 +83,7 @@ internal sealed class HelixApiClient
 
     private async Task<(HttpResponseMessage, long)> DeleteAsync(RequestData requestObject, CancellationToken ct)
     {
+        await ValidateToken();
         string url = requestObject.GetUrl();
         var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.DeleteAsync(url, ct);
@@ -88,6 +96,7 @@ internal sealed class HelixApiClient
 
     private async Task<(HttpResponseMessage, long)> PatchAsync(RequestData requestObject, CancellationToken ct)
     {
+        await ValidateToken();
         string url = requestObject.GetUrl();
         string rawContent = JsonSerializer.Serialize(requestObject.Body, this.SerializerOptions);
         var content = new StringContent(rawContent, Encoding.UTF8, "application/json");
@@ -100,5 +109,39 @@ internal sealed class HelixApiClient
         return (response, elapsedMs);
     }
 
-    private void Log(LogLevel level, string template, params object[] properties) => _logger?.Log(level, $"[MiniTwitch.Helix] " + template, properties);
+    private async ValueTask ValidateToken()
+    {
+        long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        if (_tokenInfo is not null)
+        {
+            TimeSpan expiresIn = TimeSpan.FromSeconds(_tokenInfo.ReceivedAt + _tokenInfo.ExpiresIn - now);
+            if (expiresIn.TotalSeconds <= -1)
+                throw new InvalidTokenException(null, $"Access token for user \"{_tokenInfo.Login}\" has expired");
+            else if (expiresIn.TotalHours < 0)
+                Log(LogLevel.Warning, "Access token for user {Username} expires in {ExpiresInMinutes} minutes", expiresIn.Minutes);
+            else if (expiresIn.TotalDays < 0)
+                Log(LogLevel.Warning, "Access token for user {Username} expires in {ExpiresInHours} hours", expiresIn.Hours);
+            else
+                Log(LogLevel.Trace, "Request sent with access token from user {Username} [Expires in: {ExpiresIn}]", expiresIn);
+
+            return;
+        }
+
+        HttpResponseMessage response = await _httpClient.GetAsync("https://id.twitch.tv/oauth2/validate");
+        if (!response.IsSuccessStatusCode)
+        {
+            InvalidToken? invalid = await response.Content.ReadFromJsonAsync<InvalidToken>();
+            throw new InvalidTokenException(invalid?.Message, "Provided access token is either invalid or has expired");
+        }
+
+        _tokenInfo = await response.Content.ReadFromJsonAsync<ValidToken>();
+        if (_tokenInfo is not null)
+        {
+            _tokenInfo.ReceivedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            Log(LogLevel.Information, "Validated access token from user {Username} with {ScopeCount} scopes. The token expires at {ExpiresAt}",
+                _tokenInfo.Login, _tokenInfo.Scopes.Count, DateTimeOffset.FromUnixTimeSeconds(_tokenInfo.ReceivedAt + _tokenInfo.ExpiresIn));
+        }
+    }
+
+    private void Log(LogLevel level, string template, params object[] properties) => _logger?.Log(level, "[MiniTwitch.Helix] " + template, properties);
 }
