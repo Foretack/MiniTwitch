@@ -115,14 +115,26 @@ internal sealed class HelixApiClient
         if (_tokenInfo is not null)
         {
             TimeSpan expiresIn = TimeSpan.FromSeconds(_tokenInfo.ReceivedAt + _tokenInfo.ExpiresIn - now);
-            if (expiresIn.TotalSeconds <= -1)
-                throw new InvalidTokenException(null, $"Access token for user \"{_tokenInfo.Login}\" has expired");
-            else if (expiresIn.TotalHours < 0)
-                Log(LogLevel.Warning, "Access token for user {Username} expires in {ExpiresInMinutes} minutes", expiresIn.Minutes);
-            else if (expiresIn.TotalDays < 0)
-                Log(LogLevel.Warning, "Access token for user {Username} expires in {ExpiresInHours} hours", expiresIn.Hours);
-            else
-                Log(LogLevel.Trace, "Request sent with access token from user {Username} [Expires in: {ExpiresIn}]", expiresIn);
+            if (_tokenInfo.IsPermaToken)
+            {
+                Log(LogLevel.Trace, "Request sent with access token from user {Username} [No expiry]");
+                return;
+            }
+
+            switch (expiresIn)
+            {
+                case { TotalSeconds: <=-1 }:
+                    throw new InvalidTokenException(null, $"Access token for user \"{_tokenInfo.Login}\" has expired");
+                case { TotalHours: < 0 }:
+                    Log(LogLevel.Warning, "Access token for user {Username} expires in {ExpiresInMinutes} minutes", expiresIn.Minutes);
+                    break;
+                case { TotalDays: < 0 }:
+                    Log(LogLevel.Warning, "Access token for user {Username} expires in {ExpiresInHours} hours", expiresIn.Hours);
+                    break;
+                default:
+                    Log(LogLevel.Trace, "Request sent with access token from user {Username} [Expires in: {ExpiresIn}]", expiresIn);
+                    break;
+            }
 
             return;
         }
@@ -135,12 +147,26 @@ internal sealed class HelixApiClient
         }
 
         _tokenInfo = await response.Content.ReadFromJsonAsync<ValidToken>();
-        if (_tokenInfo is not null)
+        if (_tokenInfo is null)
+            return;
+
+        _tokenInfo.ReceivedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        if (_tokenInfo.IsPermaToken)
         {
-            _tokenInfo.ReceivedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            Log(LogLevel.Information, "Validated access token from user {Username} with {ScopeCount} scopes. The token expires at {ExpiresAt}",
-                _tokenInfo.Login, _tokenInfo.Scopes.Count, DateTimeOffset.FromUnixTimeSeconds(_tokenInfo.ReceivedAt + _tokenInfo.ExpiresIn));
+            Log(
+                LogLevel.Information, 
+                "Validated access token from user {Username} with {ScopeCount} scopes. The token does not expire",
+                _tokenInfo.Login, _tokenInfo.Scopes.Count
+            );
+
+            return;
         }
+
+        Log(
+            LogLevel.Information, 
+            "Validated access token from user {Username} with {ScopeCount} scopes. The token expires at {ExpiresAt}",
+            _tokenInfo.Login, _tokenInfo.Scopes.Count, DateTimeOffset.FromUnixTimeSeconds(_tokenInfo.ReceivedAt + _tokenInfo.ExpiresIn)
+        );
     }
 
     private void Log(LogLevel level, string template, params object[] properties) => _logger?.Log(level, "[MiniTwitch.Helix] " + template, properties);

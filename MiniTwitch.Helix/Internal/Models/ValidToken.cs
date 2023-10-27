@@ -11,4 +11,5 @@ internal record ValidToken(
 )
 {
     public long ReceivedAt { get; set; }
+    public bool IsPermaToken => ExpiresIn == 0;
 };
