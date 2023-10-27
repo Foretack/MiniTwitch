@@ -117,7 +117,7 @@ internal sealed class HelixApiClient
             TimeSpan expiresIn = TimeSpan.FromSeconds(_tokenInfo.ReceivedAt + _tokenInfo.ExpiresIn - now);
             if (_tokenInfo.IsPermaToken)
             {
-                Log(LogLevel.Trace, "Request sent with access token from user {Username} [No expiry]");
+                Log(LogLevel.Trace, "Request sent with access token from user {Username} [No expiry]", _tokenInfo.Login);
                 return;
             }
 
@@ -155,7 +155,7 @@ internal sealed class HelixApiClient
         {
             Log(
                 LogLevel.Information, 
-                "Validated access token from user {Username} with {ScopeCount} scopes. The token does not expire",
+                "Validated permanent access token from user {Username} with {ScopeCount} scopes",
                 _tokenInfo.Login, _tokenInfo.Scopes.Count
             );
 
