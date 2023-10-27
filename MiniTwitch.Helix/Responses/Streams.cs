@@ -6,9 +6,9 @@ namespace MiniTwitch.Helix.Responses;
 public class Streams : PaginableResponse<Streams.Stream>
 {
     public record Stream(
-        [property: JsonPropertyName("broadcaster_language")] string BroadcasterLanguage,
-        [property: JsonPropertyName("broadcaster_login")] string BroadcasterName,
-        [property: JsonPropertyName("display_name")] string BroadcasterDisplayName,
+        [property: JsonPropertyName("language")] string Language,
+        [property: JsonPropertyName("user_login")] string BroadcasterName,
+        [property: JsonPropertyName("user_name")] string BroadcasterDisplayName,
         [property: JsonPropertyName("game_id")] string GameId,
         [property: JsonPropertyName("game_name")] string GameName,
         [property: JsonPropertyName("id")] long BroadcasterId,
