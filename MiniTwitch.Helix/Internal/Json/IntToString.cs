@@ -3,16 +3,13 @@ using System.Text.Json.Serialization;
 
 namespace MiniTwitch.Helix.Internal.Json;
 
-internal class IntToString : JsonConverter<int?>
+internal class IntToString : JsonConverter<int>
 {
-    public override int? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override int Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         => throw new NotSupportedException("Converter should only be used for writing");
 
-    public override void Write(Utf8JsonWriter writer, int? value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, int value, JsonSerializerOptions options)
     {
-        if (value is null)
-            writer.WriteNullValue();
-        else
-            writer.WriteStringValue(value.ToString());
+        writer.WriteStringValue(value.ToString());
     }
 }
