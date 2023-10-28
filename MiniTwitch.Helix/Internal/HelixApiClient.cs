@@ -20,15 +20,15 @@ internal sealed class HelixApiClient
     };
 
     private readonly HttpClient _httpClient = new();
+    private readonly string _tokenValidationUrl;
     private readonly ILogger? _logger;
-    private readonly string _token;
     private ValidToken? _tokenInfo;
 
-    public HelixApiClient(string token, string clientId, ILogger? logger)
+    public HelixApiClient(string token, string clientId, ILogger? logger, string tokenValidationUrl)
     {
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
         _httpClient.DefaultRequestHeaders.Add("Client-Id", $"{clientId}");
-        _token = token;
+        _tokenValidationUrl = tokenValidationUrl;
         _logger = logger;
     }
 
@@ -139,7 +139,7 @@ internal sealed class HelixApiClient
             return;
         }
 
-        HttpResponseMessage response = await _httpClient.GetAsync("https://id.twitch.tv/oauth2/validate");
+        HttpResponseMessage response = await _httpClient.GetAsync(_tokenValidationUrl);
         if (!response.IsSuccessStatusCode)
         {
             InvalidToken? invalid = await response.Content.ReadFromJsonAsync<InvalidToken>();

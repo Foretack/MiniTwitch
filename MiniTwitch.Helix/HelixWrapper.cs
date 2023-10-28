@@ -15,9 +15,10 @@ public class HelixWrapper
     private readonly HelixApiClient _client;
     private readonly string _baseUrl;
 
-    public HelixWrapper(string oauthToken, string clientId, ILogger? logger = null, string helixBaseUrl = "https://api.twitch.tv/helix")
+    public HelixWrapper(string oauthToken, string clientId, ILogger? logger = null,
+        string helixBaseUrl = "https://api.twitch.tv/helix", string tokenValidationUrl = "https://id.twitch.tv/oauth2/validate")
     {
-        _client = new HelixApiClient(oauthToken, clientId, logger);
+        _client = new HelixApiClient(oauthToken, clientId, logger, tokenValidationUrl);
         _baseUrl = helixBaseUrl;
     }
 
