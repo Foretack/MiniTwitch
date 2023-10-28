@@ -14,6 +14,7 @@ internal static class HelixResultFactory
         CancellationToken cancellationToken)
     {
         (HttpResponseMessage response, long elapsedMs) = await client.RequestAsync(request, cancellationToken);
+        // Because some endpoints don't have appropriate success status codes, .IsSuccessStatusCode should be checked first
         if (!response.IsSuccessStatusCode && response.StatusCode != endpoint.SuccessStatusCode)
         {
             return new HelixResult<T>()
