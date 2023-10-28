@@ -39,6 +39,11 @@ public sealed class ChatCategory
         CancellationToken cancellationToken = default)
     => _all.GetEmoteSets(emoteSetIds, cancellationToken);
 
+    public Task<HelixResult<ChatBadges>> GetChannelChatBadges(
+        long broadcasterId,
+        CancellationToken cancellationToken = default)
+    => _all.GetChannelChatBadges(broadcasterId, cancellationToken);
+
     public Task<HelixResult<ChatBadges>> GetGlobalChatBadges(
         CancellationToken cancellationToken = default)
     => _all.GetGlobalChatBadges(cancellationToken);

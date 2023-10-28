@@ -2091,4 +2091,15 @@ public sealed class AllCategories
         var request = new RequestData(_baseUrl, endpoint);
         return HelixResultFactory.Create<ChatBadges>(_client, request, endpoint, cancellationToken);
     }
+
+    public Task<HelixResult<ChatBadges>> GetChannelChatBadges(
+        long broadcasterId,
+        CancellationToken cancellationToken = default)
+    {
+        HelixEndpoint endpoint = Endpoints.GetChannelChatBadges;
+        var request = new RequestData(_baseUrl, endpoint)
+            .AddParam(QueryParams.BroadcasterId, broadcasterId);
+
+        return HelixResultFactory.Create<ChatBadges>(_client, request, endpoint, cancellationToken);
+    }
 }

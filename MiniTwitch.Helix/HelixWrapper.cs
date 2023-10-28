@@ -198,7 +198,6 @@ public class HelixWrapper
         CancellationToken cancellationToken = default)
     => _all.GetGlobalEmotes(cancellationToken);
 
-    // TODO: Add single
     public Task<HelixResult<EmoteSets>> GetEmoteSets(
         string emoteSetId,
         CancellationToken cancellationToken = default)
@@ -963,7 +962,11 @@ public class HelixWrapper
         CancellationToken cancellationToken = default)
     => _all.SnoozeNextAd(broadcasterId, cancellationToken);
 
-    // TODO: Get Channel Chat Badges is missing
+    public Task<HelixResult<ChatBadges>> GetChannelChatBadges(
+        long broadcasterId,
+        CancellationToken cancellationToken = default)
+    => _all.GetChannelChatBadges(broadcasterId, cancellationToken);
+
     public Task<HelixResult<ChatBadges>> GetGlobalChatBadges(
         CancellationToken cancellationToken = default)
     => _all.GetGlobalChatBadges(cancellationToken);
