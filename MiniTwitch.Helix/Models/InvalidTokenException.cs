@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace MiniTwitch.Helix.Models;
+﻿namespace MiniTwitch.Helix.Models;
 
 public class InvalidTokenException : Exception
 {

@@ -35,28 +35,28 @@ public sealed class SortedHelixWrapper
         string helixBaseUrl = "https://api.twitch.tv/helix", string tokenValidationUrl = "https://id.twitch.tv/oauth2/validate")
     {
         this.All = new(new HelixApiClient(bearerToken, clientId, logger, tokenValidationUrl), helixBaseUrl);
-        Analytics = new(All);
-        Bits = new(All);
-        ChannelPoints = new(All);
-        Channels = new(All);
-        Charity = new(All);
-        Chat = new(All);
-        Clips = new(All);
-        Entitlements = new(All);
-        Eventsub = new(All);
-        Extensions = new(All);
-        Games = new(All);
-        GuestStar = new(All);
-        Moderation = new(All);
-        Polls = new(All);
-        Predictions = new(All);
-        Raids = new(All);
-        Schedule = new(All);
-        Search = new(All);
-        Streams = new(All);
-        Subscriptions = new(All);
-        Teams = new(All);
-        Users = new(All);
-        Videos = new(All);
+        this.Analytics = new(this.All);
+        this.Bits = new(this.All);
+        this.ChannelPoints = new(this.All);
+        this.Channels = new(this.All);
+        this.Charity = new(this.All);
+        this.Chat = new(this.All);
+        this.Clips = new(this.All);
+        this.Entitlements = new(this.All);
+        this.Eventsub = new(this.All);
+        this.Extensions = new(this.All);
+        this.Games = new(this.All);
+        this.GuestStar = new(this.All);
+        this.Moderation = new(this.All);
+        this.Polls = new(this.All);
+        this.Predictions = new(this.All);
+        this.Raids = new(this.All);
+        this.Schedule = new(this.All);
+        this.Search = new(this.All);
+        this.Streams = new(this.All);
+        this.Subscriptions = new(this.All);
+        this.Teams = new(this.All);
+        this.Users = new(this.All);
+        this.Videos = new(this.All);
     }
 }

@@ -19,14 +19,7 @@ internal class SnakeCase : ICaseConverter
         for (; i < chars.Length - offset; i++)
         {
             char c = chars[i + offset];
-            if (c == underscore)
-            {
-                replacement[i] = char.ToUpper(chars[i + ++offset]);
-            }
-            else
-            {
-                replacement[i] = c;
-            }
+            replacement[i] = c == underscore ? char.ToUpper(chars[i + ++offset]) : c;
         }
 
         return replacement[..i].ToString();

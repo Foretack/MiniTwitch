@@ -114,7 +114,7 @@ internal sealed class HelixApiClient
         long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         if (_tokenInfo is not null)
         {
-            TimeSpan expiresIn = TimeSpan.FromSeconds(_tokenInfo.ReceivedAt + _tokenInfo.ExpiresIn - now);
+            var expiresIn = TimeSpan.FromSeconds(_tokenInfo.ReceivedAt + _tokenInfo.ExpiresIn - now);
             if (_tokenInfo.IsPermaToken)
             {
                 Log(LogLevel.Trace, "Request sent with access token from user {Username} [No expiry]", _tokenInfo.Login);
@@ -123,7 +123,7 @@ internal sealed class HelixApiClient
 
             switch (expiresIn)
             {
-                case { TotalSeconds: <=-1 }:
+                case { TotalSeconds: <= -1 }:
                     throw new InvalidTokenException(null, $"Access token for user \"{_tokenInfo.Login}\" has expired");
                 case { TotalHours: < 0 }:
                     Log(LogLevel.Warning, "Access token for user {Username} expires in {ExpiresInMinutes} minutes", expiresIn.Minutes);
@@ -154,7 +154,7 @@ internal sealed class HelixApiClient
         if (_tokenInfo.IsPermaToken)
         {
             Log(
-                LogLevel.Information, 
+                LogLevel.Information,
                 "Validated permanent access token from user {Username} with {ScopeCount} scopes",
                 _tokenInfo.Login, _tokenInfo.Scopes.Count
             );
@@ -163,7 +163,7 @@ internal sealed class HelixApiClient
         }
 
         Log(
-            LogLevel.Information, 
+            LogLevel.Information,
             "Validated access token from user {Username} with {ScopeCount} scopes. The token expires at {ExpiresAt}",
             _tokenInfo.Login, _tokenInfo.Scopes.Count, DateTimeOffset.FromUnixTimeSeconds(_tokenInfo.ReceivedAt + _tokenInfo.ExpiresIn)
         );

@@ -93,7 +93,7 @@ internal static class HelixResultFactory
         int remaining = 0;
         int resets = 0;
         int val;
-        foreach (var header in response.Headers)
+        foreach (KeyValuePair<string, IEnumerable<string>> header in response.Headers)
         {
             switch (header.Key)
             {
