@@ -263,7 +263,7 @@ public class HelixWrapper
         return HelixResultFactory.Create<CustomReward>(_client, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<CustomRewardRedemption>> GetCustomRewardRedemption(
+    public Task<HelixResult<CustomRewardRedemptions>> GetCustomRewardRedemption(
         long broadcasterId,
         string rewardId,
         RewardRedemptionStatus status,
@@ -281,10 +281,10 @@ public class HelixWrapper
             .AddParam(QueryParams.Sort, sort?.ToString())
             .AddParam(QueryParams.First, first);
 
-        return HelixResultFactory.Create<CustomRewardRedemption>(_client, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<CustomRewardRedemptions>(_client, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<CustomRewardRedemption>> GetCustomRewardRedemption(
+    public Task<HelixResult<CustomRewardRedemptions>> GetCustomRewardRedemption(
         long broadcasterId,
         string rewardId,
         RewardRedemptionStatus status,
@@ -302,7 +302,7 @@ public class HelixWrapper
             .AddParam(QueryParams.Sort, sort?.ToString())
             .AddParam(QueryParams.First, first);
 
-        return HelixResultFactory.Create<CustomRewardRedemption>(_client, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<CustomRewardRedemptions>(_client, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<CustomReward>> UpdateCustomReward(
@@ -341,7 +341,7 @@ public class HelixWrapper
         return HelixResultFactory.Create<CustomRewardRedemption>(_client, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<CustomRewardRedemption>> UpdateRedemptionStatus(
+    public Task<HelixResult<CustomRewardRedemptions>> UpdateRedemptionStatus(
         long broadcasterId,
         IEnumerable<string> ids,
         string rewardId,
@@ -359,7 +359,7 @@ public class HelixWrapper
             status = status.ToString()
         };
 
-        return HelixResultFactory.Create<CustomRewardRedemption>(_client, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<CustomRewardRedemptions>(_client, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<CharityCampaign>> GetCharityCampaign(
@@ -523,7 +523,7 @@ public class HelixWrapper
         return HelixResultFactory.Create<UserChatColor>(_client, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<UserChatColor>> GetUserChatColor(
+    public Task<HelixResult<UsersChatColor>> GetUserChatColor(
         IEnumerable<long> userIds,
         CancellationToken cancellationToken = default)
     {
@@ -531,7 +531,7 @@ public class HelixWrapper
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddMultiParam(QueryParams.UserId, userIds);
 
-        return HelixResultFactory.Create<UserChatColor>(_client, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<UsersChatColor>(_client, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult> UpdateUserChatColor(
@@ -899,7 +899,7 @@ public class HelixWrapper
         return HelixResultFactory.Create<Games>(_client, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<Games>> GetGames(
+    public Task<HelixResult<Game>> GetGames(
         string? id = null,
         string? name = null,
         string? igdbId = null,
@@ -911,7 +911,7 @@ public class HelixWrapper
             .AddParam(QueryParams.Name, name)
             .AddParam(QueryParams.IgdbId, igdbId);
 
-        return HelixResultFactory.Create<Games>(_client, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<Game>(_client, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<Games>> GetGames(
@@ -1737,7 +1737,7 @@ public class HelixWrapper
         return HelixResultFactory.Create<StreamKey>(_client, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<Streams>> GetStreams(
+    public Task<HelixResult<SingleStream>> GetStreams(
         long? userId = null,
         string? userLogin = null,
         string? gameId = null,
@@ -1755,7 +1755,7 @@ public class HelixWrapper
             .AddParam(QueryParams.Language, language)
             .AddParam(QueryParams.First, first);
 
-        return HelixResultFactory.Create<Streams>(_client, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<SingleStream>(_client, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<Streams>> GetStreams(
@@ -1892,7 +1892,7 @@ public class HelixWrapper
         return HelixResultFactory.Create<Teams>(_client, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<Users>> GetUsers(
+    public Task<HelixResult<User>> GetUsers(
         long? id = null,
         string? login = null,
         CancellationToken cancellationToken = default)
@@ -1902,7 +1902,7 @@ public class HelixWrapper
             .AddParam(QueryParams.Id, id)
             .AddParam(QueryParams.Login, login);
 
-        return HelixResultFactory.Create<Users>(_client, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<User>(_client, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<Users>> GetUsers(

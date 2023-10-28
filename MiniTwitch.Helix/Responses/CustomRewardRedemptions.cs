@@ -4,7 +4,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class CustomRewardRedemption : PaginableResponse<CustomRewardRedemption.Info>
+public class CustomRewardRedemptions : PaginableResponse<CustomRewardRedemptions.Info>
 {
     public record Info(
         [property: JsonPropertyName("broadcaster_name")] string BroadcasterDisplayName,
@@ -29,4 +29,8 @@ public class CustomRewardRedemption : PaginableResponse<CustomRewardRedemption.I
         [property: JsonPropertyName("prompt")] string Prompt,
         [property: JsonPropertyName("cost")] long Cost
     );
+}
+
+public class CustomRewardRedemption : PaginableResponse<CustomRewardRedemptions.Info>
+{
 }
