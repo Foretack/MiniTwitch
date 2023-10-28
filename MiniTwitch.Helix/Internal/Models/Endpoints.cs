@@ -1872,7 +1872,6 @@ internal static class Endpoints
         }
     };
 
-    // TODO: check if this is fixed
     public static readonly HelixEndpoint SnoozeNextAd = new()
     {
         Method = HttpMethod.Post,
@@ -1882,6 +1881,7 @@ internal static class Endpoints
         {
             HttpStatusCode.OK => "User’s next ad is successfully snoozed. Their snooze_count is decremented and snooze_refresh_time and next_ad_at are both updated.",
             HttpStatusCode.BadRequest => "The channel is not currently live.\r\nThe broadcaster ID is not valid.\r\nChannel does not have an upcoming scheduled ad break.",
+            HttpStatusCode.TooManyRequests => "Channel has no snoozes left.",
             _ => "Unknown response code"
         }
     };
