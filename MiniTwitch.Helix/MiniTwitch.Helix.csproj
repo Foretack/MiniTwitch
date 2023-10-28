@@ -6,9 +6,10 @@
       <PackageVersion>1.1.1</PackageVersion>
       <PackageId>MiniTwitch.Helix</PackageId>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
       <ImplicitUsings>enable</ImplicitUsings>
       <Nullable>enable</Nullable>
-      <NoWarn>CS8618,IDE0058</NoWarn>
+      <NoWarn>CS8618,IDE0058,CS1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

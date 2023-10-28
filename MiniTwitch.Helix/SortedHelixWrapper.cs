@@ -4,6 +4,9 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix;
 
+/// <summary>
+/// Wraps all Helix endpoints and exposes them as methods in categories.
+/// </summary>
 public sealed class SortedHelixWrapper
 {
     public AllCategories All { get; }
@@ -15,7 +18,7 @@ public sealed class SortedHelixWrapper
     public ChatCategory Chat { get; }
     public ClipsCategory Clips { get; }
     public EntitlementsCategory Entitlements { get; }
-    public EventsubCategory Eventsub { get; }
+    public EventSubCategory EventSub { get; }
     public ExtensionsCategory Extensions { get; }
     public GamesCategory Games { get; }
     public GuestStarCategory GuestStar { get; }
@@ -43,7 +46,7 @@ public sealed class SortedHelixWrapper
         this.Chat = new(this.All);
         this.Clips = new(this.All);
         this.Entitlements = new(this.All);
-        this.Eventsub = new(this.All);
+        this.EventSub = new(this.All);
         this.Extensions = new(this.All);
         this.Games = new(this.All);
         this.GuestStar = new(this.All);

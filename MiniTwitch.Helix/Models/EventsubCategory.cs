@@ -4,11 +4,11 @@ using MiniTwitch.Helix.Responses;
 
 namespace MiniTwitch.Helix.Models;
 
-public sealed class EventsubCategory
+public sealed class EventSubCategory
 {
     private readonly AllCategories _all;
 
-    internal EventsubCategory(AllCategories all)
+    internal EventSubCategory(AllCategories all)
     {
         _all = all;
     }

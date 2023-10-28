@@ -7,6 +7,9 @@ using MiniTwitch.Helix.Responses;
 
 namespace MiniTwitch.Helix;
 
+/// <summary>
+/// Wraps all Helix endpoints and exposes them directly as methods.
+/// </summary>
 public class HelixWrapper
 {
     private readonly AllCategories _all;
