@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class ChannelInformation : BaseResponse<ChannelInformation.Information>
+public class ChannelsInformation : BaseResponse<ChannelsInformation.Information>
 {
     public record Information(
         [property: JsonPropertyName("broadcaster_id")] long Id,
@@ -16,4 +16,8 @@ public class ChannelInformation : BaseResponse<ChannelInformation.Information>
         [property: JsonPropertyName("delay")] int Delay,
         [property: JsonPropertyName("tags")] IReadOnlyList<string> Tags
     );
+}
+
+public class ChannelInformation : SingleResponse<ChannelsInformation.Information>
+{
 }

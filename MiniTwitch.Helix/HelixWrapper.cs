@@ -142,7 +142,7 @@ public class HelixWrapper
         return HelixResultFactory.Create<ChannelInformation>(_client, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<ChannelInformation>> GetChannelInformation(
+    public Task<HelixResult<ChannelsInformation>> GetChannelInformation(
         IEnumerable<long> broadcasterIds,
         CancellationToken cancellationToken = default)
     {
@@ -150,7 +150,7 @@ public class HelixWrapper
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddMultiParam(QueryParams.BroadcasterId, broadcasterIds);
 
-        return HelixResultFactory.Create<ChannelInformation>(_client, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<ChannelsInformation>(_client, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult> ModifyChannelInformation(
