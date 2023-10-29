@@ -33,6 +33,9 @@ public readonly struct HelixResult : IHelixResult
     public RequestRatelimit Ratelimit { get; init; }
 }
 
+/// <summary>
+/// Contains the data about the result of a request to the Twitch Helix API.
+/// </summary>
 public readonly struct HelixResult<TResult> : IHelixResult
 {
     /// <summary>
