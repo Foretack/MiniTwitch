@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using MiniTwitch.Irc.Internal.Enums;
+using MiniTwitch.Irc.Internal.Models;
 using MiniTwitch.Irc.Internal.Parsing;
 using Xunit;
 
@@ -10,78 +11,67 @@ public class CommandParsingTests
     public void Parse_PRIVMSG()
     {
         string raw = "@badge-info=subscriber/42;badges=subscriber/42,glhf-pledge/1;color=#F97304;display-name=zneix;emotes=;first-msg=0;flags=;id=ffc033d5-862c-413c-8422-72a59aa1b0f1;mod=0;returning-chatter=0;room-id=11148817;subscriber=1;tmi-sent-ts=1678752306574;turbo=0;user-id=99631238;user-type= :zneix!zneix@zneix.tmi.twitch.tv PRIVMSG #pajlada :btw DFantasy, have you gotten an unused Dragon Hunter Crossbow just laying around by any chance? kkOna";
-        ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        Assert.Equal(IrcCommand.PRIVMSG, IrcParsing.ParseCommand(span).cmd);
+        Assert.Equal(IrcCommand.PRIVMSG, new IrcMessage(Encoding.UTF8.GetBytes(raw)).Command);
     }
     [Fact]
     public void Parse_USERNOTICE()
     {
         string raw = "@badge-info=subscriber/15;badges=subscriber/12;color=#BAFF2F;display-name=VOJTERIS;emotes=;flags=;id=267bffe6-534c-4ddc-a11c-d32b242d8734;login=vojteris;mod=0;msg-id=resub;msg-param-cumulative-months=15;msg-param-months=0;msg-param-multimonth-duration=0;msg-param-multimonth-tenure=0;msg-param-should-share-streak=0;msg-param-sub-plan-name=look\\sat\\sthose\\sshitty\\semotes,\\srip\\s$5\\sLUL;msg-param-sub-plan=1000;msg-param-was-gifted=false;room-id=11148817;subscriber=1;system-msg=VOJTERIS\\ssubscribed\\sat\\sTier\\s1.\\sThey've\\ssubscribed\\sfor\\s15\\smonths!;tmi-sent-ts=1678743959736;user-id=75436142;user-type= :tmi.twitch.tv USERNOTICE #pajlada :egFors TeaTime";
-        ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        Assert.Equal(IrcCommand.USERNOTICE, IrcParsing.ParseCommand(span).cmd);
+        Assert.Equal(IrcCommand.USERNOTICE, new IrcMessage(Encoding.UTF8.GetBytes(raw)).Command);
     }
     [Fact]
     public void Parse_CLEARCHAT()
     {
         string raw = "@ban-duration=30;room-id=11148817;target-user-id=783267696;tmi-sent-ts=1678712873805 :tmi.twitch.tv CLEARCHAT #pajlada :occluder";
-        ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        Assert.Equal(IrcCommand.CLEARCHAT, IrcParsing.ParseCommand(span).cmd);
+        Assert.Equal(IrcCommand.CLEARCHAT, new IrcMessage(Encoding.UTF8.GetBytes(raw)).Command);
     }
     [Fact]
     public void Parse_WHISPER()
     {
         string raw = "@badges=;color=#2E8B57;display-name=pajbot;emotes=25:7-11;message-id=7;thread-id=82008718_783267696;turbo=0;user-id=82008718;user-type= :pajbot!pajbot@pajbot.tmi.twitch.tv WHISPER occluder :Riftey Kappa";
-        ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        Assert.Equal(IrcCommand.WHISPER, IrcParsing.ParseCommand(span).cmd);
+        Assert.Equal(IrcCommand.WHISPER, new IrcMessage(Encoding.UTF8.GetBytes(raw)).Command);
     }
     [Fact]
     public void Parse_ROOMSTATE()
     {
         string raw = "@emote-only=0;followers-only=-1;r9k=0;room-id=783267696;slow=0;subs-only=0 :tmi.twitch.tv ROOMSTATE #occluder";
-        ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        Assert.Equal(IrcCommand.ROOMSTATE, IrcParsing.ParseCommand(span).cmd);
+        Assert.Equal(IrcCommand.ROOMSTATE, new IrcMessage(Encoding.UTF8.GetBytes(raw)).Command);
     }
     [Fact]
     public void Parse_NOTICE()
     {
         string raw = "@msg-id=msg_channel_suspended :tmi.twitch.tv NOTICE #foretack :This channel does not exist or has been suspended.";
-        ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        Assert.Equal(IrcCommand.NOTICE, IrcParsing.ParseCommand(span).cmd);
+        Assert.Equal(IrcCommand.NOTICE, new IrcMessage(Encoding.UTF8.GetBytes(raw)).Command);
     }
     [Fact]
     public void Parse_CLEARMSG()
     {
         string raw = "@login=occluder;room-id=;target-msg-id=55dc74c9-a6b2-4443-9b68-3446a5ddb7ed;tmi-sent-ts=1678798254260 :tmi.twitch.tv CLEARMSG #occluder :@emote-only=0;followers-only=-1;r9k=0;room-id=783267696;slow=0;subs-only=0 :tmi.twitch.tv ROOMSTATE #occluder ";
-        ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        Assert.Equal(IrcCommand.CLEARMSG, IrcParsing.ParseCommand(span).cmd);
+        Assert.Equal(IrcCommand.CLEARMSG, new IrcMessage(Encoding.UTF8.GetBytes(raw)).Command);
     }
     [Fact]
     public void Parse_USERSTATE()
     {
         string raw = "@badge-info=;badges=broadcaster/1;color=#F2647B;display-name=occluder;emote-sets=0,4236,15961,19194,376284588,385292559,477339272,5fc5e142-d394-481f-a561-5406c2ba3ef0,e21484e8-cf11-48b1-8b67-c180fa39f926;mod=0;subscriber=0;user-type= :tmi.twitch.tv USERSTATE #occluder";
-        ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        Assert.Equal(IrcCommand.USERSTATE, IrcParsing.ParseCommand(span).cmd);
+        Assert.Equal(IrcCommand.USERSTATE, new IrcMessage(Encoding.UTF8.GetBytes(raw)).Command);
     }
     [Fact]
     public void Parse_RECONNECT()
     {
         string raw = ":tmi.twitch.tv RECONNECT";
-        ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        Assert.Equal(IrcCommand.RECONNECT, IrcParsing.ParseCommand(span).cmd);
+        Assert.Equal(IrcCommand.RECONNECT, new IrcMessage(Encoding.UTF8.GetBytes(raw)).Command);
     }
     [Fact]
     public void Parse_PING()
     {
         string raw = "PING :tmi.twitch.tv";
-        ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        Assert.Equal(IrcCommand.PING, IrcParsing.ParseCommand(span).cmd);
+        Assert.Equal(IrcCommand.PING, new IrcMessage(Encoding.UTF8.GetBytes(raw)).Command);
     }
     [Fact]
     public void Parse_PONG()
     {
         string raw = "PONG :tmi.twitch.tv";
-        ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
-        Assert.Equal(IrcCommand.PONG, IrcParsing.ParseCommand(span).cmd);
+        Assert.Equal(IrcCommand.PONG, new IrcMessage(Encoding.UTF8.GetBytes(raw)).Command);
     }
     [Fact]
     public void Parse_Multiple()

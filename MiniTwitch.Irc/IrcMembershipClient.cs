@@ -4,7 +4,7 @@ using MiniTwitch.Common.Extensions;
 using MiniTwitch.Irc.Interfaces;
 using MiniTwitch.Irc.Internal;
 using MiniTwitch.Irc.Internal.Enums;
-using MiniTwitch.Irc.Internal.Parsing;
+using MiniTwitch.Irc.Internal.Models;
 using MiniTwitch.Irc.Models;
 
 namespace MiniTwitch.Irc;
@@ -21,7 +21,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
 
     #region Properties
     /// <summary>
-    /// 
+    /// The action to invoke when an exception is caught within an event
     /// </summary>
     public Action<Exception> ExceptionHandler { get; set; } = default!;
     #endregion
@@ -56,7 +56,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     private readonly SemaphoreSlim _connectionWaiter = new(0);
     private readonly SemaphoreSlim _joinChannelWaiter = new(0);
     private readonly IMembershipClientOptions _options;
-    private readonly WebSocketClient _ws = new(TimeSpan.FromSeconds(30), 8192);
+    private readonly WebSocketClient _ws;
     private readonly List<string> _joinedChannels = new();
     private readonly RateLimitManager _manager;
     private bool _connectInvoked;
@@ -71,6 +71,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
         var clientOptions = new ClientOptions();
         options(clientOptions);
         _options = clientOptions;
+        _ws = new(_options.ReconnectionDelay, 8192);
         _manager = new(clientOptions);
 
         InternalInt();
@@ -98,7 +99,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     }
 
     /// <summary>
-    /// Attempts connection to TMI like <see cref="ConnectAsync()"/>, but connects in a "fire and forget" style
+    /// Attempts connection to TMI like <see cref="ConnectAsync(CancellationToken)"/>, but connects in a "fire and forget" style
     /// </summary>
     public void Connect() => ConnectAsync().StepOver();
 
@@ -106,13 +107,13 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     /// Connects to TMI
     /// </summary>
     /// <returns><see langword="true"/> if the connection is successful; Otherwise, after 15 seconds: <see langword="false"/></returns>
-    public async Task<bool> ConnectAsync()
+    public async Task<bool> ConnectAsync(CancellationToken cancellationToken = default)
     {
         Uri uri = new(CONN_URL);
 
-        await _ws.Start(uri);
+        await _ws.Start(uri, cancellationToken);
 
-        if (await _connectionWaiter.WaitAsync(TimeSpan.FromSeconds(15)).ConfigureAwait(false))
+        if (await _connectionWaiter.WaitAsync(TimeSpan.FromSeconds(15), cancellationToken).ConfigureAwait(false))
             return true;
 
         Log(LogLevel.Critical, "Connection timed out.");
@@ -127,15 +128,24 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     /// <summary>
     /// Disconnects from TMI
     /// </summary>
-    public Task DisconnectAsync() => _ws.Disconnect();
+    public Task DisconnectAsync(CancellationToken cancellationToken = default) => _ws.Disconnect(cancellationToken);
+
+    /// <summary>
+    /// Disconnects then reconnects to TMI
+    /// </summary>
+    public Task ReconnectAsync(CancellationToken cancellationToken = default) => _ws.Restart(_options.ReconnectionDelay, cancellationToken);
 
     private async Task OnWsReconnect()
     {
         await Login();
+        TimeSpan joinInterval = _joinedChannels.Count >= _options.JoinRateLimit
+            ? TimeSpan.FromSeconds(_joinedChannels.Count * (10 / _options.JoinRateLimit))
+            : TimeSpan.Zero;
+
         foreach (string channel in _joinedChannels)
         {
             await JoinChannel(channel);
-            await Task.Delay(1000);
+            await Task.Delay(joinInterval);
         }
     }
 
@@ -159,8 +169,9 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     /// Used for joining a channel
     /// </summary>
     /// <param name="channel">Username of the channel to join</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
     /// <returns><see langword="true"/> if the join is successful; Otherwise, after 10 seconds: <see langword="false"/></returns>
-    public async Task JoinChannel(string channel)
+    public async Task JoinChannel(string channel, CancellationToken cancellationToken = default)
     {
         if (!_ws.IsConnected)
         {
@@ -170,13 +181,13 @@ public sealed class IrcMembershipClient : IAsyncDisposable
 
         if (!_manager.CanJoin())
         {
-            await Task.Delay(2500);
             Log(LogLevel.Warning, "Waiting to join #{channel}: Configured ratelimit of {rate} joins/10s is hit", channel, _options.JoinRateLimit);
-            await JoinChannel(channel);
+            await Task.Delay(TimeSpan.FromSeconds(30 / _options.JoinRateLimit), cancellationToken);
+            await JoinChannel(channel, cancellationToken);
             return;
         }
 
-        await _ws.SendAsync($"JOIN #{channel}");
+        await _ws.SendAsync($"JOIN #{channel}", cancellationToken: cancellationToken);
         _joinedChannels.Add(channel);
     }
 
@@ -184,8 +195,9 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     /// Used for joining multiple channels
     /// </summary>
     /// <param name="channels">Usernames of channels to join</param>
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
     /// <returns><see langword="true"/> if all joins are successful; Otherwise, <see langword="false"/></returns>
-    public async Task JoinChannels(params string[] channels)
+    public async Task JoinChannels(IEnumerable<string> channels, CancellationToken cancellationToken = default)
     {
         if (!_ws.IsConnected)
         {
@@ -195,7 +207,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
 
         foreach (string channel in channels)
         {
-            await JoinChannel(channel);
+            await JoinChannel(channel, cancellationToken);
         }
     }
 
@@ -203,7 +215,8 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     /// Used for leaving/parting a joined channel
     /// </summary>
     /// <param name="channel">name of the channel to part</param>
-    public Task PartChannel(string channel)
+    /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
+    public Task PartChannel(string channel, CancellationToken cancellationToken = default)
     {
         if (!_ws.IsConnected)
         {
@@ -214,27 +227,24 @@ public sealed class IrcMembershipClient : IAsyncDisposable
         if (_joinedChannels.Remove(channel))
             Log(LogLevel.Debug, "Removed #{channel} from joined channels list.", channel);
 
-        return _ws.SendAsync($"PART #{channel}").AsTask();
+        return _ws.SendAsync($"PART #{channel}", cancellationToken: cancellationToken).AsTask();
     }
     #endregion
 
     #region Parsing
     internal void Parse(ReadOnlyMemory<byte> data)
     {
-        (IrcCommand command, int lfIndex) = IrcParsing.ParseCommand(data.Span);
-        int accumulatedIndex = lfIndex;
-        ReceiveData(command, data);
-        while (lfIndex != 0 && data.Length - accumulatedIndex > 0)
+        IrcMessage message = new(data);
+        HandleMessage(message);
+        if (message.IsMultipleMessages)
         {
-            (command, lfIndex) = IrcParsing.ParseCommand(data.Span[accumulatedIndex..]);
-            ReceiveData(command, data[accumulatedIndex..]);
-            accumulatedIndex += lfIndex;
+            Parse(data[message.NextMessageStartIndex..]);
         }
     }
 
-    private void ReceiveData(IrcCommand command, ReadOnlyMemory<byte> data)
+    private void HandleMessage(IrcMessage message)
     {
-        switch (command)
+        switch (message.Command)
         {
             case IrcCommand.Connected:
                 if (_connectionWaiter.CurrentCount == 0)
@@ -252,7 +262,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
 
             case IrcCommand.RECONNECT:
                 Log(LogLevel.Information, "Twitch servers requested a reconnection. Reconnecting ...");
-                _ws.Restart(TimeSpan.FromSeconds(30)).StepOver();
+                _ws.Restart(_options.ReconnectionDelay).StepOver();
                 OnReconnect?.Invoke().StepOver(this.ExceptionHandler);
                 break;
 
@@ -265,11 +275,11 @@ public sealed class IrcMembershipClient : IAsyncDisposable
                 {
                     User = new MessageAuthor()
                     {
-                        Name = data.Span.FindUsername(noTags: true)
+                        Name = message.GetUsername()
                     },
                     Channel = new IrcChannel()
                     {
-                        Name = data.Span.FindChannel(anySeparator: true)
+                        Name = message.GetChannel()
                     }
                 };
                 OnUserJoin?.Invoke(joinArgs).StepOver(this.ExceptionHandler);
@@ -280,11 +290,11 @@ public sealed class IrcMembershipClient : IAsyncDisposable
                 {
                     User = new MessageAuthor()
                     {
-                        Name = data.Span.FindUsername(noTags: true)
+                        Name = message.GetUsername()
                     },
                     Channel = new IrcChannel()
                     {
-                        Name = data.Span.FindChannel(anySeparator: true)
+                        Name = message.GetChannel()
                     }
                 };
                 OnUserPart?.Invoke(partArgs).StepOver(this.ExceptionHandler);

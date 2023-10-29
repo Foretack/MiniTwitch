@@ -1,4 +1,5 @@
-﻿using MiniTwitch.Irc.Enums;
+﻿using System.Drawing;
+using MiniTwitch.Irc.Enums;
 using MiniTwitch.Irc.Models;
 
 namespace MiniTwitch.Irc.Interfaces;
@@ -12,8 +13,8 @@ public interface IUserstateSelf
     string BadgeInfo { get; }
     /// <inheritdoc cref="MessageAuthor.Badges"/>
     string Badges { get; }
-    /// <inheritdoc cref="MessageAuthor.ColorCode"/>
-    string ColorCode { get; }
+    /// <inheritdoc cref="MessageAuthor.ChatColor"/>
+    Color ChatColor { get; }
     /// <summary>
     /// Your username
     /// </summary>
@@ -42,6 +43,5 @@ public interface IUserstateSelf
     /// Whether you have site-wide commercial free mode enabled
     /// <para>Note: This value is always <see langword="false"/></para>
     /// </summary>
-    [Obsolete("Always false")]
     bool IsTurbo { get; }
 }

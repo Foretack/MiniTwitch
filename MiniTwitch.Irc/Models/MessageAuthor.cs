@@ -1,4 +1,5 @@
-﻿using MiniTwitch.Irc.Enums;
+﻿using System.Drawing;
+using MiniTwitch.Irc.Enums;
 using MiniTwitch.Irc.Interfaces;
 
 namespace MiniTwitch.Irc.Models;
@@ -7,7 +8,8 @@ namespace MiniTwitch.Irc.Models;
 /// Represents an author of a message or a certain event
 /// </summary>
 public readonly struct MessageAuthor : IBanTarget, IDeletedMessageAuthor, IWhisperAuthor,
-    IGiftSubRecipient, IUserstateSelf, IMembershipUser
+    IGiftSubRecipient, IUserstateSelf, IMembershipUser, IGazatuChannel, IPartedChannel,
+    IBasicChannel, IEquatable<MessageAuthor>, IEquatable<IrcChannel>
 {
     /// <summary>
     /// Contains metadata related to the chat badges in the badges tag
@@ -29,10 +31,9 @@ public readonly struct MessageAuthor : IBanTarget, IDeletedMessageAuthor, IWhisp
     /// </summary>
     public string Badges { get; init; }
     /// <summary>
-    /// The color of the user’s name in the chat room. This is a hexadecimal RGB color code in the form, #RGB
-    /// <para>Note: May be empty if it is never set</para>
+    /// The color of the user’s name in the chat room
     /// </summary>
-    public string ColorCode { get; init; }
+    public Color ChatColor { get; init; }
     /// <summary>
     /// The user’s display name, escaped as described in the <see href="https://ircv3.net/specs/core/message-tags-3.2.html">IRCv3</see> spec
     /// <para>Note: Can contain characters outside [a-zA-Z0-9_]</para>
@@ -66,8 +67,35 @@ public readonly struct MessageAuthor : IBanTarget, IDeletedMessageAuthor, IWhisp
     /// Whether the user has site-wide commercial free mode enabled
     /// <para>Note: This value is always <see langword="false"/></para>
     /// </summary>
-    [Obsolete("Always false")]
     public bool IsTurbo { get; init; }
+
+#pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+    /// <inheritdoc/>
+    public bool Equals(IrcChannel other) => this.Name == other.Name;
+    /// <inheritdoc/>
+    public override bool Equals(object obj) => (obj is MessageAuthor && Equals((MessageAuthor)obj)) || (obj is IrcChannel && Equals((IrcChannel)obj));
+    /// <inheritdoc/>
+    public bool Equals(MessageAuthor other) => this.Name == other.Name || (this.Id != 0 && this.Id == other.Id);
+#pragma warning restore CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+
+    /// <inheritdoc/>
+    public static bool operator ==(MessageAuthor left, MessageAuthor right) => left.Equals(right);
+    /// <inheritdoc/>
+    public static bool operator !=(MessageAuthor left, MessageAuthor right) => !(left == right);
+
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        var code = new HashCode();
+        code.Add(this.Name);
+        code.Add(this.Id);
+        return code.ToHashCode();
+    }
+
+    /// <summary>
+    /// Returns the author's name
+    /// </summary>
+    public override string ToString() => this.Name;
 
     /// <inheritdoc/>
     public static implicit operator string(MessageAuthor messageAuthor) => messageAuthor.Name;

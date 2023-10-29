@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageVersion>1.0.1</PackageVersion>
+    <Version>1.0.1</Version>
+    <PackageId>MiniTwitch.PubSub</PackageId>
+    <Title>MiniTwitch.Irc</Title>
+    <Description>Fast and easy to use async library for Twitch's PubSub service</Description>
+    <Authors>Foretack</Authors>
+    <PackageTags>PubSub;Twitch;Bots;Client;Events</PackageTags>
+    <RepositoryUrl>https://github.com/Foretack/MiniTwitch</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <license>MIT</license>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon256.png</PackageIcon>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\icon256.png">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MiniTwitch.Common\MiniTwitch.Common.csproj" />
+  </ItemGroup>
+
+</Project>

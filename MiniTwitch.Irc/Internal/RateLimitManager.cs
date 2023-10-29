@@ -46,7 +46,7 @@ internal sealed class RateLimitManager
 
         for (int i = 0; i < old; i++)
         {
-            _ = _messages[channel].Dequeue();
+            _ = _messages[channel].TryDequeue(out _);
         }
 
         if (_isGlobal)
@@ -96,7 +96,7 @@ internal sealed class RateLimitManager
 
         for (int i = 0; i < old; i++)
         {
-            _ = _joins.Dequeue();
+            _ = _joins.TryDequeue(out _);
         }
 
         if (attempts < _joinLimit)

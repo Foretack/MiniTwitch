@@ -1,4 +1,5 @@
-﻿using System.Net.WebSockets;
+﻿using System.Buffers;
+using System.Net.WebSockets;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using MiniTwitch.Common.Internal.Models;
@@ -20,11 +21,11 @@ public sealed class WebSocketClient : IAsyncDisposable
     #endregion
 
     #region Fields
-    private readonly CancellationToken _ct = CancellationToken.None;
     private readonly SemaphoreSlim _sendLock = new(1);
     private readonly SemaphoreSlim _reconnectionLock = new(0);
     private readonly TimeSpan _reconnectDelay;
     private readonly ByteBucket _bucket;
+    private CancellationTokenSource _cts;
     private ClientWebSocket _client = new();
     private Uri _uri = default!;
     private Task _receiveTask = default!;
@@ -36,11 +37,12 @@ public sealed class WebSocketClient : IAsyncDisposable
     {
         _bucket = new ByteBucket(bufferSize);
         _reconnectDelay = reconnectionDelay;
+        _cts = new CancellationTokenSource();
     }
     #endregion
 
     #region Controls
-    public async Task Start(Uri uri)
+    public async Task Start(Uri uri, CancellationToken cancellationToken = default)
     {
         // The ClientWebSocket cannot be reused once it is aborted
         if (_client.State == WebSocketState.Aborted)
@@ -49,11 +51,25 @@ public sealed class WebSocketClient : IAsyncDisposable
             return;
         }
 
+        // Make sure buffers are clear before starting
+        _bucket.Clear();
+
+        // Set URI for reconnects
         _uri = uri;
         Log(LogLevel.Trace, "Connecting to {uri} ...", uri);
-        await _client.ConnectAsync(uri, _ct);
-        _receiveTask = Receive();
-        await Task.Delay(500);
+
+        // Connect
+        await _client.ConnectAsync(uri, cancellationToken);
+
+        // Make sure _cts isn't cancelled
+        if (_cts.IsCancellationRequested)
+            _cts = new();
+
+        // Start receiving data
+        _receiveTask = Task.Factory.StartNew(Receive, TaskCreationOptions.LongRunning);
+        await Task.Delay(250, cancellationToken);
+
+        // Invoke OnConnect if this is the first time connecting
         if (this.IsConnected)
         {
             if (!_reconnecting)
@@ -63,13 +79,21 @@ public sealed class WebSocketClient : IAsyncDisposable
         }
     }
 
-    private Task Stop() => _client.CloseOutputAsync(_client.CloseStatus ?? WebSocketCloseStatus.NormalClosure, _client.CloseStatusDescription, _ct).WaitAsync(_ct);
-
-    public async Task Disconnect()
+    private async Task Stop(CancellationToken cancellationToken = default)
     {
+        WebSocketCloseStatus status = _client.CloseStatus ?? WebSocketCloseStatus.NormalClosure;
+        string? description = _client.CloseStatusDescription;
+
+        await _client.CloseAsync(status, description, cancellationToken);
+        //await _client.CloseOutputAsync(status, description, cancellationToken);
+    }
+
+    public async Task Disconnect(CancellationToken cancellationToken = default)
+    {
+        _cts.Cancel();
         // Need to be connected to do this
         if (this.IsConnected)
-            await Stop();
+            await Stop(cancellationToken);
 
         _client.Dispose();
         await OnDisconnect.Invoke();
@@ -77,27 +101,36 @@ public sealed class WebSocketClient : IAsyncDisposable
             _receiveTask.Dispose();
     }
 
-    public async Task Restart(TimeSpan delay)
+    public async Task Restart(TimeSpan delay, CancellationToken cancellationToken = default)
     {
         // Sometimes the method gets invoked twice in a short span of time
         // The whole purpose of this _reconnecting field is to stop that
         if (_reconnecting)
             return;
 
-        Log(LogLevel.Critical, "The WebSocket client is restarting in {delay}", delay);
         _reconnecting = true;
-        await Disconnect();
+
+        Log(LogLevel.Critical, "The WebSocket client is restarting in {delay}", delay);
+        // Attempt to disconnect
+        await Disconnect(cancellationToken);
+
+        // Re-instantiate the client
         _client = new ClientWebSocket();
-        await Task.Delay(delay);
+
+        // Wait the delay
+        await Task.Delay(_reconnectDelay, cancellationToken);
         Log(LogLevel.Debug, "Finished waiting for reconnection delay");
-        await Start(_uri);
+
+        // Attempt to start the client again
+        await Start(_uri, cancellationToken);
         Log(LogLevel.Trace, "If the WebSocket doesn't reconnect in 10 seconds you will see a warning");
+
         // Keep trying until you reconnect
-        if (!await _reconnectionLock.WaitAsync(TimeSpan.FromSeconds(10)))
+        if (!await _reconnectionLock.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken))
         {
             Log(LogLevel.Warning, "WebSocket reconnect failed. Retrying...");
             _reconnecting = false; // Set to false otherwise the method returns early
-            await Restart(delay);
+            await Restart(_reconnectDelay, cancellationToken);
             return;
         }
 
@@ -119,7 +152,7 @@ public sealed class WebSocketClient : IAsyncDisposable
 
                 try
                 {
-                    bool shouldDrain = await _bucket.FillFrom(_client, _ct);
+                    bool shouldDrain = await _bucket.FillFrom(_client, _cts.Token);
                     if (!shouldDrain)
                         continue;
 
@@ -136,20 +169,27 @@ public sealed class WebSocketClient : IAsyncDisposable
                     Log(LogLevel.Warning, "Tried to receive data, but the WebSocket client is not connected");
                     break;
                 }
+                catch (TaskCanceledException) when (_cts.IsCancellationRequested)
+                {
+                    // Break loop to exit method
+                    break;
+                }
                 catch (Exception ex)
                 {
                     LogException(ex, "Exception caught in data receiver: ");
                 }
             }
 
-            await Restart(_reconnectDelay);
+            // Don't restart if it's a user disconnect
+            if (!_cts.IsCancellationRequested)
+                await Restart(_reconnectDelay);
         });
     }
 
-    public async ValueTask SendAsync(string data, bool sensitive = false)
+    public async ValueTask SendAsync(string data, bool sensitive = false, CancellationToken cancellationToken = default)
     {
-        ReadOnlyMemory<byte> bytes = Encoding.UTF8.GetBytes(data);
-        if (!await _sendLock.WaitAsync(TimeSpan.FromSeconds(10)).ConfigureAwait(false))
+        var (written, mem) = StringToBytes(data);
+        if (!await _sendLock.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken).ConfigureAwait(false))
         {
             Log(LogLevel.Warning, "{method} timed out after 10 seconds.", nameof(SendAsync));
             return;
@@ -164,7 +204,7 @@ public sealed class WebSocketClient : IAsyncDisposable
 
         try
         {
-            await _client!.SendAsync(bytes, WebSocketMessageType.Text, true, _ct);
+            await _client!.SendAsync(mem.Memory[..written], WebSocketMessageType.Text, true, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -172,6 +212,7 @@ public sealed class WebSocketClient : IAsyncDisposable
         }
         finally
         {
+            mem.Dispose();
             _ = _sendLock.Release();
         }
     }
@@ -181,6 +222,14 @@ public sealed class WebSocketClient : IAsyncDisposable
     private void Log(LogLevel level, string template, params object[] properties) => OnLog?.Invoke(level, template, properties);
 
     private void LogException(Exception ex, string template, params object[] properties) => OnLogEx?.Invoke(ex, template, properties);
+
+    private static (int, IMemoryOwner<byte>) StringToBytes(string s)
+    {
+        ReadOnlySpan<char> chars = s;
+        IMemoryOwner<byte> bytes = MemoryPool<byte>.Shared.Rent(chars.Length * sizeof(char));
+        int written = Encoding.UTF8.GetBytes(chars, bytes.Memory.Span);
+        return (written, bytes);
+    }
     #endregion
 
     public async ValueTask DisposeAsync()

@@ -1,7 +1,9 @@
-﻿using System.Text;
+﻿using System.Drawing;
+using System.Text;
 using MiniTwitch.Common.Extensions;
 using MiniTwitch.Irc.Enums;
 using MiniTwitch.Irc.Interfaces;
+using MiniTwitch.Irc.Internal.Enums;
 using MiniTwitch.Irc.Internal.Models;
 using MiniTwitch.Irc.Internal.Parsing;
 
@@ -33,12 +35,12 @@ public readonly struct Whisper
     /// </summary>
     public bool IsAction { get; init; }
 
-    internal Whisper(ReadOnlyMemory<byte> memory)
+    internal Whisper(ref IrcMessage message)
     {
         string badges = string.Empty;
-        string color = string.Empty;
+        Color color = default;
         string displayName = string.Empty;
-        string username = memory.Span.FindUsername();
+        string username = message.GetUsername();
         long uid = 0;
         UserType type = UserType.None;
         bool turbo = false;
@@ -46,9 +48,8 @@ public readonly struct Whisper
         string emotes = string.Empty;
         int id = 0;
         string threadId = string.Empty;
-        (string content, bool action) = memory.Span.FindContent(maybeAction: true);
-
-        using IrcTags tags = IrcParsing.ParseTags(memory);
+        (string content, bool action) = message.GetContent(maybeAction: true);
+        using IrcTags tags = message.ParseTags();
         foreach (IrcTag tag in tags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
@@ -56,47 +57,47 @@ public readonly struct Whisper
             switch (tagKey.Sum())
             {
                 //color
-                case 543:
-                    color = TagHelper.GetString(tagValue, true);
+                case (int)Tags.Color:
+                    color = TagHelper.GetColor(tagValue);
                     break;
 
                 //turbo
-                case 556:
+                case (int)Tags.Turbo:
                     turbo = TagHelper.GetBool(tagValue);
                     break;
 
                 //badges
-                case 614:
+                case (int)Tags.Badges:
                     badges = TagHelper.GetString(tagValue, true);
                     break;
 
                 //emotes
-                case 653:
+                case (int)Tags.Emotes:
                     emotes = TagHelper.GetString(tagValue);
                     break;
 
                 //user-id
-                case 697:
+                case (int)Tags.UserId:
                     uid = TagHelper.GetLong(tagValue);
                     break;
 
                 //thread-id
-                case 882:
+                case (int)Tags.ThreadId:
                     threadId = TagHelper.GetString(tagValue, true);
                     break;
 
                 //user-type
-                case 942 when tagValue.Length > 0:
+                case (int)Tags.UserType when tagValue.Length > 0:
                     type = (UserType)tagValue.Sum();
                     break;
 
                 //message-id
-                case 991:
+                case (int)Tags.MessageId:
                     id = TagHelper.GetInt(tagValue);
                     break;
 
                 //display-name
-                case 1220:
+                case (int)Tags.DisplayName:
                     displayName = TagHelper.GetString(tagValue);
                     break;
             }
@@ -105,7 +106,7 @@ public readonly struct Whisper
         this.Author = new MessageAuthor()
         {
             Badges = badges,
-            ColorCode = color,
+            ChatColor = color,
             DisplayName = displayName,
             Name = username,
             Id = uid,
@@ -127,7 +128,8 @@ public readonly struct Whisper
     public static Whisper Construct(string rawData)
     {
         ReadOnlyMemory<byte> memory = new(Encoding.UTF8.GetBytes(rawData));
-        return new(memory);
+        var message = new IrcMessage(memory);
+        return new(ref message);
     }
 
     /// <inheritdoc/>

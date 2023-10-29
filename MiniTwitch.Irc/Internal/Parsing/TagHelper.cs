@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Drawing;
+using System.Text;
+using MiniTwitch.Common.Extensions;
 
 namespace MiniTwitch.Irc.Internal.Parsing;
 
@@ -11,8 +13,8 @@ internal static class TagHelper
         if (unescape)
         {
             Span<byte> unescaped = stackalloc byte[span.Length];
-            Unescape(span, unescaped);
-            value = Encoding.UTF8.GetString(unescaped);
+            int end = span.CopyUnescaped(unescaped);
+            value = Encoding.UTF8.GetString(unescaped[..end]);
         }
         else
         {
@@ -32,10 +34,9 @@ internal static class TagHelper
         const byte zero = (byte)'0';
         if (nonBinary)
         {
-            string value = Encoding.UTF8.GetString(span);
-            string interned = string.IsInterned(value) ?? string.Intern(value);
-
-            return bool.Parse(interned);
+            Span<char> charSpan = stackalloc char[span.Length];
+            int charsWritten = Encoding.UTF8.GetChars(span, charSpan);
+            return bool.Parse(charSpan[..charsWritten]);
         }
 
         return span[0] != zero;
@@ -56,12 +57,11 @@ internal static class TagHelper
     public static TEnum GetEnum<TEnum>(ReadOnlySpan<byte> span, bool useTry = true)
     where TEnum : struct
     {
-        string value = Encoding.UTF8.GetString(span);
-        string interned = string.IsInterned(value) ?? string.Intern(value);
-
+        Span<char> charSpan = stackalloc char[span.Length];
+        int charsWritten = Encoding.UTF8.GetChars(span, charSpan);
         if (useTry)
         {
-            if (Enum.TryParse(interned, true, out TEnum result))
+            if (Enum.TryParse(charSpan[..charsWritten], true, out TEnum result))
             {
                 return result;
             }
@@ -69,45 +69,26 @@ internal static class TagHelper
             return default;
         }
 
-        return Enum.Parse<TEnum>(interned, true);
+        return Enum.Parse<TEnum>(charSpan[..charsWritten], true);
     }
 
-    private static void Unescape(ReadOnlySpan<byte> source, Span<byte> destination)
+    public static Color GetColor(ReadOnlySpan<byte> hexBytes)
     {
-        const byte backSlash = (byte)'\\';
+        const byte zero = (byte)'0';
+        const byte nine = (byte)'9';
+        const byte leading = (byte)'#';
+        const byte A = (byte)'A';
 
-        const byte s = (byte)'s';
-        const byte colon = (byte)':';
-        const byte r = (byte)'r';
-        const byte n = (byte)'n';
-
-        const byte space = (byte)' ';
-        const byte semicolon = (byte)';';
-        const byte cr = (byte)'\r';
-        const byte lf = (byte)'\n';
-
-        source.CopyTo(destination);
-        if (source.IndexOf(backSlash) == -1)
+        int hexValue = 0;
+        foreach (byte b in hexBytes)
         {
-            return;
+            if (b == leading)
+                continue;
+
+            hexValue = (hexValue << 4) | (b is >= zero and <= nine ? b - zero : (b & 0x4F) - A + 10);
         }
 
-        int atIndex = 0;
-        int slashIndex;
-        while ((slashIndex = source[atIndex..].IndexOf(backSlash)) != -1)
-        {
-            destination[atIndex + slashIndex] = source[atIndex + slashIndex + 1] switch
-            {
-                s => space,
-                colon => semicolon,
-                r => cr,
-                n => lf,
-                _ => backSlash
-            };
-            destination[atIndex + slashIndex + 1] = 0;
-
-            atIndex += slashIndex + 2;
-        }
+        return Color.FromArgb(hexValue);
     }
 
     private static int ParseInt(ReadOnlySpan<byte> span)

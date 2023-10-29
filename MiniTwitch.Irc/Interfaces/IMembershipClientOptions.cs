@@ -18,4 +18,9 @@ public interface IMembershipClientOptions
     /// <para>Adding a logger is not required, but highly recommended</para>
     /// </summary>
     public ILogger? Logger { get; set; }
+    /// <summary>
+    /// The time to wait before trying to reconnect
+    /// <para>Default value is <see langword="30"/> seconds</para>
+    /// </summary>
+    public TimeSpan ReconnectionDelay { get; set; }
 }

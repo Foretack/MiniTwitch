@@ -29,15 +29,15 @@ public class TagHelperTests
     [Fact]
     public void GetString_Escaped()
     {
-        string raw = "i\\slolled\\sxD";
+        string raw = @"i\slolled\sxD";
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
         string result = TagHelper.GetString(span, unescape: true);
-        Assert.Equal(raw.Unescape(), result);
+        Assert.Equal(@"i lolled xD", result);
 
-        string raw2 = "i\\slolled\\:xD";
+        string raw2 = @"i\slolled\:xD";
         ReadOnlySpan<byte> span2 = Encoding.UTF8.GetBytes(raw2).AsSpan();
         string result2 = TagHelper.GetString(span2, unescape: true);
-        Assert.Equal(raw2.Unescape(), result2);
+        Assert.Equal(@"i lolled;xD", result2);
     }
 
     [Fact]
@@ -47,6 +47,11 @@ public class TagHelperTests
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
         bool result = TagHelper.GetBool(span);
         Assert.True(result);
+
+        string raw2 = "0";
+        ReadOnlySpan<byte> span2 = Encoding.UTF8.GetBytes(raw2).AsSpan();
+        bool result2 = TagHelper.GetBool(span2);
+        Assert.False(result2);
     }
 
     [Fact]
@@ -56,6 +61,11 @@ public class TagHelperTests
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
         bool result = TagHelper.GetBool(span, nonBinary: true);
         Assert.True(result);
+
+        string raw2 = "false";
+        ReadOnlySpan<byte> span2 = Encoding.UTF8.GetBytes(raw2).AsSpan();
+        bool result2 = TagHelper.GetBool(span2, nonBinary: true);
+        Assert.False(result2);
     }
 
     [Fact]
@@ -101,6 +111,10 @@ public class TagHelperTests
         ReadOnlySpan<byte> span = Encoding.UTF8.GetBytes(raw).AsSpan();
         UserType result = TagHelper.GetEnum<UserType>(span);
         Assert.Equal(UserType.Admin, result);
+        //No try
+        ReadOnlySpan<byte> span2 = Encoding.UTF8.GetBytes(raw).AsSpan();
+        UserType result2 = TagHelper.GetEnum<UserType>(span2, useTry: false);
+        Assert.Equal(UserType.Admin, result2);
     }
 
     [Fact]

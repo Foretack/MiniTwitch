@@ -3,7 +3,7 @@
 /// <summary>
 /// Contains information about a user ban
 /// </summary>
-public interface IUserBan
+public interface IUserBan : IUnixTimestamped
 {
     /// <summary>
     /// The target user of the ban
@@ -13,8 +13,4 @@ public interface IUserBan
     /// The channel where the event occurred
     /// </summary>
     IBasicChannel Channel { get; }
-    /// <summary>
-    /// Milliseconds Unix timestamp of when the event occurred
-    /// </summary>
-    long TmiSentTs { get; }
 }

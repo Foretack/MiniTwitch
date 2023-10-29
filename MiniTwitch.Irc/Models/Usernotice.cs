@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Drawing;
+using System.Text;
 using MiniTwitch.Common.Extensions;
 using MiniTwitch.Irc.Enums;
 using MiniTwitch.Irc.Interfaces;
@@ -67,11 +68,11 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
 
     internal UsernoticeType MsgId { get; init; } = UsernoticeType.None;
 
-    internal Usernotice(ReadOnlyMemory<byte> memory)
+    internal Usernotice(ref IrcMessage message)
     {
         // Author
         bool isMod = false;
-        string colorCode = string.Empty;
+        Color colorCode = default;
         string badges = string.Empty;
         long userId = 0;
         UserType userType = UserType.None;
@@ -87,7 +88,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
         long recipientId = 0;
 
         // Channel
-        string channelName = memory.Span.FindChannel();
+        string channelName = message.GetChannel();
         long channelId = 0;
 
         SubPlan subPlan = SubPlan.None;
@@ -97,7 +98,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
         string id = string.Empty;
         string subPlanName = string.Empty;
         string systemMessage = string.Empty;
-        string message = string.Empty;
+        string content = string.Empty;
         string gifterUsername = string.Empty;
         string gifterDisplayName = string.Empty;
         int cumulativeMonths = 0;
@@ -109,7 +110,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
         int viewerCount = 0;
         bool shouldShareStreak = false;
 
-        using IrcTags tags = IrcParsing.ParseTags(memory);
+        using IrcTags tags = message.ParseTags();
         foreach (IrcTag tag in tags)
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
@@ -118,167 +119,167 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
             switch (tagKey.Sum())
             {
                 //id
-                case 205:
+                case (int)Tags.Id:
                     id = TagHelper.GetString(tagValue);
                     break;
 
                 //mod
-                case 320:
+                case (int)Tags.Mod:
                     isMod = TagHelper.GetBool(tagValue);
                     break;
 
                 //flags
-                case 525:
+                case (int)Tags.Flags:
                     flags = TagHelper.GetString(tagValue);
                     break;
 
                 //login
-                case 537:
+                case (int)Tags.Login:
                     username = TagHelper.GetString(tagValue);
                     break;
 
                 //color
-                case 543:
-                    colorCode = TagHelper.GetString(tagValue, true);
+                case (int)Tags.Color:
+                    colorCode = TagHelper.GetColor(tagValue);
                     break;
 
                 //turbo 
-                case 556:
+                case (int)Tags.Turbo:
                     isTurbo = TagHelper.GetBool(tagValue);
                     break;
 
                 //msg-id
-                case 577:
+                case (int)Tags.MsgId:
                     this.MsgId = (UsernoticeType)tagValue.Sum();
                     break;
 
                 //badges
-                case 614:
+                case (int)Tags.Badges:
                     badges = TagHelper.GetString(tagValue, true);
                     break;
 
                 //emotes
-                case 653:
+                case (int)Tags.Emotes:
                     emotes = TagHelper.GetString(tagValue);
                     break;
 
                 //room-id
-                case 695:
+                case (int)Tags.RoomId:
                     channelId = TagHelper.GetLong(tagValue);
                     break;
 
                 //user-id
-                case 697:
+                case (int)Tags.UserId:
                     userId = TagHelper.GetLong(tagValue);
                     break;
 
                 //user-type
-                case 942 when tagValue.Length > 0:
+                case (int)Tags.UserType when tagValue.Length > 0:
                     userType = (UserType)tagValue.Sum();
                     break;
 
                 //badge-info
-                case 972:
-                    badgeInfo = TagHelper.GetString(tagValue, true);
+                case (int)Tags.BadgeInfo:
+                    badgeInfo = TagHelper.GetString(tagValue, true, true);
                     break;
 
                 //system-msg
-                case 1049:
+                case (int)Tags.SystemMsg:
                     systemMessage = TagHelper.GetString(tagValue, unescape: true);
                     break;
 
                 //subscriber
-                case 1076:
+                case (int)Tags.Subscriber:
                     isSubscriber = TagHelper.GetBool(tagValue);
                     break;
 
                 //tmi-sent-ts
-                case 1093:
+                case (int)Tags.TmiSentTs:
                     this.TmiSentTs = TagHelper.GetLong(tagValue);
                     break;
 
                 //display-name
-                case 1220:
+                case (int)Tags.DisplayName:
                     displayName = TagHelper.GetString(tagValue);
                     break;
 
                 //msg-param-color
-                case 1489:
+                case (int)Tags.MsgParamColor:
                     color = (AnnouncementColor)tagValue.Sum();
                     break;
 
                 //msg-param-months
-                case 1611:
+                case (int)Tags.MsgParamMonths:
                     months = TagHelper.GetInt(tagValue);
                     break;
 
                 //msg-param-sub-plan
-                case 1748:
+                case (int)Tags.MsgParamSubPlan:
                     subPlan = (SubPlan)tagValue.Sum();
                     break;
 
                 //msg-param-sender-name
-                case 2049:
+                case (int)Tags.MsgParamSenderName:
                     gifterDisplayName = TagHelper.GetString(tagValue);
                     break;
 
                 //msg-param-gift-months
-                case 2082:
+                case (int)Tags.MsgParamGiftMonths:
                     giftedMonths = TagHelper.GetInt(tagValue);
                     break;
 
                 //msg-param-viewerCount
-                case 2125:
+                case (int)Tags.MsgParamViewerCount:
                     viewerCount = TagHelper.GetInt(tagValue);
                     break;
 
                 //msg-param-recipient-id
-                case 2159:
+                case (int)Tags.MsgParamRecipientId:
                     recipientId = TagHelper.GetLong(tagValue);
                     break;
 
                 //msg-param-sender-login
-                case 2169:
+                case (int)Tags.MsgParamSenderLogin:
                     gifterUsername = TagHelper.GetString(tagValue);
                     break;
 
                 //msg-param-sender-count
-                case 2185:
+                case (int)Tags.MsgParamSenderCount:
                     totalGiftCount = TagHelper.GetInt(tagValue);
                     break;
 
                 //msg-param-sub-plan-name
-                case 2210:
+                case (int)Tags.MsgParamSubPlanName:
                     subPlanName = TagHelper.GetString(tagValue, true, true);
                     break;
 
                 //msg-param-streak-months
-                case 2306:
+                case (int)Tags.MsgParamStreakMonths:
                     monthStreak = TagHelper.GetInt(tagValue);
                     break;
 
                 //msg-param-mass-gift-count
-                case 2451:
+                case (int)Tags.MsgParamMassGiftCount:
                     giftCount = TagHelper.GetInt(tagValue);
                     break;
 
                 //msg-param-cumulative-months
-                case 2743:
+                case (int)Tags.MsgParamCumulativeMonths:
                     cumulativeMonths = TagHelper.GetInt(tagValue);
                     break;
 
                 //msg-param-recipient-user-name
-                case 2863:
+                case (int)Tags.MsgParamRecipientUserName:
                     recipientUsername = TagHelper.GetString(tagValue);
                     break;
 
                 //msg-param-should-share-streak
-                case 2872:
+                case (int)Tags.MsgParamShouldShareStreak:
                     shouldShareStreak = TagHelper.GetBool(tagValue);
                     break;
 
                 //msg-param-recipient-display-name
-                case 3174:
+                case (int)Tags.MsgparamRecipientDisplayName:
                     recipientDisplayName = TagHelper.GetString(tagValue);
                     break;
             }
@@ -286,14 +287,14 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
 
         if (this.MsgId is UsernoticeType.Resub or UsernoticeType.Announcement)
         {
-            message = memory.Span.FindContent(maybeEmpty: true).Content;
+            content = message.HasMessageContent ? message.GetContent().Content : string.Empty;
         }
 
         this.Author = new MessageAuthor()
         {
             BadgeInfo = badgeInfo,
             Badges = badges,
-            ColorCode = colorCode,
+            ChatColor = colorCode,
             DisplayName = displayName,
             Id = userId,
             IsMod = isMod,
@@ -321,7 +322,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
         this.Id = id;
         this.SubPlanName = subPlanName;
         this.SystemMessage = systemMessage;
-        this.Message = message;
+        this.Message = content;
         this.GifterUsername = gifterUsername;
         this.GifterDisplayName = gifterDisplayName;
         this.CumulativeMonths = cumulativeMonths;
@@ -342,7 +343,8 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
     public static Usernotice Construct(string rawData)
     {
         ReadOnlyMemory<byte> memory = new(Encoding.UTF8.GetBytes(rawData));
-        return new(memory);
+        var message = new IrcMessage(memory);
+        return new(ref message);
     }
 
 #pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).

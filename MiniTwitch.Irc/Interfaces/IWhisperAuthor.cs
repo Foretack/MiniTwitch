@@ -1,4 +1,5 @@
-﻿using MiniTwitch.Irc.Enums;
+﻿using System.Drawing;
+using MiniTwitch.Irc.Enums;
 using MiniTwitch.Irc.Models;
 
 namespace MiniTwitch.Irc.Interfaces;
@@ -10,8 +11,8 @@ public interface IWhisperAuthor
 {
     /// <inheritdoc cref="MessageAuthor.Badges"/>
     string Badges { get; }
-    /// <inheritdoc cref="MessageAuthor.ColorCode"/>
-    string ColorCode { get; }
+    /// <inheritdoc cref="MessageAuthor.ChatColor"/>
+    Color ChatColor { get; }
     /// <inheritdoc cref="MessageAuthor.DisplayName"/>
     string DisplayName { get; }
     /// <inheritdoc cref="MessageAuthor.Name"/>
@@ -21,6 +22,5 @@ public interface IWhisperAuthor
     /// <inheritdoc cref="MessageAuthor.Type"/>
     UserType Type { get; }
     /// <inheritdoc cref="MessageAuthor.IsTurbo"/>
-    [Obsolete("This is always false")]
     bool IsTurbo { get; }
 }
