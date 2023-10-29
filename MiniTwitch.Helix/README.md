@@ -47,9 +47,9 @@ public class Program
     {
         List<string> usernames = new();
         HelixResult<Chatters> chatters = await helix.GetChatters(broadcasterId, moderatorId, first: 1000);
-        
+
         if (!chatters.Success) return Array.Empty<string>();
-        
+
         foreach (var chatter in chatters.Value.Data)
         {
             usernames.Add(chatter.Username);
@@ -80,7 +80,7 @@ public class Program
                 usernames.Add(chatter.Username);
             }
 
-            if (!next.CanPaginate) return usernames;
+            if (!next.CanPaginate) break;
 
             chatters = next;
         }
