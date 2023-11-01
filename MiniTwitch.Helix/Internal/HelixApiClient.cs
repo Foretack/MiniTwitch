@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
+using MiniTwitch.Common;
 using MiniTwitch.Helix.Internal.Json;
 using MiniTwitch.Helix.Internal.Models;
 using MiniTwitch.Helix.Models;
@@ -12,6 +13,7 @@ namespace MiniTwitch.Helix.Internal;
 
 internal sealed class HelixApiClient
 {
+    public DefaultMiniTwitchLogger<HelixWrapper> Logger { get; } = new();
     public JsonSerializerOptions SerializerOptions { get; init; } = new()
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
@@ -169,5 +171,6 @@ internal sealed class HelixApiClient
         );
     }
 
-    private void Log(LogLevel level, string template, params object[] properties) => _logger?.Log(level, "[MiniTwitch.Helix] " + template, properties);
+    private void Log(LogLevel level, string template, params object[] properties) => GetLogger().Log(level, "[MiniTwitch.Helix] " + template, properties);
+    private ILogger GetLogger() => _logger ?? this.Logger;
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using MiniTwitch.Common;
 using MiniTwitch.Helix.Enums;
 using MiniTwitch.Helix.Internal;
 using MiniTwitch.Helix.Models;
@@ -12,6 +13,12 @@ namespace MiniTwitch.Helix;
 /// </summary>
 public class HelixWrapper
 {
+    /// <summary>
+    /// The default logger for <see cref="HelixWrapper"/>, only used when <see cref="ILogger"/> is not provided in the constructor
+    /// <para>Can be toggled with <see cref="DefaultMiniTwitchLogger{T}.Enabled"/></para>
+    /// </summary>
+    public DefaultMiniTwitchLogger<HelixWrapper> DefaultLogger => _all.ApiClient.Logger;
+
     private readonly AllCategories _all;
 
     public HelixWrapper(string bearerToken, string clientId, ILogger? logger = null,
