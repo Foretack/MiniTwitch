@@ -11,5 +11,5 @@ public abstract class SingleResponse<T>
     public T Data => this.I_Data[0];
 
     [JsonIgnore]
-    public bool HasContent => I_Data is { Count: > 0 };
+    public bool HasContent => this.I_Data is { Count: > 0 };
 }

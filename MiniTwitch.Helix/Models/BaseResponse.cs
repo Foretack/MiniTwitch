@@ -8,5 +8,5 @@ public abstract class BaseResponse<T>
     public required IReadOnlyList<T> Data { get; init; }
 
     [JsonIgnore]
-    public bool HasContent => Data is { Count: > 0 };
+    public bool HasContent => this.Data is { Count: > 0 };
 }
