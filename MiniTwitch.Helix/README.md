@@ -33,11 +33,11 @@ namespace MiniTwitchExample;
 
 public class Program
 {
-    private static HelixWrapper helix;
-    
+    public static HelixWrapper Helix { get; set; }
+
     static async Task Main()
     {
-        helix = new HelixWrapper("Access token", "Client ID");
+        Helix = new HelixWrapper("Access token", "Client ID");
 
         await GetFirst1000Usernames(12345678, 12345678);
         await GetAllUsernames(12345678, 12345678);
@@ -46,9 +46,10 @@ public class Program
     private static async Task<IReadOnlyList<string>> GetFirst1000Usernames(long broadcasterId, long moderatorId)
     {
         List<string> usernames = new();
-        HelixResult<Chatters> chatters = await helix.GetChatters(broadcasterId, moderatorId, first: 1000);
+        HelixResult<Chatters> chatters = await Helix.GetChatters(broadcasterId, moderatorId, first: 1000);
 
-        if (!chatters.Success) return Array.Empty<string>();
+        // Make sure the result is a success and the value contains data
+        if (!chatters.Success || !chatters.Value.HasContent) return Array.Empty<string>();
 
         foreach (var chatter in chatters.Value.Data)
         {
@@ -61,9 +62,9 @@ public class Program
     private static async Task<IReadOnlyList<string>> GetAllUsernames(long broadcasterId, long moderatorId)
     {
         List<string> usernames = new();
-        HelixResult<Chatters> chatters = await helix.GetChatters(broadcasterId, moderatorId, first: 1000);
+        HelixResult<Chatters> chatters = await Helix.GetChatters(broadcasterId, moderatorId, first: 1000);
         
-        if (!chatters.Success) return Array.Empty<string>();
+        if (!chatters.Success || !chatters.Value.HasContent) return Array.Empty<string>();
 
         foreach (var chatter in chatters.Value.Data)
         {
@@ -73,14 +74,16 @@ public class Program
         // No more users - return what we got
         if (!chatters.CanPaginate) return usernames;
 
-        while (await chatters.Paginate() is { Success: true } next)
+        // Continue paginating if the result is a success and there is content
+        while (await chatters.Paginate() is { Success: true, Value.HasContent: true } next)
         {
             foreach (var chatter in next.Value.Data)
             {
                 usernames.Add(chatter.Username);
             }
 
-            if (!next.CanPaginate) break;
+            // Return when pagination is no longer possible
+            if (!next.CanPaginate) return usernames;
 
             chatters = next;
         }
