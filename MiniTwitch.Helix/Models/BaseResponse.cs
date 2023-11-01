@@ -6,4 +6,7 @@ public abstract class BaseResponse<T>
 {
     [JsonPropertyName("data")]
     public required IReadOnlyList<T> Data { get; init; }
+
+    [JsonIgnore]
+    public bool HasContent => Data is { Count: > 0 };
 }
