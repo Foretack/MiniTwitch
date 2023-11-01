@@ -17,6 +17,7 @@
       <PackageTags>Twitch;Bots;Helix;API;Wrapper</PackageTags>
       <license>MIT</license>
       <PackageLicenseFile>LICENSE</PackageLicenseFile>
+      <PackageReadmeFile>README.md</PackageReadmeFile>
       <PackageIcon>icon256.png</PackageIcon>
       <ImplicitUsings>enable</ImplicitUsings>
       <Nullable>enable</Nullable>

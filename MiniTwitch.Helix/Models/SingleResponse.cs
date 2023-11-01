@@ -6,8 +6,10 @@ public abstract class SingleResponse<T>
 {
     [JsonPropertyName("data")]
     internal IReadOnlyList<T> I_Data { get; init; }
+
     [JsonIgnore]
     public T Data => this.I_Data[0];
+
     [JsonIgnore]
     public bool HasContent => I_Data is { Count: > 0 };
 }
