@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+      <LangVersion>latest</LangVersion>
+
+      <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+      <PackageId>MiniTwitch.Helix</PackageId>
+      <PackageVersion>0.1.0-prerelease</PackageVersion>
+      <Version>0.1.0-prerelease</Version>
+      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <Title>MiniTwitch.Helix</Title>
+      <Description>Convenient wrapper classes for Twitch's Helix API</Description>
+      <Authors>Foretack</Authors>
+      <RepositoryUrl>https://github.com/Foretack/MiniTwitch</RepositoryUrl>
+      <RepositoryType>git</RepositoryType>
+      <PackageTags>Twitch;Bots;Helix;API;Wrapper</PackageTags>
+      <license>MIT</license>
+      <PackageLicenseFile>LICENSE</PackageLicenseFile>
+      <PackageReadmeFile>README.md</PackageReadmeFile>
+      <PackageIcon>icon256.png</PackageIcon>
+      <ImplicitUsings>enable</ImplicitUsings>
+      <Nullable>enable</Nullable>
+      <NoWarn>CS8618,IDE0058,CS1591</NoWarn>
+  </PropertyGroup>
+
+    <ItemGroup>
+      <None Include="..\icon256.png">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+      <None Include="..\LICENSE">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+      <None Include="README.md">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+    </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MiniTwitch.Common\MiniTwitch.Common.csproj" />
+  </ItemGroup>
+
+</Project>
