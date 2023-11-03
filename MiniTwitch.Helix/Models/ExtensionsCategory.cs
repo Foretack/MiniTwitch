@@ -73,7 +73,7 @@ public sealed class ExtensionsCategory
         CancellationToken cancellationToken = default)
     => _all.SendExtensionChatMessage(broadcasterId, body, cancellationToken);
 
-    public Task<HelixResult<Extensions>> GetExtensions(
+    public Task<HelixResult<ChannelExtensions>> GetExtensions(
         string extensionId,
         string? extensionVersion = null,
         CancellationToken cancellationToken = default)

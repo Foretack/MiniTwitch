@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class Poll : SingleResponse<Poll.Info>
+public class Poll : BaseResponse<Poll.Info>
 {
     public record Choice(
         [property: JsonPropertyName("id")] string Id,

@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class AutoModSettings : SingleResponse<AutoModSettings.Settings>
+public class AutoModSettings : BaseResponse<AutoModSettings.Settings>
 {
     public record Settings(
         [property: JsonPropertyName("broadcaster_id")] long BroadcasterId,

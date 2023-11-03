@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class UpdatedUser : SingleResponse<UpdatedUser.Info>
+public class UpdatedUser : BaseResponse<UpdatedUser.Info>
 {
     public record Info(
         [property: JsonPropertyName("id")] long Id,

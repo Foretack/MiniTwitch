@@ -20,18 +20,19 @@ internal sealed class HelixApiClient
         NumberHandling = JsonNumberHandling.AllowReadingFromString,
         PropertyNamingPolicy = new SnakeCaseNamingPolicy()
     };
+    internal long UserId { get; private set; }
 
     private readonly HttpClient _httpClient = new();
     private readonly string _tokenValidationUrl;
     private readonly ILogger? _logger;
-    private ValidToken? _tokenInfo;
+    private TokenInfo? _tokenInfo;
 
-    public HelixApiClient(string token, string clientId, ILogger? logger, string tokenValidationUrl)
+    public HelixApiClient(string token, long userId, ILogger? logger, string tokenValidationUrl)
     {
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-        _httpClient.DefaultRequestHeaders.Add("Client-Id", $"{clientId}");
         _tokenValidationUrl = tokenValidationUrl;
         _logger = logger;
+        UserId = userId;
     }
 
     public Task<(HttpResponseMessage, long)> RequestAsync(RequestData requestObject, CancellationToken ct) => requestObject._method switch
@@ -111,7 +112,7 @@ internal sealed class HelixApiClient
         return (response, elapsedMs);
     }
 
-    private async ValueTask ValidateToken()
+    internal async ValueTask ValidateToken()
     {
         long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         if (_tokenInfo is not null)
@@ -148,10 +149,11 @@ internal sealed class HelixApiClient
             throw new InvalidTokenException(invalid?.Message, "Provided access token is either invalid or has expired");
         }
 
-        _tokenInfo = await response.Content.ReadFromJsonAsync<ValidToken>();
+        _tokenInfo = await response.Content.ReadFromJsonAsync<TokenInfo>();
         if (_tokenInfo is null)
-            return;
+            throw new InvalidTokenException(null, "Validating access token failed");
 
+        _httpClient.DefaultRequestHeaders.Add("Client-Id", $"{_tokenInfo.ClientId}");
         _tokenInfo.ReceivedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         if (_tokenInfo.IsPermaToken)
         {

@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class Raid : SingleResponse<Raid.Info>
+public class Raid : BaseResponse<Raid.Info>
 {
     public record Info(
         [property: JsonPropertyName("created_at")] DateTime CreatedAt,

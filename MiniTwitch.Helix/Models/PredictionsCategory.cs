@@ -13,18 +13,16 @@ public sealed class PredictionsCategory
     }
 
     public Task<HelixResult<Predictions>> GetPredictions(
-        long broadcasterId,
         string? id = null,
         int? first = null,
         CancellationToken cancellationToken = default)
-    => _all.GetPredictions(broadcasterId, id, first, cancellationToken);
+    => _all.GetPredictions(id, first, cancellationToken);
 
     public Task<HelixResult<Predictions>> GetPredictions(
-        long broadcasterId,
         IEnumerable<string>? ids = null,
         int? first = null,
         CancellationToken cancellationToken = default)
-    => _all.GetPredictions(broadcasterId, ids, first, cancellationToken);
+    => _all.GetPredictions(ids, first, cancellationToken);
 
     public Task<HelixResult<Prediction>> CreatePrediction(
         NewPrediction body,

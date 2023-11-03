@@ -18,7 +18,3 @@ public class Users : BaseResponse<Users.User>
         [property: JsonPropertyName("created_at")] DateTime CreatedAt
     );
 }
-
-public class User : SingleResponse<Users.User>
-{
-}

@@ -12,12 +12,10 @@ public sealed class StreamsCategory
         _all = all;
     }
 
-    public Task<HelixResult<StreamKey>> GetStreamKey(
-        long broadcasterId,
-        CancellationToken cancellationToken = default)
-    => _all.GetStreamKey(broadcasterId, cancellationToken);
+    public Task<HelixResult<StreamKey>> GetStreamKey(CancellationToken cancellationToken = default)
+    => _all.GetStreamKey(cancellationToken);
 
-    public Task<HelixResult<SingleStream>> GetStreams(
+    public Task<HelixResult<Streams>> GetStreams(
         long? userId = null,
         string? userLogin = null,
         string? gameId = null,
@@ -38,21 +36,18 @@ public sealed class StreamsCategory
     => _all.GetStreams(userIds, userLogins, gameIds, type, languages, first, cancellationToken);
 
     public Task<HelixResult<FollowedStreams>> GetFollowedStreams(
-        long userId,
         int? first = null,
         CancellationToken cancellationToken = default)
-    => _all.GetFollowedStreams(userId, first, cancellationToken);
+    => _all.GetFollowedStreams(first, cancellationToken);
 
     public Task<HelixResult<StreamMarker>> CreateStreamMarker(
-        long userId,
         string? description = null,
         CancellationToken cancellationToken = default)
-    => _all.CreateStreamMarker(userId, description, cancellationToken);
+    => _all.CreateStreamMarker(description, cancellationToken);
 
     public Task<HelixResult<StreamMarkers>> GetStreamMarkers(
-        long userId,
         string? videoId,
         int? first = null,
         CancellationToken cancellationToken = default)
-    => _all.GetStreamMarkers(userId, videoId, first, cancellationToken);
+    => _all.GetStreamMarkers(videoId, first, cancellationToken);
 }

@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class ShieldModeStatus : SingleResponse<ShieldModeStatus.Status>
+public class ShieldModeStatus : BaseResponse<ShieldModeStatus.Status>
 {
     public record Status(
        [property: JsonPropertyName("is_active")] bool IsActive,

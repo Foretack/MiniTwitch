@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class ChatSettings : SingleResponse<ChatSettings.Settings>
+public class ChatSettings : BaseResponse<ChatSettings.Settings>
 {
     public record Settings(
         [property: JsonPropertyName("broadcaster_id")] long BroadcasterId,

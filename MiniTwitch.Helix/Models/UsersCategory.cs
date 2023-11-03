@@ -11,7 +11,7 @@ public sealed class UsersCategory
         _all = all;
     }
 
-    public Task<HelixResult<User>> GetUsers(
+    public Task<HelixResult<Users>> GetUsers(
         long? id = null,
         string? login = null,
         CancellationToken cancellationToken = default)
@@ -41,17 +41,14 @@ public sealed class UsersCategory
     => _all.UnblockUser(targetUserId, cancellationToken);
 
     public Task<HelixResult<BlockList>> GetUserBlockList(
-        long broadcasterId,
         int? first = null,
         CancellationToken cancellationToken = default)
-    => _all.GetUserBlockList(broadcasterId, first, cancellationToken);
+    => _all.GetUserBlockList(first, cancellationToken);
 
     public Task<HelixResult<UserExtensions>> GetUserExtensions(
         CancellationToken cancellationToken = default)
     => _all.GetUserExtensions(cancellationToken);
 
-    public Task<HelixResult<ActiveExtensions>> GetUserActiveExtensions(
-        long? userId = null,
-        CancellationToken cancellationToken = default)
-    => _all.GetUserActiveExtensions(userId, cancellationToken);
+    public Task<HelixResult<ActiveExtensions>> GetUserActiveExtensions(CancellationToken cancellationToken = default)
+    => _all.GetUserActiveExtensions(cancellationToken);
 }

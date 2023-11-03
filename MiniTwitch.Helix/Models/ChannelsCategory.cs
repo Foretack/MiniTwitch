@@ -28,7 +28,7 @@ public sealed class ChannelsCategory
     => _all.SnoozeNextAd(broadcasterId, cancellationToken);
 
 
-    public Task<HelixResult<ChannelInformation>> GetChannelInformation(
+    public Task<HelixResult<ChannelsInformation>> GetChannelInformation(
         long broadcasterId,
         CancellationToken cancellationToken = default)
     => _all.GetChannelInformation(broadcasterId, cancellationToken);
@@ -39,53 +39,45 @@ public sealed class ChannelsCategory
     => _all.GetChannelInformation(broadcasterIds, cancellationToken);
 
     public Task<HelixResult> ModifyChannelInformation(
-        long broadcasterId,
         NewChannelInformation body,
         CancellationToken cancellationToken = default)
-    => _all.ModifyChannelInformation(broadcasterId, body, cancellationToken);
+    => _all.ModifyChannelInformation(body, cancellationToken);
 
     public Task<HelixResult<ChannelEditors>> GetChannelEditors(
-        long broadcasterId,
         CancellationToken cancellationToken = default)
-    => _all.GetChannelEditors(broadcasterId, cancellationToken);
+    => _all.GetChannelEditors(cancellationToken);
 
     public Task<HelixResult<FollowedChannels>> GetFollowedChannels(
-        long userId,
         long? broadcasterId = null,
         int? first = null,
         CancellationToken cancellationToken = default)
-    => _all.GetFollowedChannels(userId, broadcasterId, first, cancellationToken);
+    => _all.GetFollowedChannels(broadcasterId, first, cancellationToken);
 
     public Task<HelixResult<ChannelFollowers>> GetChannelFollowers(
-        long broadcasterId,
         long? userId = null,
         int? first = null,
         CancellationToken cancellationToken = default)
-    => _all.GetChannelFollowers(broadcasterId, userId, first, cancellationToken);
+    => _all.GetChannelFollowers(userId, first, cancellationToken);
 
     public Task<HelixResult<VIPs>> GetVIPs(
-        long broadcasterId,
         long? userId = null,
         int? first = null,
         CancellationToken cancellationToken = default)
-    => _all.GetVIPs(broadcasterId, userId, first, cancellationToken);
+    => _all.GetVIPs(userId, first, cancellationToken);
 
     public Task<HelixResult<VIPs>> GetVIPs(
-        long broadcasterId,
         IEnumerable<long>? userIds = null,
         int? first = null,
         CancellationToken cancellationToken = default)
-    => _all.GetVIPs(broadcasterId, userIds, first, cancellationToken);
+    => _all.GetVIPs(userIds, first, cancellationToken);
 
     public Task<HelixResult> AddChannelVIP(
-        long broadcasterId,
         long userId,
         CancellationToken cancellationToken = default)
-    => _all.AddChannelVIP(broadcasterId, userId, cancellationToken);
+    => _all.AddChannelVIP(userId, cancellationToken);
 
     public Task<HelixResult> RemoveChannelVIP(
-        long broadcasterId,
         long userId,
         CancellationToken cancellationToken = default)
-    => _all.RemoveChannelVIP(broadcasterId, userId, cancellationToken);
+    => _all.RemoveChannelVIP(userId, cancellationToken);
 }

@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class Extensions : BaseResponse<Extensions.Extension>
+public class ChannelExtensions : BaseResponse<ChannelExtensions.Extension>
 {
     public record Component(
         [property: JsonPropertyName("viewer_url")] string ViewerUrl,

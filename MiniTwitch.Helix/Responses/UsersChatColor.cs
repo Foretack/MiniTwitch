@@ -12,7 +12,3 @@ public class UsersChatColor : BaseResponse<UsersChatColor.ColorInfo>
         [property: JsonPropertyName("color")] string Color
     );
 }
-
-public class UserChatColor : SingleResponse<UsersChatColor.ColorInfo>
-{
-}

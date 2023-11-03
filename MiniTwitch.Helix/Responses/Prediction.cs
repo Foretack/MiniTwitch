@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class Prediction : SingleResponse<Prediction.Info>
+public class Prediction : BaseResponse<Prediction.Info>
 {
     public record Info(
         [property: JsonPropertyName("id")] string Id,

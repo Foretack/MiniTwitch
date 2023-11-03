@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class ExtensionConfigurationSegment : SingleResponse<ExtensionConfigurationSegment.ConfigSegment>
+public class ExtensionConfigurationSegment : BaseResponse<ExtensionConfigurationSegment.ConfigSegment>
 {
     public record ConfigSegment(
         [property: JsonPropertyName("segment")] string Segment,

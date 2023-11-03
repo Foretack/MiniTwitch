@@ -12,22 +12,19 @@ public sealed class SubscriptionsCategory
     }
 
     public Task<HelixResult<BroadcasterSubscriptions>> GetBroadcasterSubscriptions(
-        long broadcasterId,
         long? userId = null,
         int? first = null,
         CancellationToken cancellationToken = default)
-    => _all.GetBroadcasterSubscriptions(broadcasterId, userId, first, cancellationToken);
+    => _all.GetBroadcasterSubscriptions(userId, first, cancellationToken);
 
     public Task<HelixResult<BroadcasterSubscriptions>> GetBroadcasterSubscriptions(
-        long broadcasterId,
         IEnumerable<long>? userIds = null,
         int? first = null,
         CancellationToken cancellationToken = default)
-    => _all.GetBroadcasterSubscriptions(broadcasterId, userIds, first, cancellationToken);
+    => _all.GetBroadcasterSubscriptions(userIds, first, cancellationToken);
 
     public Task<HelixResult<UserSubscription>> CheckUserSubscription(
         long broadcasterId,
-        long userId,
         CancellationToken cancellationToken = default)
-    => _all.CheckUserSubscription(broadcasterId, userId, cancellationToken);
+    => _all.CheckUserSubscription(broadcasterId, cancellationToken);
 }

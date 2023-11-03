@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class GuestStarSession : SingleResponse<GuestStarSession.Info>
+public class GuestStarSession : BaseResponse<GuestStarSession.Info>
 {
     public record AudioSettings(
        [property: JsonPropertyName("is_available")] bool IsAvailable,

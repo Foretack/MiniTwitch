@@ -11,6 +11,7 @@ namespace MiniTwitch.Helix.Models;
 public sealed class AllCategories
 {
     internal HelixApiClient ApiClient { get; }
+    private long UserId => ApiClient.UserId;
 
     private readonly string _baseUrl;
 
@@ -130,7 +131,7 @@ public sealed class AllCategories
         return HelixResultFactory.Create<ExtensionTransactions>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<ChannelInformation>> GetChannelInformation(
+    public Task<HelixResult<ChannelsInformation>> GetChannelInformation(
         long broadcasterId,
         CancellationToken cancellationToken = default)
     {
@@ -138,7 +139,7 @@ public sealed class AllCategories
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId);
 
-        return HelixResultFactory.Create<ChannelInformation>(this.ApiClient, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<ChannelsInformation>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<ChannelsInformation>> GetChannelInformation(
@@ -153,38 +154,34 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult> ModifyChannelInformation(
-        long broadcasterId,
         NewChannelInformation body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.ModifyChannelInformation;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId);
+            .AddParam(QueryParams.BroadcasterId, this.UserId);
 
         request.Body = body;
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<ChannelEditors>> GetChannelEditors(
-        long broadcasterId,
-        CancellationToken cancellationToken = default)
+    public Task<HelixResult<ChannelEditors>> GetChannelEditors(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetChannelEditors;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId);
+            .AddParam(QueryParams.BroadcasterId, this.UserId);
 
         return HelixResultFactory.Create<ChannelEditors>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<FollowedChannels>> GetFollowedChannels(
-        long userId,
         long? broadcasterId = null,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetFollowedChannels;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.UserId, userId)
+            .AddParam(QueryParams.UserId, this.UserId)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
             .AddParam(QueryParams.First, first);
 
@@ -192,14 +189,13 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<ChannelFollowers>> GetChannelFollowers(
-        long broadcasterId,
         long? userId = null,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetChannelFollowers;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.UserId, userId)
             .AddParam(QueryParams.First, first);
 
@@ -207,40 +203,37 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<CustomReward>> CreateCustomReward(
-        long broadcasterId,
         NewCustomReward body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.CreateCustomRewards;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId);
+            .AddParam(QueryParams.BroadcasterId, this.UserId);
 
         request.Body = body;
         return HelixResultFactory.Create<CustomReward>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult> DeleteCustomReward(
-        long broadcasterId,
         string id,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.DeleteCustomReward;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.Id, id);
 
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<CustomReward>> GetCustomReward(
-        long broadcasterId,
         string? id = null,
         bool onlyManageableRewards = false,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetCustomReward;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.Id, id)
             .AddParam(QueryParams.OnlyManageableRewards, onlyManageableRewards);
 
@@ -248,14 +241,13 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<CustomReward>> GetCustomReward(
-        long broadcasterId,
         IEnumerable<string>? ids = null,
         bool onlyManageableRewards = false,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetCustomReward;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddMultiParam(QueryParams.Id, ids)
             .AddParam(QueryParams.OnlyManageableRewards, onlyManageableRewards);
 
@@ -263,7 +255,6 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<CustomRewardRedemptions>> GetCustomRewardRedemption(
-        long broadcasterId,
         string rewardId,
         RewardRedemptionStatus status,
         string? id = null,
@@ -273,7 +264,7 @@ public sealed class AllCategories
     {
         HelixEndpoint endpoint = Endpoints.GetCustomRewardRedemption;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.RewardId, rewardId)
             .AddParam(QueryParams.Id, id)
             .AddParam(QueryParams.Status, status.ToString())
@@ -284,7 +275,6 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<CustomRewardRedemptions>> GetCustomRewardRedemption(
-        long broadcasterId,
         string rewardId,
         RewardRedemptionStatus status,
         IEnumerable<string>? ids = null,
@@ -294,7 +284,7 @@ public sealed class AllCategories
     {
         HelixEndpoint endpoint = Endpoints.GetCustomRewardRedemption;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.RewardId, rewardId)
             .AddMultiParam(QueryParams.Id, ids)
             .AddParam(QueryParams.Status, status.ToString())
@@ -305,14 +295,13 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<CustomReward>> UpdateCustomReward(
-        long broadcasterId,
         string id,
         UpdatedCustomReward body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.UpdateCustomReward;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.Id, id);
 
         request.Body = body;
@@ -320,7 +309,6 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<CustomRewardRedemption>> UpdateRedemptionStatus(
-        long broadcasterId,
         string id,
         string rewardId,
         RewardRedemptionStatus status,
@@ -328,7 +316,7 @@ public sealed class AllCategories
     {
         HelixEndpoint endpoint = Endpoints.UpdateRedemptionStatus;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.Id, id)
             .AddParam(QueryParams.RewardId, rewardId);
 
@@ -341,7 +329,6 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<CustomRewardRedemptions>> UpdateRedemptionStatus(
-        long broadcasterId,
         IEnumerable<string> ids,
         string rewardId,
         RewardRedemptionStatus status,
@@ -349,7 +336,7 @@ public sealed class AllCategories
     {
         HelixEndpoint endpoint = Endpoints.UpdateRedemptionStatus;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddMultiParam(QueryParams.Id, ids)
             .AddParam(QueryParams.RewardId, rewardId);
 
@@ -361,25 +348,22 @@ public sealed class AllCategories
         return HelixResultFactory.Create<CustomRewardRedemptions>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<CharityCampaign>> GetCharityCampaign(
-        long broadcasterId,
-        CancellationToken cancellationToken = default)
+    public Task<HelixResult<CharityCampaign>> GetCharityCampaign(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetCharityCampaign;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId);
+            .AddParam(QueryParams.BroadcasterId, this.UserId);
 
         return HelixResultFactory.Create<CharityCampaign>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<CharityCampaignDonations>> GetCharityCampaignDonations(
-        long broadcasterId,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetCharityCampaignDonations;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.First, first);
 
         return HelixResultFactory.Create<CharityCampaignDonations>(this.ApiClient, request, endpoint, cancellationToken);
@@ -387,14 +371,13 @@ public sealed class AllCategories
 
     public Task<HelixResult<Chatters>> GetChatters(
         long broadcasterId,
-        long moderatorId,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetChatters;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId)
+            .AddParam(QueryParams.ModeratorId, this.UserId)
             .AddParam(QueryParams.First, first);
 
         return HelixResultFactory.Create<Chatters>(this.ApiClient, request, endpoint, cancellationToken);
@@ -455,27 +438,25 @@ public sealed class AllCategories
 
     public Task<HelixResult<ChatSettings>> UpdateChatSettings(
         long broadcasterId,
-        long moderatorId,
         NewChatSettings body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.UpdateChatSettings;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId);
+            .AddParam(QueryParams.ModeratorId, this.UserId);
 
         request.Body = body;
         return HelixResultFactory.Create<ChatSettings>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<BlockList>> GetUserBlockList(
-        long broadcasterId,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetUserBlockList;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.First, first);
 
         return HelixResultFactory.Create<BlockList>(this.ApiClient, request, endpoint, cancellationToken);
@@ -483,14 +464,13 @@ public sealed class AllCategories
 
     public Task<HelixResult> SendChatAnnouncement(
         long broadcasterId,
-        long moderatorId,
         Announcement body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.SendChatAnnouncement;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId);
+            .AddParam(QueryParams.ModeratorId, this.UserId);
 
         request.Body = body;
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
@@ -499,19 +479,18 @@ public sealed class AllCategories
     public Task<HelixResult> SendAShoutout(
         long fromBroadcasterId,
         long toBroadcasterId,
-        long moderatorId,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.SendAShoutout;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.FromBroadcasterId, fromBroadcasterId)
             .AddParam(QueryParams.ToBroadcasterId, toBroadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId);
+            .AddParam(QueryParams.ModeratorId, this.UserId);
 
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<UserChatColor>> GetUserChatColor(
+    public Task<HelixResult<UsersChatColor>> GetUserChatColor(
         long userId,
         CancellationToken cancellationToken = default)
     {
@@ -519,7 +498,7 @@ public sealed class AllCategories
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.UserId, userId);
 
-        return HelixResultFactory.Create<UserChatColor>(this.ApiClient, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<UsersChatColor>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<UsersChatColor>> GetUserChatColor(
@@ -534,26 +513,24 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult> UpdateUserChatColor(
-        long userId,
         ChatColor color,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.UpdateUserChatColor;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.UserId, userId)
+            .AddParam(QueryParams.UserId, this.UserId)
             .AddParam(QueryParams.Color, SnakeCase.Instance.ConvertToCase(color.ToString()));
 
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult> UpdateUserChatColor(
-        long userId,
         string hexColor,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.UpdateUserChatColor;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.UserId, userId)
+            .AddParam(QueryParams.UserId, this.UserId)
             .AddParam(QueryParams.Color, HttpUtility.UrlEncode(hexColor));
 
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
@@ -800,7 +777,7 @@ public sealed class AllCategories
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<Extensions>> GetExtensions(
+    public Task<HelixResult<ChannelExtensions>> GetExtensions(
         string extensionId,
         string? extensionVersion = null,
         CancellationToken cancellationToken = default)
@@ -810,7 +787,7 @@ public sealed class AllCategories
             .AddParam(QueryParams.ExtensionId, extensionId)
             .AddParam(QueryParams.ExtensionVersion, extensionVersion);
 
-        return HelixResultFactory.Create<Extensions>(this.ApiClient, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<ChannelExtensions>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<ReleasedExtensions>> GetReleasedExtensions(
@@ -898,7 +875,7 @@ public sealed class AllCategories
         return HelixResultFactory.Create<Games>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<Game>> GetGames(
+    public Task<HelixResult<Games>> GetGames(
         string? id = null,
         string? name = null,
         string? igdbId = null,
@@ -910,7 +887,7 @@ public sealed class AllCategories
             .AddParam(QueryParams.Name, name)
             .AddParam(QueryParams.IgdbId, igdbId);
 
-        return HelixResultFactory.Create<Game>(this.ApiClient, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<Games>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<Games>> GetGames(
@@ -928,26 +905,23 @@ public sealed class AllCategories
         return HelixResultFactory.Create<Games>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<CreatorGoals>> GetCreatorGoals(
-        long broadcasterId,
-        CancellationToken cancellationToken = default)
+    public Task<HelixResult<CreatorGoals>> GetCreatorGoals(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetCreatorGoals;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId);
+            .AddParam(QueryParams.BroadcasterId, this.UserId);
 
         return HelixResultFactory.Create<CreatorGoals>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<ChannelGuestStarSettings>> GetChannelGuestStarSettings(
         long broadcasterId,
-        long moderatorId,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetChannelGuestStarSettings;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId);
+            .AddParam(QueryParams.ModeratorId, this.UserId);
 
         return HelixResultFactory.Create<ChannelGuestStarSettings>(this.ApiClient, request, endpoint, cancellationToken);
     }
@@ -960,42 +934,39 @@ public sealed class AllCategories
         var request = new RequestData(_baseUrl, endpoint)
         {
             Body = body
-        };
+        }.AddParam(QueryParams.BroadcasterId, this.UserId);
+
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<GuestStarSession>> GetGuestStarSession(
         long broadcasterId,
-        long moderatorId,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetGuestStarSession;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId);
+            .AddParam(QueryParams.ModeratorId, this.UserId);
 
         return HelixResultFactory.Create<GuestStarSession>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<GuestStarSession>> CreateGuestStarSession(
-        long broadcasterId,
-        CancellationToken cancellationToken = default)
+    public Task<HelixResult<GuestStarSession>> CreateGuestStarSession(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.CreateGuestStarSession;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId);
+            .AddParam(QueryParams.BroadcasterId, this.UserId);
 
         return HelixResultFactory.Create<GuestStarSession>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<GuestStarSession>> EndGuestStarSession(
-        long broadcasterId,
         string sessionId,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.EndGuestStarSession;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.SessionId, sessionId);
 
         return HelixResultFactory.Create<GuestStarSession>(this.ApiClient, request, endpoint, cancellationToken);
@@ -1003,14 +974,13 @@ public sealed class AllCategories
 
     public Task<HelixResult<GuestStarInvites>> GetGuestStarInvites(
         long broadcasterId,
-        long moderatorId,
         string sessionId,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetGuestStarInvites;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId)
+            .AddParam(QueryParams.ModeratorId, this.UserId)
             .AddParam(sessionId, sessionId);
 
         return HelixResultFactory.Create<GuestStarInvites>(this.ApiClient, request, endpoint, cancellationToken);
@@ -1018,7 +988,6 @@ public sealed class AllCategories
 
     public Task<HelixResult> SendGuestStarInvite(
         long broadcasterId,
-        long moderatorId,
         string sessionId,
         long guestId,
         CancellationToken cancellationToken = default)
@@ -1026,7 +995,7 @@ public sealed class AllCategories
         HelixEndpoint endpoint = Endpoints.SendGuestStarInvite;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId)
+            .AddParam(QueryParams.ModeratorId, this.UserId)
             .AddParam(QueryParams.GuestId, guestId);
 
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
@@ -1034,7 +1003,6 @@ public sealed class AllCategories
 
     public Task<HelixResult> DeleteGuestStarInvite(
         long broadcasterId,
-        long moderatorId,
         string sessionId,
         long guestId,
         CancellationToken cancellationToken = default)
@@ -1042,7 +1010,7 @@ public sealed class AllCategories
         HelixEndpoint endpoint = Endpoints.DeleteGuestStarInvite;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId)
+            .AddParam(QueryParams.ModeratorId, this.UserId)
             .AddParam(QueryParams.SessionId, sessionId)
             .AddParam(QueryParams.GuestId, guestId);
 
@@ -1051,7 +1019,6 @@ public sealed class AllCategories
 
     public Task<HelixResult> AssignGuestStarSlot(
         long broadcasterId,
-        long moderatorId,
         string sessionId,
         long guestId,
         string slotId,
@@ -1060,7 +1027,7 @@ public sealed class AllCategories
         HelixEndpoint endpoint = Endpoints.AssignGuestStarSlot;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId)
+            .AddParam(QueryParams.ModeratorId, this.UserId)
             .AddParam(QueryParams.SessionId, sessionId)
             .AddParam(QueryParams.GuestId, guestId)
             .AddParam(QueryParams.SlotId, slotId);
@@ -1070,7 +1037,6 @@ public sealed class AllCategories
 
     public Task<HelixResult> UpdateGuestStarSlot(
         long broadcasterId,
-        long moderatorId,
         string sessionId,
         string sourceSlotId,
         string? destinationSlotId = null,
@@ -1079,7 +1045,7 @@ public sealed class AllCategories
         HelixEndpoint endpoint = Endpoints.UpdateGuestStarSlot;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId)
+            .AddParam(QueryParams.ModeratorId, this.UserId)
             .AddParam(QueryParams.SessionId, sessionId)
             .AddParam(QueryParams.SourceSlotId, sourceSlotId)
             .AddParam(QueryParams.DestinationSlotId, destinationSlotId);
@@ -1089,7 +1055,6 @@ public sealed class AllCategories
 
     public Task<HelixResult> DeleteGuestStarSlot(
         long broadcasterId,
-        long moderatorId,
         string sessionId,
         long guestId,
         string slotId,
@@ -1099,7 +1064,7 @@ public sealed class AllCategories
         HelixEndpoint endpoint = Endpoints.DeleteGuestStarSlot;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId)
+            .AddParam(QueryParams.ModeratorId, this.UserId)
             .AddParam(QueryParams.SessionId, sessionId)
             .AddParam(QueryParams.GuestId, guestId)
             .AddParam(QueryParams.SlotId, slotId)
@@ -1110,7 +1075,6 @@ public sealed class AllCategories
 
     public Task<HelixResult> UpdateGuestStarSlotSettings(
         long broadcasterId,
-        long moderatorId,
         string sessionId,
         string slotId,
         bool? isAudioEnabled = null,
@@ -1122,7 +1086,7 @@ public sealed class AllCategories
         HelixEndpoint endpoint = Endpoints.UpdateGuestStarSlotSettings;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId)
+            .AddParam(QueryParams.ModeratorId, this.UserId)
             .AddParam(QueryParams.SessionId, sessionId)
             .AddParam(QueryParams.SlotId, slotId)
             .AddParam(QueryParams.IsAudioEnabled, isAudioEnabled)
@@ -1134,40 +1098,37 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<HypeTrainEvents>> GetHypeTrainEvents(
-        long broadcasterId,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetHypeTrainEvents;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.First, first);
 
         return HelixResultFactory.Create<HypeTrainEvents>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<AutoModStatus>> CheckAutoModStatus(
-        long broadcasterId,
         MessageToCheck body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.CheckAutoModStatus;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId);
+            .AddParam(QueryParams.BroadcasterId, this.UserId);
 
         request.Body = body;
         return HelixResultFactory.Create<AutoModStatus>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult> ManageHeldAutoModMessages(
-        long userId,
         string msgId,
         string action,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.ManageHeldAutoModMessages;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.UserId, userId)
+            .AddParam(QueryParams.UserId, this.UserId)
             .AddParam(QueryParams.MsgId, msgId)
             .AddParam(QueryParams.Action, action);
 
@@ -1176,41 +1137,38 @@ public sealed class AllCategories
 
     public Task<HelixResult<AutoModSettings>> GetAutoModSettings(
         long broadcasterId,
-        long moderatorId,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetAutoModSettings;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId);
+            .AddParam(QueryParams.ModeratorId, this.UserId);
 
         return HelixResultFactory.Create<AutoModSettings>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<AutoModSettings>> UpdateAutoModSettings(
         long broadcasterId,
-        long moderatorId,
         NewAutoModSettings body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.UpdateAutoModSettings;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId);
+            .AddParam(QueryParams.ModeratorId, this.UserId);
 
         request.Body = body;
         return HelixResultFactory.Create<AutoModSettings>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<BannedUsers>> GetBannedUsers(
-        long broadcasterId,
         long? userId = null,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetBannedUsers;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.UserId, userId)
             .AddParam(QueryParams.First, first);
 
@@ -1218,14 +1176,13 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<BannedUsers>> GetBannedUsers(
-        long broadcasterId,
         IEnumerable<long>? userIds = null,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetBannedUsers;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddMultiParam(QueryParams.UserId, userIds)
             .AddParam(QueryParams.First, first);
 
@@ -1234,14 +1191,13 @@ public sealed class AllCategories
 
     public Task<HelixResult<BannedUser>> BanUser(
         long broadcasterId,
-        long moderatorId,
         UserToBan body,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.BanUser;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId);
+            .AddParam(QueryParams.ModeratorId, this.UserId);
 
         request.Body = body;
         return HelixResultFactory.Create<BannedUser>(this.ApiClient, request, endpoint, cancellationToken);
@@ -1249,14 +1205,13 @@ public sealed class AllCategories
 
     public Task<HelixResult> UnbanUser(
         long broadcasterId,
-        long moderatorId,
         long userId,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.UnbanUser;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId)
+            .AddParam(QueryParams.ModeratorId, this.UserId)
             .AddParam(QueryParams.UserId, userId);
 
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
@@ -1264,44 +1219,41 @@ public sealed class AllCategories
 
     public Task<HelixResult<BlockedTerms>> GetBlockedTerms(
         long broadcasterId,
-        long moderatorId,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetBlockedTerms;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId)
+            .AddParam(QueryParams.ModeratorId, this.UserId)
             .AddParam(QueryParams.First, first);
 
         return HelixResultFactory.Create<BlockedTerms>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<BlockedTerm>> AddBlockedTerm(
+    public Task<HelixResult<BlockedTerms>> AddBlockedTerm(
         long broadcasterId,
-        long moderatorId,
         string text,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.AddBlockedTerm;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId);
+            .AddParam(QueryParams.ModeratorId, this.UserId);
 
         request.Body = new { text };
-        return HelixResultFactory.Create<BlockedTerm>(this.ApiClient, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<BlockedTerms>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult> RemoveBlockedTerm(
         long broadcasterId,
-        long moderatorId,
         string id,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.RemoveBlockedTerm;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId)
+            .AddParam(QueryParams.ModeratorId, this.UserId)
             .AddParam(QueryParams.Id, id);
 
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
@@ -1309,28 +1261,26 @@ public sealed class AllCategories
 
     public Task<HelixResult> DeleteChatMessages(
         long broadcasterId,
-        long moderatorId,
         string? messageId = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.DeleteChatMessages;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId)
+            .AddParam(QueryParams.ModeratorId, this.UserId)
             .AddParam(QueryParams.MessageId, messageId);
 
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<Moderators>> GetModerators(
-        long broadcasterId,
         long? userId = null,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetModerators;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.UserId, userId)
             .AddParam(QueryParams.First, first);
 
@@ -1338,14 +1288,13 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<Moderators>> GetModerators(
-        long broadcasterId,
         IEnumerable<long>? userIds = null,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetModerators;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddMultiParam(QueryParams.UserId, userIds)
             .AddParam(QueryParams.First, first);
 
@@ -1353,40 +1302,37 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult> AddChannelModerator(
-        long broadcasterId,
         long userId,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.AddChannelModerator;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.UserId, userId);
 
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult> RemoveChannelModerator(
-        long broadcasterId,
         long userId,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.RemoveChannelModerator;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.UserId, userId);
 
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<VIPs>> GetVIPs(
-        long broadcasterId,
         long? userId = null,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetVIPs;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.UserId, userId)
             .AddParam(QueryParams.First, first);
 
@@ -1394,14 +1340,13 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<VIPs>> GetVIPs(
-        long broadcasterId,
         IEnumerable<long>? userIds = null,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetVIPs;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddMultiParam(QueryParams.UserId, userIds)
             .AddParam(QueryParams.First, first);
 
@@ -1409,26 +1354,24 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult> AddChannelVIP(
-        long broadcasterId,
         long userId,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.AddChannelVIP;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.UserId, userId);
 
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult> RemoveChannelVIP(
-        long broadcasterId,
         long userId,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.RemoveChannelVIP;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.UserId, userId);
 
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
@@ -1436,14 +1379,13 @@ public sealed class AllCategories
 
     public Task<HelixResult<ShieldModeStatus>> UpdateShieldModeStatus(
         long broadcasterId,
-        long moderatorId,
         bool isActive,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.UpdateShieldModeStatus;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId);
+            .AddParam(QueryParams.ModeratorId, this.UserId);
 
         request.Body = new { is_active = isActive };
         return HelixResultFactory.Create<ShieldModeStatus>(this.ApiClient, request, endpoint, cancellationToken);
@@ -1451,26 +1393,24 @@ public sealed class AllCategories
 
     public Task<HelixResult<ShieldModeStatus>> GetShieldModeStatus(
         long broadcasterId,
-        long moderatorId,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetShieldModeStatus;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.ModeratorId, moderatorId);
+            .AddParam(QueryParams.ModeratorId, this.UserId);
 
         return HelixResultFactory.Create<ShieldModeStatus>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<Polls>> GetPolls(
-        long broadcasterId,
         string? id = null,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetPolls;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.Id, id)
             .AddParam(QueryParams.First, first);
 
@@ -1478,14 +1418,13 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<Polls>> GetPolls(
-        long broadcasterId,
         IEnumerable<string>? ids = null,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetPolls;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddMultiParam(QueryParams.Id, ids)
             .AddParam(QueryParams.First, first);
 
@@ -1506,14 +1445,13 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<Poll>> EndPoll(
-        long broadcasterId,
         string id,
         string status,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.EndPoll;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.Id, id)
             .AddParam(QueryParams.Status, status);
 
@@ -1521,14 +1459,13 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<Predictions>> GetPredictions(
-        long broadcasterId,
         string? id = null,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetPredictions;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.Id, id)
             .AddParam(QueryParams.First, first);
 
@@ -1536,14 +1473,13 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<Predictions>> GetPredictions(
-        long broadcasterId,
         IEnumerable<string>? ids = null,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetPredictions;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddMultiParam(QueryParams.Id, ids)
             .AddParam(QueryParams.First, first);
 
@@ -1576,26 +1512,23 @@ public sealed class AllCategories
         return HelixResultFactory.Create<Prediction>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<Raid>> StartARaid(
-        long fromBroadcasterId,
+    public Task<HelixResult<Raid>> StartRaid(
         long toBroadcasterId,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.StartARaid;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.FromBroadcasterId, fromBroadcasterId)
+            .AddParam(QueryParams.FromBroadcasterId, this.UserId)
             .AddParam(QueryParams.ToBroadcasterId, toBroadcasterId);
 
         return HelixResultFactory.Create<Raid>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult> CancelARaid(
-        long broadcasterId,
-        CancellationToken cancellationToken = default)
+    public Task<HelixResult> CancelRaid(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.CancelARaid;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId);
+            .AddParam(QueryParams.BroadcasterId, this.UserId);
 
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
     }
@@ -1635,7 +1568,6 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult> UpdateChannelStreamSchedule(
-        long broadcasterId,
         bool? isVacationEnabled = null,
         DateTime? vacationStartTime = null,
         DateTime? vacationEndTime = null,
@@ -1644,7 +1576,7 @@ public sealed class AllCategories
     {
         HelixEndpoint endpoint = Endpoints.UpdateChannelStreamSchedule;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.IsVacationEnabled, isVacationEnabled)
             .AddParam(QueryParams.VacationStartTime, vacationStartTime)
             .AddParam(QueryParams.VacationEndTime, vacationEndTime)
@@ -1654,7 +1586,6 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<ScheduleSegment>> CreateChannelStreamScheduleSegment(
-        long broadcasterId,
         NewScheduleSegment body,
         CancellationToken cancellationToken = default)
     {
@@ -1662,13 +1593,12 @@ public sealed class AllCategories
         RequestData request = new RequestData(_baseUrl, endpoint)
         {
             Body = body
-        }.AddParam(QueryParams.BroadcasterId, broadcasterId);
+        }.AddParam(QueryParams.BroadcasterId, this.UserId);
 
         return HelixResultFactory.Create<ScheduleSegment>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<Responses.UpdatedScheduleSegment>> UpdateChannelStreamScheduleSegment(
-        long broadcasterId,
         string id,
         Requests.UpdatedScheduleSegment Body,
         CancellationToken cancellationToken = default)
@@ -1678,20 +1608,19 @@ public sealed class AllCategories
         {
             Body = Body
         }
-        .AddParam(QueryParams.BroadcasterId, broadcasterId)
+        .AddParam(QueryParams.BroadcasterId, this.UserId)
         .AddParam(QueryParams.Id, id);
 
         return HelixResultFactory.Create<Responses.UpdatedScheduleSegment>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult> DeleteChannelStreamScheduleSegment(
-        long broadcasterId,
         string id,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.DeleteChannelStreamScheduleSegment;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.Id, id);
 
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
@@ -1725,18 +1654,16 @@ public sealed class AllCategories
         return HelixResultFactory.Create<Channels>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<StreamKey>> GetStreamKey(
-        long broadcasterId,
-        CancellationToken cancellationToken = default)
+    public Task<HelixResult<StreamKey>> GetStreamKey(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetStreamKey;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId);
+            .AddParam(QueryParams.BroadcasterId, this.UserId);
 
         return HelixResultFactory.Create<StreamKey>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<SingleStream>> GetStreams(
+    public Task<HelixResult<Streams>> GetStreams(
         long? userId = null,
         string? userLogin = null,
         string? gameId = null,
@@ -1754,7 +1681,7 @@ public sealed class AllCategories
             .AddParam(QueryParams.Language, language)
             .AddParam(QueryParams.First, first);
 
-        return HelixResultFactory.Create<SingleStream>(this.ApiClient, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<Streams>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<Streams>> GetStreams(
@@ -1779,20 +1706,18 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<FollowedStreams>> GetFollowedStreams(
-        long userId,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetFollowedStreams;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.UserId, userId)
+            .AddParam(QueryParams.UserId, this.UserId)
             .AddParam(QueryParams.First, first);
 
         return HelixResultFactory.Create<FollowedStreams>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<StreamMarker>> CreateStreamMarker(
-        long userId,
         string? description = null,
         CancellationToken cancellationToken = default)
     {
@@ -1801,7 +1726,7 @@ public sealed class AllCategories
         {
             Body = new
             {
-                user_id = userId,
+                user_id = this.UserId,
                 description
             }
         };
@@ -1810,14 +1735,13 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<StreamMarkers>> GetStreamMarkers(
-        long userId,
         string? videoId,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetStreamMarkers;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.UserId, userId)
+            .AddParam(QueryParams.UserId, this.UserId)
             .AddParam(QueryParams.VideoId, videoId)
             .AddParam(QueryParams.First, first);
 
@@ -1825,14 +1749,13 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<BroadcasterSubscriptions>> GetBroadcasterSubscriptions(
-        long broadcasterId,
         long? userId = null,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetBroadcasterSubscriptions;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddParam(QueryParams.UserId, userId)
             .AddParam(QueryParams.First, first);
 
@@ -1840,14 +1763,13 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult<BroadcasterSubscriptions>> GetBroadcasterSubscriptions(
-        long broadcasterId,
         IEnumerable<long>? userIds = null,
         int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetBroadcasterSubscriptions;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.BroadcasterId, this.UserId)
             .AddMultiParam(QueryParams.UserId, userIds)
             .AddParam(QueryParams.First, first);
 
@@ -1856,13 +1778,12 @@ public sealed class AllCategories
 
     public Task<HelixResult<UserSubscription>> CheckUserSubscription(
         long broadcasterId,
-        long userId,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.CheckUserSubscription;
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
-            .AddParam(QueryParams.UserId, userId);
+            .AddParam(QueryParams.UserId, this.UserId);
 
         return HelixResultFactory.Create<UserSubscription>(this.ApiClient, request, endpoint, cancellationToken);
     }
@@ -1891,7 +1812,7 @@ public sealed class AllCategories
         return HelixResultFactory.Create<Teams>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<User>> GetUsers(
+    public Task<HelixResult<Users>> GetUsers(
         long? id = null,
         string? login = null,
         CancellationToken cancellationToken = default)
@@ -1901,7 +1822,7 @@ public sealed class AllCategories
             .AddParam(QueryParams.Id, id)
             .AddParam(QueryParams.Login, login);
 
-        return HelixResultFactory.Create<User>(this.ApiClient, request, endpoint, cancellationToken);
+        return HelixResultFactory.Create<Users>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
     public Task<HelixResult<Users>> GetUsers(
@@ -1961,13 +1882,11 @@ public sealed class AllCategories
         return HelixResultFactory.Create<UserExtensions>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
-    public Task<HelixResult<ActiveExtensions>> GetUserActiveExtensions(
-        long? userId = null,
-        CancellationToken cancellationToken = default)
+    public Task<HelixResult<ActiveExtensions>> GetUserActiveExtensions(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetUserActiveExtensions;
         RequestData request = new RequestData(_baseUrl, endpoint)
-            .AddParam(QueryParams.UserId, userId);
+            .AddParam(QueryParams.UserId, this.UserId);
 
         return HelixResultFactory.Create<ActiveExtensions>(this.ApiClient, request, endpoint, cancellationToken);
     }
@@ -2045,7 +1964,6 @@ public sealed class AllCategories
     }
 
     public Task<HelixResult> SendWhisper(
-        long fromUserId,
         long toUserId,
         string message,
         CancellationToken cancellationToken = default)
@@ -2058,7 +1976,7 @@ public sealed class AllCategories
                 message
             }
         }
-        .AddParam(QueryParams.FromUserId, fromUserId)
+        .AddParam(QueryParams.FromUserId, this.UserId)
         .AddParam(QueryParams.ToUserId, toUserId);
 
         return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);

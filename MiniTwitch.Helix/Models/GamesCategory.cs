@@ -16,7 +16,7 @@ public sealed class GamesCategory
         CancellationToken cancellationToken = default)
     => _all.GetTopGames(first, cancellationToken);
 
-    public Task<HelixResult<Game>> GetGames(
+    public Task<HelixResult<Games>> GetGames(
         string? id = null,
         string? name = null,
         string? igdbId = null,
