@@ -1,5 +1,6 @@
 ﻿using MiniTwitch.Common.Interaction;
 using MiniTwitch.Helix.Models;
+using MiniTwitch.Helix.Requests;
 using MiniTwitch.Helix.Responses;
 
 namespace MiniTwitch.Helix.Extensions;
@@ -26,4 +27,17 @@ public static class ChannelExtensions
         int? first = null,
         CancellationToken cancellationToken = default)
     => wrapper.GetModerators(userId, first, cancellationToken);
+
+    public static Task<HelixResult<ChannelTeams>> GetChannelTeams(
+        this IHelixChannelTarget channel,
+        HelixWrapper wrapper,
+        CancellationToken cancellationToken = default)
+    => wrapper.GetChannelTeams(channel.Id, cancellationToken);
+
+    public static Task<HelixResult<Commercial>> StartCommercial(
+        this IHelixChannelTarget channel,
+        HelixWrapper wrapper,
+        NewCommercial body,
+        CancellationToken cancellationToken = default)
+    => wrapper.StartCommercial(body, cancellationToken);
 }

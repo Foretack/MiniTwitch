@@ -1199,7 +1199,11 @@ public sealed class AllCategories
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
             .AddParam(QueryParams.ModeratorId, this.UserId);
 
-        request.Body = body;
+        request.Body = new
+        {
+            data = body
+        };
+
         return HelixResultFactory.Create<BannedUser>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
