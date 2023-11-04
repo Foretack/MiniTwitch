@@ -35,7 +35,7 @@ internal sealed class HelixApiClient
         UserId = userId;
     }
 
-    public Task<(HttpResponseMessage, long)> RequestAsync(RequestData requestObject, CancellationToken ct) => requestObject._method switch
+    public Task<(HttpResponseMessage, TimeSpan)> RequestAsync(RequestData requestObject, CancellationToken ct) => requestObject._method switch
     {
         "POST" => PostAsync(requestObject, ct),
         "GET" => GetAsync(requestObject, ct),
@@ -45,59 +45,59 @@ internal sealed class HelixApiClient
         _ => throw new NotImplementedException($"HTTP method {requestObject._method} is not supported")
     };
 
-    private async Task<(HttpResponseMessage, long)> PostAsync(RequestData requestObject, CancellationToken ct)
+    private async Task<(HttpResponseMessage, TimeSpan)> PostAsync(RequestData requestObject, CancellationToken ct)
     {
         await ValidateToken();
         string url = requestObject.GetUrl();
         var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url, requestObject.Body, this.SerializerOptions, ct);
         sw.Stop();
-        long elapsedMs = sw.ElapsedMilliseconds;
+        TimeSpan elapsed = sw.Elapsed;
         LogLevel logLevel = response.IsSuccessStatusCode ? LogLevel.Debug : LogLevel.Warning;
-        Log(logLevel, "POST [{Code}] {Url} {ElapsedMs}ms", response.StatusCode, url, elapsedMs);
-        return (response, elapsedMs);
+        Log(logLevel, "POST [{Code}] {Url} {Elapsed}", response.StatusCode, url, elapsed);
+        return (response, elapsed);
     }
 
-    private async Task<(HttpResponseMessage, long)> GetAsync(RequestData requestObject, CancellationToken ct)
+    private async Task<(HttpResponseMessage, TimeSpan)> GetAsync(RequestData requestObject, CancellationToken ct)
     {
         await ValidateToken();
         string url = requestObject.GetUrl();
         var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.GetAsync(url, ct);
         sw.Stop();
-        long elapsedMs = sw.ElapsedMilliseconds;
+        TimeSpan elapsed = sw.Elapsed;
         LogLevel logLevel = response.IsSuccessStatusCode ? LogLevel.Debug : LogLevel.Warning;
-        Log(logLevel, "GET [{Code}] {Url} {ElapsedMs}ms", response.StatusCode, url, elapsedMs);
-        return (response, elapsedMs);
+        Log(logLevel, "GET [{Code}] {Url} {Elapsed}", response.StatusCode, url, elapsed);
+        return (response, elapsed);
     }
 
-    private async Task<(HttpResponseMessage, long)> PutAsync(RequestData requestObject, CancellationToken ct)
+    private async Task<(HttpResponseMessage, TimeSpan)> PutAsync(RequestData requestObject, CancellationToken ct)
     {
         await ValidateToken();
         string url = requestObject.GetUrl();
         var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.PutAsJsonAsync(url, requestObject.Body, this.SerializerOptions, ct);
         sw.Stop();
-        long elapsedMs = sw.ElapsedMilliseconds;
+        TimeSpan elapsed = sw.Elapsed;
         LogLevel logLevel = response.IsSuccessStatusCode ? LogLevel.Debug : LogLevel.Warning;
-        Log(logLevel, "PUT [{Code}] {Url} {ElapsedMs}ms", response.StatusCode, url, elapsedMs);
-        return (response, elapsedMs);
+        Log(logLevel, "PUT [{Code}] {Url} {Elapsed}", response.StatusCode, url, elapsed);
+        return (response, elapsed);
     }
 
-    private async Task<(HttpResponseMessage, long)> DeleteAsync(RequestData requestObject, CancellationToken ct)
+    private async Task<(HttpResponseMessage, TimeSpan)> DeleteAsync(RequestData requestObject, CancellationToken ct)
     {
         await ValidateToken();
         string url = requestObject.GetUrl();
         var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.DeleteAsync(url, ct);
         sw.Stop();
-        long elapsedMs = sw.ElapsedMilliseconds;
+        TimeSpan elapsed = sw.Elapsed;
         LogLevel logLevel = response.IsSuccessStatusCode ? LogLevel.Debug : LogLevel.Warning;
-        Log(logLevel, "DELETE [{Code}] {Url} {ElapsedMs}ms", response.StatusCode, url, elapsedMs);
-        return (response, elapsedMs);
+        Log(logLevel, "DELETE [{Code}] {Url} {Elapsed}", response.StatusCode, url, elapsed);
+        return (response, elapsed);
     }
 
-    private async Task<(HttpResponseMessage, long)> PatchAsync(RequestData requestObject, CancellationToken ct)
+    private async Task<(HttpResponseMessage, TimeSpan)> PatchAsync(RequestData requestObject, CancellationToken ct)
     {
         await ValidateToken();
         string url = requestObject.GetUrl();
@@ -106,10 +106,10 @@ internal sealed class HelixApiClient
         var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.PatchAsync(url, content, ct);
         sw.Stop();
-        long elapsedMs = sw.ElapsedMilliseconds;
+        TimeSpan elapsed = sw.Elapsed;
         LogLevel logLevel = response.IsSuccessStatusCode ? LogLevel.Debug : LogLevel.Warning;
-        Log(logLevel, "PATCH [{Code}] {Url} {ElapsedMs}ms", response.StatusCode, url, elapsedMs);
-        return (response, elapsedMs);
+        Log(logLevel, "PATCH [{Code}] {Url} {Elapsed}", response.StatusCode, url, elapsed);
+        return (response, elapsed);
     }
 
     internal async ValueTask ValidateToken()
