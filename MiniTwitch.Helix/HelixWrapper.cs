@@ -18,6 +18,9 @@ public class HelixWrapper
     /// <para>Can be toggled with <see cref="DefaultMiniTwitchLogger{T}.Enabled"/></para>
     /// </summary>
     public DefaultMiniTwitchLogger<HelixWrapper> DefaultLogger => _all.ApiClient.Logger;
+    /// <summary>
+    /// Gets the user ID associated with this <see cref="HelixWrapper"/> instance
+    /// </summary>
     public long UserId { get; }
 
     private readonly AllCategories _all;
