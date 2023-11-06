@@ -1,9 +1,11 @@
-﻿namespace MiniTwitch.Irc.Interfaces;
+﻿using MiniTwitch.Common.Interaction;
+
+namespace MiniTwitch.Irc.Interfaces;
 
 /// <summary>
 /// Contains the name and ID of a channel
 /// </summary>
-public interface IBasicChannel
+public interface IBasicChannel : IHelixChannelTarget
 {
     /// <summary>
     /// The channel's username
@@ -12,5 +14,5 @@ public interface IBasicChannel
     /// <summary>
     /// The channel's ID
     /// </summary>
-    long Id { get; }
+    new long Id { get; }
 }

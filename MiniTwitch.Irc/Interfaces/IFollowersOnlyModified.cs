@@ -1,9 +1,11 @@
-﻿namespace MiniTwitch.Irc.Interfaces;
+﻿using MiniTwitch.Common.Interaction;
+
+namespace MiniTwitch.Irc.Interfaces;
 
 /// <summary>
 /// Contains information about a new followers-only state
 /// </summary>
-public interface IFollowersOnlyModified
+public interface IFollowersOnlyModified : IHelixChannelTarget
 {
     /// <summary>
     /// Minimum amount of time a user needs to be following in order to chat
@@ -16,7 +18,7 @@ public interface IFollowersOnlyModified
     /// <summary>
     /// ID of the channel where this event occurred
     /// </summary>
-    long Id { get; }
+    new long Id { get; }
     /// <summary>
     /// <see langword="true"/> if followers-only mode is activated; <see langword="false"/> if deactivated
     /// </summary>

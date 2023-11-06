@@ -1,9 +1,11 @@
-﻿namespace MiniTwitch.Irc.Interfaces;
+﻿using MiniTwitch.Common.Interaction;
+
+namespace MiniTwitch.Irc.Interfaces;
 
 /// <summary>
 /// Contains information about a new unique-messages-only mode state
 /// </summary>
-public interface IR9KModified
+public interface IR9KModified : IHelixChannelTarget
 {
     /// <summary>
     /// Name of the channel where the event occurred
@@ -12,7 +14,7 @@ public interface IR9KModified
     /// <summary>
     /// ID of the channel where the event occurred
     /// </summary>
-    long Id { get; }
+    new long Id { get; }
     /// <summary>
     /// <see langword="true"/> if unique mode is activated; <see langword="false"/> if deactivated
     /// </summary>

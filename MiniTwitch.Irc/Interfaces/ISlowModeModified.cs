@@ -1,9 +1,11 @@
-﻿namespace MiniTwitch.Irc.Interfaces;
+﻿using MiniTwitch.Common.Interaction;
+
+namespace MiniTwitch.Irc.Interfaces;
 
 /// <summary>
 /// Contains information about a new slow mode state
 /// </summary>
-public interface ISlowModeModified
+public interface ISlowModeModified : IHelixChannelTarget
 {
     /// <summary>
     /// The amount of time a user needs to wait between messages
@@ -16,7 +18,7 @@ public interface ISlowModeModified
     /// <summary>
     /// ID of the channel where the event occurred
     /// </summary>
-    long Id { get; }
+    new long Id { get; }
     /// <summary>
     /// <see langword="true"/> if slow mode is activated; <see langword="false"/> if deactivated
     /// </summary>

@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Text;
 using MiniTwitch.Common.Extensions;
+using MiniTwitch.Common.Interaction;
 using MiniTwitch.Irc.Enums;
 using MiniTwitch.Irc.Interfaces;
 using MiniTwitch.Irc.Internal.Enums;
@@ -15,7 +16,7 @@ namespace MiniTwitch.Irc.Models;
 /// <para>Twitch docs: <see href="https://dev.twitch.tv/docs/irc/tags/#privmsg-tags"/></para>
 /// <para>Note: Object can be implicitly converted to <see langword="string"/>, which returns <see cref="Privmsg.Content"/></para>
 /// </summary>
-public readonly struct Privmsg : IUnixTimestamped, IEquatable<Privmsg>
+public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatable<Privmsg>
 {
     /// <summary>
     /// Author of the message
