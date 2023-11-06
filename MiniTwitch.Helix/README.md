@@ -37,16 +37,16 @@ public class Program
 
     static async Task Main()
     {
-        Helix = new HelixWrapper("Access token", "Client ID");
+        Helix = new HelixWrapper("Access token", 7654321);
 
-        await GetFirst1000Usernames(12345678, 12345678);
-        await GetAllUsernames(12345678, 12345678);
+        await GetFirst1000Usernames(12345678);
+        await GetAllUsernames(12345678);
     }
 
-    private static async Task<IReadOnlyList<string>> GetFirst1000Usernames(long broadcasterId, long moderatorId)
+    private static async Task<IReadOnlyList<string>> GetFirst1000Usernames(long broadcasterId)
     {
         List<string> usernames = new();
-        HelixResult<Chatters> chatters = await Helix.GetChatters(broadcasterId, moderatorId, first: 1000);
+        HelixResult<Chatters> chatters = await Helix.GetChatters(broadcasterId, first: 1000);
 
         // Make sure the result is a success and the value contains data
         if (!chatters.Success) return Array.Empty<string>();
@@ -59,10 +59,10 @@ public class Program
         return usernames;
     }
 
-    private static async Task<IReadOnlyList<string>> GetAllUsernames(long broadcasterId, long moderatorId)
+    private static async Task<IReadOnlyList<string>> GetAllUsernames(long broadcasterId)
     {
         List<string> usernames = new();
-        HelixResult<Chatters> chatters = await Helix.GetChatters(broadcasterId, moderatorId, first: 1000);
+        HelixResult<Chatters> chatters = await Helix.GetChatters(broadcasterId, first: 1000);
         
         if (!chatters.Success) return Array.Empty<string>();
 
