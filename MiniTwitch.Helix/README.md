@@ -49,7 +49,7 @@ public class Program
         HelixResult<Chatters> chatters = await Helix.GetChatters(broadcasterId, moderatorId, first: 1000);
 
         // Make sure the result is a success and the value contains data
-        if (!chatters.Success || !chatters.Value.HasContent) return Array.Empty<string>();
+        if (!chatters.Success) return Array.Empty<string>();
 
         foreach (var chatter in chatters.Value.Data)
         {
@@ -64,7 +64,7 @@ public class Program
         List<string> usernames = new();
         HelixResult<Chatters> chatters = await Helix.GetChatters(broadcasterId, moderatorId, first: 1000);
         
-        if (!chatters.Success || !chatters.Value.HasContent) return Array.Empty<string>();
+        if (!chatters.Success) return Array.Empty<string>();
 
         foreach (var chatter in chatters.Value.Data)
         {
@@ -75,7 +75,7 @@ public class Program
         if (!chatters.CanPaginate) return usernames;
 
         // Continue paginating if the result is a success and there is content
-        while (await chatters.Paginate() is { Success: true, Value.HasContent: true } next)
+        while (await chatters.Paginate() is { Success: true } next)
         {
             foreach (var chatter in next.Value.Data)
             {
