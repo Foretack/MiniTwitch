@@ -14,71 +14,62 @@ public sealed class ChannelPointsCategory
     }
 
     public Task<HelixResult<CustomReward>> CreateCustomReward(
-        long broadcasterId,
         NewCustomReward body,
         CancellationToken cancellationToken = default)
-    => _all.CreateCustomReward(broadcasterId, body, cancellationToken);
+    => _all.CreateCustomReward(body, cancellationToken);
 
     public Task<HelixResult> DeleteCustomReward(
-        long broadcasterId,
         string id,
         CancellationToken cancellationToken = default)
-    => _all.DeleteCustomReward(broadcasterId, id, cancellationToken);
+    => _all.DeleteCustomReward(id, cancellationToken);
 
     public Task<HelixResult<CustomReward>> GetCustomReward(
-        long broadcasterId,
         string? id = null,
         bool onlyManageableRewards = false,
         CancellationToken cancellationToken = default)
-    => _all.GetCustomReward(broadcasterId, id, onlyManageableRewards, cancellationToken);
+    => _all.GetCustomReward(id, onlyManageableRewards, cancellationToken);
 
     public Task<HelixResult<CustomReward>> GetCustomReward(
-        long broadcasterId,
         IEnumerable<string>? ids = null,
         bool onlyManageableRewards = false,
         CancellationToken cancellationToken = default)
-    => _all.GetCustomReward(broadcasterId, ids, onlyManageableRewards, cancellationToken);
+    => _all.GetCustomReward(ids, onlyManageableRewards, cancellationToken);
 
     public Task<HelixResult<CustomRewardRedemptions>> GetCustomRewardRedemption(
-        long broadcasterId,
         string rewardId,
         RewardRedemptionStatus status,
         string? id = null,
         SortMethod? sort = null,
         int? first = null,
         CancellationToken cancellationToken = default)
-    => _all.GetCustomRewardRedemption(broadcasterId, rewardId, status, id, sort, first, cancellationToken);
+    => _all.GetCustomRewardRedemption(rewardId, status, id, sort, first, cancellationToken);
 
     public Task<HelixResult<CustomRewardRedemptions>> GetCustomRewardRedemption(
-        long broadcasterId,
         string rewardId,
         RewardRedemptionStatus status,
         IEnumerable<string>? ids = null,
         SortMethod? sort = null,
         int? first = null,
         CancellationToken cancellationToken = default)
-    => _all.GetCustomRewardRedemption(broadcasterId, rewardId, status, ids, sort, first, cancellationToken);
+    => _all.GetCustomRewardRedemption(rewardId, status, ids, sort, first, cancellationToken);
 
     public Task<HelixResult<CustomReward>> UpdateCustomReward(
-        long broadcasterId,
         string id,
         UpdatedCustomReward body,
         CancellationToken cancellationToken = default)
-    => _all.UpdateCustomReward(broadcasterId, id, body, cancellationToken);
+    => _all.UpdateCustomReward(id, body, cancellationToken);
 
     public Task<HelixResult<CustomRewardRedemption>> UpdateRedemptionStatus(
-        long broadcasterId,
         string id,
         string rewardId,
         RewardRedemptionStatus status,
         CancellationToken cancellationToken = default)
-    => _all.UpdateRedemptionStatus(broadcasterId, id, rewardId, status, cancellationToken);
+    => _all.UpdateRedemptionStatus(id, rewardId, status, cancellationToken);
 
     public Task<HelixResult<CustomRewardRedemptions>> UpdateRedemptionStatus(
-        long broadcasterId,
         IEnumerable<string> ids,
         string rewardId,
         RewardRedemptionStatus status,
         CancellationToken cancellationToken = default)
-    => _all.UpdateRedemptionStatus(broadcasterId, ids, rewardId, status, cancellationToken);
+    => _all.UpdateRedemptionStatus(ids, rewardId, status, cancellationToken);
 }

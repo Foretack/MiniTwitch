@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class UserSubscription : SingleResponse<UserSubscription.Info>
+public class UserSubscription : BaseResponse<UserSubscription.Info>
 {
     public record Info(
         [property: JsonPropertyName("broadcaster_id")] string BroadcasterId,

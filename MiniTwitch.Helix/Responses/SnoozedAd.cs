@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class SnoozedAd : SingleResponse<SnoozedAd.Info>
+public class SnoozedAd : BaseResponse<SnoozedAd.Info>
 {
     public record Info(
         [property: JsonPropertyName("snooze_count")] int SnoozeCount,

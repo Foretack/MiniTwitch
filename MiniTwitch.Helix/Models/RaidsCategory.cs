@@ -12,13 +12,10 @@ public sealed class RaidsCategory
     }
 
     public Task<HelixResult<Raid>> StartARaid(
-        long fromBroadcasterId,
         long toBroadcasterId,
         CancellationToken cancellationToken = default)
-    => _all.StartARaid(fromBroadcasterId, toBroadcasterId, cancellationToken);
+    => _all.StartRaid(toBroadcasterId, cancellationToken);
 
-    public Task<HelixResult> CancelARaid(
-        long broadcasterId,
-        CancellationToken cancellationToken = default)
-    => _all.CancelARaid(broadcasterId, cancellationToken);
+    public Task<HelixResult> CancelARaid(CancellationToken cancellationToken = default)
+    => _all.CancelRaid(cancellationToken);
 }

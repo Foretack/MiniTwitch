@@ -15,6 +15,10 @@ public sealed class SortedHelixWrapper
     /// <para>Can be toggled with <see cref="DefaultMiniTwitchLogger{T}.Enabled"/></para>
     /// </summary>
     public DefaultMiniTwitchLogger<HelixWrapper> DefaultLogger => this.All.ApiClient.Logger;
+    /// <summary>
+    /// Gets the user ID associated with this <see cref="SortedHelixWrapper"/> instance
+    /// </summary>
+    public long UserId { get; }
     public AllCategories All { get; }
     public AnalyticsCategory Analytics { get; }
     public BitsCategory Bits { get; }
@@ -40,10 +44,15 @@ public sealed class SortedHelixWrapper
     public UsersCategory Users { get; }
     public VideosCategory Videos { get; }
 
-    public SortedHelixWrapper(string bearerToken, string clientId, ILogger? logger = null,
-        string helixBaseUrl = "https://api.twitch.tv/helix", string tokenValidationUrl = "https://id.twitch.tv/oauth2/validate")
+    public SortedHelixWrapper(
+        string bearerToken, 
+        long userId, 
+        ILogger? logger = null,
+        string helixBaseUrl = "https://api.twitch.tv/helix", 
+        string tokenValidationUrl = "https://id.twitch.tv/oauth2/validate")
     {
-        this.All = new(new HelixApiClient(bearerToken, clientId, logger, tokenValidationUrl), helixBaseUrl);
+        this.All = new(new HelixApiClient(bearerToken, userId, logger, tokenValidationUrl), helixBaseUrl);
+        this.UserId = userId;
         this.Analytics = new(this.All);
         this.Bits = new(this.All);
         this.ChannelPoints = new(this.All);

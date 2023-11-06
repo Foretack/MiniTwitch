@@ -29,30 +29,26 @@ public sealed class ScheduleCategory
     => _all.GetChannelStreamSchedule(broadcasterId, ids, startTime, first, cancellationToken);
 
     public Task<HelixResult> UpdateChannelStreamSchedule(
-        long broadcasterId,
         bool? isVacationEnabled = null,
         DateTime? vacationStartTime = null,
         DateTime? vacationEndTime = null,
         string? timezone = null,
         CancellationToken cancellationToken = default)
-    => _all.UpdateChannelStreamSchedule(broadcasterId, isVacationEnabled, vacationStartTime, vacationEndTime, timezone, cancellationToken);
+    => _all.UpdateChannelStreamSchedule(isVacationEnabled, vacationStartTime, vacationEndTime, timezone, cancellationToken);
 
     public Task<HelixResult<ScheduleSegment>> CreateChannelStreamScheduleSegment(
-        long broadcasterId,
         NewScheduleSegment body,
         CancellationToken cancellationToken = default)
-    => _all.CreateChannelStreamScheduleSegment(broadcasterId, body, cancellationToken);
+    => _all.CreateChannelStreamScheduleSegment(body, cancellationToken);
 
     public Task<HelixResult<Responses.UpdatedScheduleSegment>> UpdateChannelStreamScheduleSegment(
-        long broadcasterId,
         string id,
         Requests.UpdatedScheduleSegment Body,
         CancellationToken cancellationToken = default)
-    => _all.UpdateChannelStreamScheduleSegment(broadcasterId, id, Body, cancellationToken);
+    => _all.UpdateChannelStreamScheduleSegment(id, Body, cancellationToken);
 
     public Task<HelixResult> DeleteChannelStreamScheduleSegment(
-        long broadcasterId,
         string id,
         CancellationToken cancellationToken = default)
-    => _all.DeleteChannelStreamScheduleSegment(broadcasterId, id, cancellationToken);
+    => _all.DeleteChannelStreamScheduleSegment(id, cancellationToken);
 }

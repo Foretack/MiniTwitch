@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class CreatedSubscription : SingleResponse<CreatedSubscription.Info>
+public class CreatedSubscription : BaseResponse<CreatedSubscription.Info>
 {
     [JsonPropertyName("total")]
     public int Total { get; init; }

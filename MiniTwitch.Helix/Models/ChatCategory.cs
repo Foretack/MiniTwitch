@@ -15,10 +15,9 @@ public sealed class ChatCategory
 
     public Task<HelixResult<Chatters>> GetChatters(
         long broadcasterId,
-        long moderatorId,
         int? first = null,
         CancellationToken cancellationToken = default)
-    => _all.GetChatters(broadcasterId, moderatorId, first, cancellationToken);
+    => _all.GetChatters(broadcasterId, first, cancellationToken);
 
     public Task<HelixResult<Emotes>> GetChannelEmotes(
         long broadcasterId,
@@ -56,26 +55,23 @@ public sealed class ChatCategory
 
     public Task<HelixResult<ChatSettings>> UpdateChatSettings(
         long broadcasterId,
-        long moderatorId,
         NewChatSettings body,
         CancellationToken cancellationToken = default)
-    => _all.UpdateChatSettings(broadcasterId, moderatorId, body, cancellationToken);
+    => _all.UpdateChatSettings(broadcasterId, body, cancellationToken);
 
     public Task<HelixResult> SendChatAnnouncement(
         long broadcasterId,
-        long moderatorId,
         Announcement body,
         CancellationToken cancellationToken = default)
-    => _all.SendChatAnnouncement(broadcasterId, moderatorId, body, cancellationToken);
+    => _all.SendChatAnnouncement(broadcasterId, body, cancellationToken);
 
     public Task<HelixResult> SendAShoutout(
         long fromBroadcasterId,
         long toBroadcasterId,
-        long moderatorId,
         CancellationToken cancellationToken = default)
-    => _all.SendAShoutout(fromBroadcasterId, toBroadcasterId, moderatorId, cancellationToken);
+    => _all.SendAShoutout(fromBroadcasterId, toBroadcasterId, cancellationToken);
 
-    public Task<HelixResult<UserChatColor>> GetUserChatColor(
+    public Task<HelixResult<UsersChatColor>> GetUserChatColor(
         long userId,
         CancellationToken cancellationToken = default)
     => _all.GetUserChatColor(userId, cancellationToken);
@@ -86,14 +82,12 @@ public sealed class ChatCategory
     => _all.GetUserChatColor(userIds, cancellationToken);
 
     public Task<HelixResult> UpdateUserChatColor(
-        long userId,
         ChatColor color,
         CancellationToken cancellationToken = default)
-    => _all.UpdateUserChatColor(userId, color, cancellationToken);
+    => _all.UpdateUserChatColor(color, cancellationToken);
 
     public Task<HelixResult> UpdateUserChatColor(
-        long userId,
         string hexColor,
         CancellationToken cancellationToken = default)
-    => _all.UpdateUserChatColor(userId, hexColor, cancellationToken);
+    => _all.UpdateUserChatColor(hexColor, cancellationToken);
 }

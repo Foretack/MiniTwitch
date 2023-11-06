@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class Commercial : SingleResponse<Commercial.Info>
+public class Commercial : BaseResponse<Commercial.Info>
 {
     public record Info(
         [property: JsonPropertyName("length")] int Length,

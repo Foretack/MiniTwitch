@@ -21,12 +21,7 @@ public class BroadcasterSubscriptions : PaginableResponse<BroadcasterSubscriptio
         [property: JsonPropertyName("plan_name")] string PlanName,
         [property: JsonPropertyName("user_id")] long UserId,
         [property: JsonPropertyName("user_name")] string UserDisplayName,
-        [property: JsonPropertyName("user_login")] string Username
-    )
-    {
-        [JsonInclude, JsonPropertyName("gifter_id")]
-        private readonly string _gifterId = default!;
-        [JsonIgnore]
-        public long GifterId => _gifterId is { Length: > 0 } ? long.Parse(_gifterId) : 0;
-    };
+        [property: JsonPropertyName("user_login")] string Username,
+        [property: JsonPropertyName("gifter_id")] long GifterId
+    );
 }

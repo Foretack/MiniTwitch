@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class ChannelGuestStarSettings : SingleResponse<ChannelGuestStarSettings.Settings>
+public class ChannelGuestStarSettings : BaseResponse<ChannelGuestStarSettings.Settings>
 {
     public record Settings(
         [property: JsonPropertyName("is_moderator_send_live_enabled")] bool IsModeratorSendLiveEnabled,

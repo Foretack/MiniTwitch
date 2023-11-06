@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class CustomReward : SingleResponse<CustomReward.Reward>
+public class CustomReward : BaseResponse<CustomReward.Reward>
 {
     public record Reward(
         [property: JsonPropertyName("broadcaster_name")] string BroadcasterDisplayName,

@@ -1,9 +1,11 @@
-﻿namespace MiniTwitch.Irc.Interfaces;
+﻿using MiniTwitch.Common.Interaction;
+
+namespace MiniTwitch.Irc.Interfaces;
 
 /// <summary>
 /// Contains information about a user ban
 /// </summary>
-public interface IBanTarget
+public interface IBanTarget : IHelixUserTarget
 {
     /// <summary>
     /// Username of the user receiving the ban
@@ -12,5 +14,5 @@ public interface IBanTarget
     /// <summary>
     /// ID of the user receiving the ban
     /// </summary>
-    long Id { get; }
+    new long Id { get; }
 }

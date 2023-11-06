@@ -19,7 +19,3 @@ public class Streams : PaginableResponse<Streams.Stream>
         [property: JsonPropertyName("started_at")] DateTime? StartedAt
     );
 }
-
-public class SingleStream : SingleResponse<Streams.Stream>
-{
-}

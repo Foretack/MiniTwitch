@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class ChatBadges : SingleResponse<ChatBadges.BadgeSet>
+public class ChatBadges : BaseResponse<ChatBadges.BadgeSet>
 {
     public record BadgeSet(
         [property: JsonPropertyName("set_id")] string SetId,

@@ -1,9 +1,11 @@
-﻿namespace MiniTwitch.Irc.Interfaces;
+﻿using MiniTwitch.Common.Interaction;
+
+namespace MiniTwitch.Irc.Interfaces;
 
 /// <summary>
 /// Contains information about a new sub-only mode state
 /// </summary>
-public interface ISubOnlyModified
+public interface ISubOnlyModified : IHelixChannelTarget
 {
     /// <summary>
     /// Username of the channel where the event occurred
@@ -12,7 +14,7 @@ public interface ISubOnlyModified
     /// <summary>
     /// ID of the channel where the event occurred
     /// </summary>
-    long Id { get; }
+    new long Id { get; }
     /// <summary>
     /// <see langword="true"/> if sub-only mode is activated; <see langword="false"/> if deactivated
     /// </summary>

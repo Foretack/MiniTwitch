@@ -3,7 +3,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class StreamMarker : SingleResponse<StreamMarker.Marker>
+public class StreamMarker : BaseResponse<StreamMarker.Marker>
 {
     public record Marker(
         [property: JsonPropertyName("id")] int Id,

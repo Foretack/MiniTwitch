@@ -12,7 +12,3 @@ public class Games : PaginableResponse<Games.Game>
         [property: JsonPropertyName("igdb_id")] string IgdbId
     );
 }
-
-public class Game : SingleResponse<Games.Game>
-{
-}

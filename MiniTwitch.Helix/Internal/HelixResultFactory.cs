@@ -13,7 +13,7 @@ internal static class HelixResultFactory
     public static async Task<HelixResult<T>> Create<T>(HelixApiClient client, RequestData request, HelixEndpoint endpoint,
         CancellationToken cancellationToken)
     {
-        (HttpResponseMessage response, long elapsedMs) = await client.RequestAsync(request, cancellationToken);
+        (HttpResponseMessage response, TimeSpan elapsed) = await client.RequestAsync(request, cancellationToken);
         // Because some endpoints don't have appropriate success status codes, .IsSuccessStatusCode should be checked first
         if (!response.IsSuccessStatusCode && response.StatusCode != endpoint.SuccessStatusCode)
         {
@@ -22,7 +22,7 @@ internal static class HelixResultFactory
                 Success = false,
                 Message = endpoint.GetResponseMessage(response.StatusCode),
                 StatusCode = response.StatusCode,
-                Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
+                Elapsed = elapsed,
                 Value = default!
             };
         }
@@ -39,7 +39,7 @@ internal static class HelixResultFactory
                     Message = "Unknown deserialization failure.\n\n" +
                         await response.Content.ReadAsStringAsync(cancellationToken),
                     StatusCode = response.StatusCode,
-                    Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
+                    Elapsed = elapsed,
                     Value = toObject!,
                     Ratelimit = GetRateLimit(response)
                 };
@@ -55,7 +55,7 @@ internal static class HelixResultFactory
                     $"{ex.StackTrace}\n\n" +
                     await response.Content.ReadAsStringAsync(cancellationToken),
                 StatusCode = response.StatusCode,
-                Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
+                Elapsed = elapsed,
                 Value = default!
             };
         }
@@ -65,7 +65,7 @@ internal static class HelixResultFactory
             Success = true,
             Message = endpoint.GetResponseMessage(response.StatusCode),
             StatusCode = response.StatusCode,
-            Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
+            Elapsed = elapsed,
             Value = toObject,
             HelixTask = new() { Endpoint = endpoint, Client = client, Request = request },
             Ratelimit = GetRateLimit(response)
@@ -75,13 +75,13 @@ internal static class HelixResultFactory
     public static async Task<HelixResult> Create(HelixApiClient client, RequestData request, HelixEndpoint endpoint,
         CancellationToken cancellationToken)
     {
-        (HttpResponseMessage response, long elapsedMs) = await client.RequestAsync(request, cancellationToken);
+        (HttpResponseMessage response, TimeSpan elapsed) = await client.RequestAsync(request, cancellationToken);
         return new HelixResult()
         {
             Success = response.StatusCode == endpoint.SuccessStatusCode,
             Message = endpoint.GetResponseMessage(response.StatusCode),
             StatusCode = response.StatusCode,
-            Elapsed = TimeSpan.FromMilliseconds(elapsedMs),
+            Elapsed = elapsed,
             Ratelimit = GetRateLimit(response)
         };
     }

@@ -17,7 +17,3 @@ public class ChannelsInformation : BaseResponse<ChannelsInformation.Information>
         [property: JsonPropertyName("tags")] IReadOnlyList<string> Tags
     );
 }
-
-public class ChannelInformation : SingleResponse<ChannelsInformation.Information>
-{
-}
