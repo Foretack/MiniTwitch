@@ -124,9 +124,7 @@ internal readonly ref struct IrcMessage
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly string GetChannel() => TagHelper.GetString(this.Memory.Span[this.ChannelRange], true);
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly string GetUsername() => TagHelper.GetString(this.Memory.Span[this.UsernameRange]);
 
     public readonly (string Content, bool Action) GetContent(bool maybeAction = false)
@@ -141,7 +139,6 @@ internal readonly ref struct IrcMessage
         return (content, false);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly IrcTags ParseTags()
     {
         const byte semiColon = (byte)';';
