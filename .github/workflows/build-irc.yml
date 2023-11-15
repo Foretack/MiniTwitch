@@ -26,5 +26,5 @@ jobs:
     - name: Build
       run: |
           cd .\MiniTwitch.Irc\
-          dotnet build -c Release
+          dotnet build -c Release -f net6.0
           

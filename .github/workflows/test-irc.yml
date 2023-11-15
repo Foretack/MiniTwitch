@@ -26,5 +26,5 @@ jobs:
     - name: Run tests
       run: |
           cd .\MiniTwitch.Irc.Test\
-          dotnet test
+          dotnet test -f net6.0
           
