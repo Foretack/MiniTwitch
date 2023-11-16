@@ -8,6 +8,7 @@ namespace MiniTwitch.Common;
 public sealed class WebSocketClient : IAsyncDisposable
 {
     #region Properties
+    internal static ArrayPool<byte> BytePool { get; } = ArrayPool<byte>.Create(4096, 8);
     public bool IsConnected => _client is not null && _client.State == WebSocketState.Open;
     #endregion
 
@@ -206,7 +207,7 @@ public sealed class WebSocketClient : IAsyncDisposable
         }
         finally
         {
-            ArrayPool<byte>.Shared.Return(bytes);
+            BytePool.Return(bytes, true);
             _ = _sendLock.Release();
         }
     }
@@ -220,7 +221,7 @@ public sealed class WebSocketClient : IAsyncDisposable
     private static (int, byte[]) StringToBytes(string s)
     {
         ReadOnlySpan<char> chars = s;
-        byte[] bytes = ArrayPool<byte>.Shared.Rent(chars.Length * sizeof(char));
+        byte[] bytes = BytePool.Rent(chars.Length * sizeof(char));
         int written = Encoding.UTF8.GetBytes(chars, bytes.AsSpan());
         return (written, bytes);
     }
