@@ -8,6 +8,7 @@ namespace MiniTwitch.Common;
 public sealed class WebSocketClient : IAsyncDisposable
 {
     #region Properties
+    internal static ArrayPool<byte> BytePool { get; } = ArrayPool<byte>.Create(4096, 8);
     public bool IsConnected => _client is not null && _client.State == WebSocketState.Open;
     #endregion
 
@@ -141,54 +142,48 @@ public sealed class WebSocketClient : IAsyncDisposable
     #endregion
 
     #region Communication
-    private Task Receive()
+    private async Task Receive()
     {
-        return Task.Run(async () =>
+        while (this.IsConnected)
         {
-            while (true)
+            try
             {
-                if (!this.IsConnected)
+                // Continue if not at the end of message
+                if (!await _bucket.FillFrom(_client, _cts.Token))
                     continue;
 
-                try
-                {
-                    bool shouldDrain = await _bucket.FillFrom(_client, _cts.Token);
-                    if (!shouldDrain)
-                        continue;
-
-                    ReadOnlyMemory<byte> message = _bucket.Drain();
-                    OnData?.Invoke(message);
-                }
-                catch (WebSocketException wse)
-                {
-                    Log(LogLevel.Critical, "An error occurred while receiving data from the WebSocket connection: {msg}", wse.Message);
-                    break;
-                }
-                catch (InvalidOperationException)
-                {
-                    Log(LogLevel.Warning, "Tried to receive data, but the WebSocket client is not connected");
-                    break;
-                }
-                catch (TaskCanceledException) when (_cts.IsCancellationRequested)
-                {
-                    // Break loop to exit method
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    LogException(ex, "Exception caught in data receiver: ");
-                }
+                ReadOnlyMemory<byte> message = _bucket.Drain();
+                OnData?.Invoke(message);
             }
+            catch (WebSocketException wse)
+            {
+                Log(LogLevel.Critical, "An error occurred while receiving data from the WebSocket connection: {msg}", wse.Message);
+                break;
+            }
+            catch (InvalidOperationException)
+            {
+                Log(LogLevel.Warning, "Tried to receive data, but the WebSocket client is not connected");
+                break;
+            }
+            catch (TaskCanceledException) when (_cts.IsCancellationRequested)
+            {
+                // Break loop to exit method
+                break;
+            }
+            catch (Exception ex)
+            {
+                LogException(ex, "Exception caught in data receiver: ");
+            }
+        }
 
-            // Don't restart if it's a user disconnect
-            if (!_cts.IsCancellationRequested)
-                await Restart(_reconnectDelay);
-        });
+        // Don't restart if it's a user disconnect
+        if (!_cts.IsCancellationRequested)
+            await Restart(_reconnectDelay);
     }
 
     public async ValueTask SendAsync(string data, bool sensitive = false, CancellationToken cancellationToken = default)
     {
-        var (written, mem) = StringToBytes(data);
+        var (written, bytes) = StringToBytes(data);
         if (!await _sendLock.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken).ConfigureAwait(false))
         {
             Log(LogLevel.Warning, "{method} timed out after 10 seconds.", nameof(SendAsync));
@@ -204,7 +199,7 @@ public sealed class WebSocketClient : IAsyncDisposable
 
         try
         {
-            await _client!.SendAsync(mem.Memory[..written], WebSocketMessageType.Text, true, cancellationToken);
+            await _client!.SendAsync(new ReadOnlyMemory<byte>(bytes)[..written], WebSocketMessageType.Text, true, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -212,7 +207,7 @@ public sealed class WebSocketClient : IAsyncDisposable
         }
         finally
         {
-            mem.Dispose();
+            BytePool.Return(bytes, true);
             _ = _sendLock.Release();
         }
     }
@@ -223,11 +218,11 @@ public sealed class WebSocketClient : IAsyncDisposable
 
     private void LogException(Exception ex, string template, params object[] properties) => OnLogEx?.Invoke(ex, template, properties);
 
-    private static (int, IMemoryOwner<byte>) StringToBytes(string s)
+    private static (int, byte[]) StringToBytes(string s)
     {
         ReadOnlySpan<char> chars = s;
-        IMemoryOwner<byte> bytes = MemoryPool<byte>.Shared.Rent(chars.Length * sizeof(char));
-        int written = Encoding.UTF8.GetBytes(chars, bytes.Memory.Span);
+        byte[] bytes = BytePool.Rent(chars.Length * sizeof(char));
+        int written = Encoding.UTF8.GetBytes(chars, bytes.AsSpan());
         return (written, bytes);
     }
     #endregion
