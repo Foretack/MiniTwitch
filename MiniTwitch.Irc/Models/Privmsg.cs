@@ -30,7 +30,9 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
     /// <summary>
     /// HypeChat information about this message
     /// <para>Note: If <see cref="HypeChat.HasContent"/> is <see langword="false"/>, strings are <see cref="string.Empty"/> and numbers are <see langword="0"/></para>
+    /// <para>WARNING: This property will be removed in a future version. See: <see href="https://twitter.com/TwitchSupport/status/1722675472218141072"/></para>
     /// </summary>
+    [Obsolete("Hype Chat has been officially removed from Twitch. This property will be removed in a future version.")]
     public HypeChat HypeChat { get; init; }
     /// <summary>
     /// The channel where the message was sent
