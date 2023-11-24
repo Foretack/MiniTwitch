@@ -26,5 +26,5 @@ jobs:
     - name: Run tests
       run: |
           cd .\MiniTwitch.PubSub.Test\
-          dotnet test -f net6.0
+          dotnet test
           
