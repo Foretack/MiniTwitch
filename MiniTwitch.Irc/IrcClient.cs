@@ -141,6 +141,10 @@ public sealed class IrcClient : IAsyncDisposable
     /// Invoked when a whisper Is received
     /// </summary>
     public event Func<Whisper, ValueTask> OnWhisper = default!;
+    /// <summary>
+    /// Invoked when a user donates to a charity during a fundraiser
+    /// </summary>
+    public event Func<ICharityDonation, ValueTask> OnCharityDonation = default!;
 
     internal event Func<ValueTask> OnPing = default!;
     #endregion
@@ -618,6 +622,10 @@ public sealed class IrcClient : IAsyncDisposable
 
                     case UsernoticeType.SubMysteryGift:
                         OnGiftedSubNoticeIntro?.Invoke(usernotice).StepOver(this.ExceptionHandler);
+                        break;
+
+                    case UsernoticeType.CharityDonation:
+                        OnCharityDonation?.Invoke(usernotice).StepOver(this.ExceptionHandler);
                         break;
                 }
 
