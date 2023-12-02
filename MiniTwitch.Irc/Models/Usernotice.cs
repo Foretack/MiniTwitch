@@ -69,7 +69,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
     public bool ShouldShareStreak { get; init; }
 
     /// <inheritdoc/>
-    public long TmiSentTs { get; init; }
+    public long TmiSentTs { get; init; } = default;
     /// <inheritdoc/>
     public DateTimeOffset SentTimestamp => DateTimeOffset.FromUnixTimeMilliseconds(this.TmiSentTs);
 
