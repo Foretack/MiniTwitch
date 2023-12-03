@@ -14,7 +14,8 @@ namespace MiniTwitch.Irc.Models;
 /// <para>Twitch docs: <see href="https://dev.twitch.tv/docs/irc/commands/#usernotice"/>, <see href="https://dev.twitch.tv/docs/irc/tags/#usernotice-tags"/></para>
 /// </summary>
 public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IPaidUpgradeNotice,
-    ISubNotice, IGiftSubNotice, IRaidNotice, IPrimeUpgradeNotice, IEquatable<Usernotice>
+    ISubNotice, IGiftSubNotice, IRaidNotice, IPrimeUpgradeNotice, IEquatable<Usernotice>,
+    ICharityDonation
 {
     private const string VIP_ROLE = "vip/1";
 
@@ -45,6 +46,12 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
     /// <inheritdoc/>
     public string GifterDisplayName { get; init; }
     /// <inheritdoc/>
+    public string CharityName { get; init; }
+    /// <inheritdoc/>
+    public double DonationAmount { get; init; }
+    /// <inheritdoc/>
+    public CurrencyCode DonationCurrency { get; init; }
+    /// <inheritdoc/>
     public int CumulativeMonths { get; init; }
     /// <inheritdoc/>
     public int Months { get; init; }
@@ -59,7 +66,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
     /// <inheritdoc/>
     public int ViewerCount { get; init; }
     /// <inheritdoc/>
-    public bool ShouldShareStreak { get; init; } = default;
+    public bool ShouldShareStreak { get; init; }
 
     /// <inheritdoc/>
     public long TmiSentTs { get; init; } = default;
@@ -109,6 +116,12 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
         int totalGiftCount = 0;
         int viewerCount = 0;
         bool shouldShareStreak = false;
+
+        string charityName = string.Empty;
+        int donationAmount = 0;
+        int donationExponent = 0;
+        double actualDonationAmount = 0;
+        CurrencyCode donationCurrency = CurrencyCode.None;
 
         using IrcTags tags = message.ParseTags();
         foreach (IrcTag tag in tags)
@@ -282,12 +295,32 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
                 case (int)Tags.MsgparamRecipientDisplayName:
                     recipientDisplayName = TagHelper.GetString(tagValue);
                     break;
+
+                case (int)Tags.MsgParamCharityName:
+                    charityName = TagHelper.GetString(tagValue, intern: true, unescape: true);
+                    break;
+
+                case (int)Tags.MsgParamDonationAmount:
+                    donationAmount = TagHelper.GetInt(tagValue);
+                    break;
+
+                case (int)Tags.MsgParamExponent:
+                    donationExponent = TagHelper.GetInt(tagValue);
+                    break;
+
+                case (int)Tags.MsgParamDonationCurrency:
+                    donationCurrency = TagHelper.GetEnum<CurrencyCode>(tagValue);
+                    break;
             }
         }
 
         if (this.MsgId is UsernoticeType.Resub or UsernoticeType.Announcement)
         {
             content = message.HasMessageContent ? message.GetContent().Content : string.Empty;
+        }
+        else if (this.MsgId is UsernoticeType.CharityDonation)
+        {
+            actualDonationAmount = donationAmount * Math.Pow(10, -donationExponent);
         }
 
         this.Author = new MessageAuthor()
@@ -333,6 +366,9 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
         this.TotalGiftCount = totalGiftCount;
         this.ViewerCount = viewerCount;
         this.ShouldShareStreak = shouldShareStreak;
+        this.CharityName = charityName;
+        this.DonationAmount = actualDonationAmount;
+        this.DonationCurrency = donationCurrency;
     }
 
     /// <summary>
