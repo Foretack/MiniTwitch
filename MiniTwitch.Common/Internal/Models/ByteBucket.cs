@@ -23,9 +23,15 @@ internal sealed class ByteBucket
     /// <returns><see langword="true"/> if the bucket should be drained</returns>
     public async ValueTask<bool> FillFrom(ClientWebSocket source, CancellationToken cToken)
     {
+        ValueTask<ValueWebSocketReceiveResult> valueTask = source.ReceiveAsync(_temp, cToken);
+        if (valueTask.IsCanceled || cToken.IsCancellationRequested)
+        {
+            return false;
+        }
+
         // Receive bytes into _temp
         // This overwrites previous data
-        ValueWebSocketReceiveResult result = await source.ReceiveAsync(_temp, cToken);
+        ValueWebSocketReceiveResult result = await valueTask.ConfigureAwait(false);
         // Copy the received bytes into the bucket
         _temp[..result.Count].CopyTo(_bucket[_reached..(result.Count + _reached)]);
         _reached += result.Count;

@@ -22,8 +22,9 @@ public sealed class WebSocketClient : IAsyncDisposable
     #endregion
 
     #region Fields
-    private readonly SemaphoreSlim _sendLock = new(1);
     private readonly SemaphoreSlim _reconnectionLock = new(0);
+    private readonly SemaphoreSlim _receiveLock = new(1);
+    private readonly SemaphoreSlim _sendLock = new(1);
     private readonly TimeSpan _reconnectDelay;
     private readonly ByteBucket _bucket;
     private CancellationTokenSource _cts;
@@ -148,6 +149,7 @@ public sealed class WebSocketClient : IAsyncDisposable
         {
             try
             {
+                await _receiveLock.WaitAsync(_cts.Token);
                 // Continue if not at the end of message
                 if (!await _bucket.FillFrom(_client, _cts.Token))
                     continue;
@@ -157,7 +159,8 @@ public sealed class WebSocketClient : IAsyncDisposable
             }
             catch (WebSocketException wse)
             {
-                Log(LogLevel.Critical, "An error occurred while receiving data from the WebSocket connection: {msg}", wse.Message);
+                Log(LogLevel.Critical, "An error occurred while receiving data from the WebSocket connection: {msg}",
+                    wse.Message);
                 break;
             }
             catch (InvalidOperationException)
@@ -174,6 +177,10 @@ public sealed class WebSocketClient : IAsyncDisposable
             {
                 LogException(ex, "Exception caught in data receiver: ");
             }
+            finally
+            {
+                _ = _receiveLock.Release();
+            }
         }
 
         // Don't restart if it's a user disconnect
@@ -186,16 +193,16 @@ public sealed class WebSocketClient : IAsyncDisposable
         var (written, bytes) = StringToBytes(data);
         if (!await _sendLock.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken).ConfigureAwait(false))
         {
-            Log(LogLevel.Warning, "{method} timed out after 10 seconds.", nameof(SendAsync));
+            Log(LogLevel.Warning, "{Method} timed out after 10 seconds.", nameof(SendAsync));
             return;
         }
         else if (!this.IsConnected)
         {
-            Log(LogLevel.Warning, "Cannot send data in non-connect state. ({state})", _client.State);
+            Log(LogLevel.Warning, "Cannot send data in non-connect state. ({State})", _client.State);
         }
 
         if (!sensitive)
-            Log(LogLevel.Debug, "Sending data: {msg}", data);
+            Log(LogLevel.Debug, "Sending data: {Message}", data);
 
         try
         {
