@@ -22,6 +22,7 @@ internal sealed class HelixApiClient
     };
     internal long UserId { get; private set; }
 
+    private readonly SemaphoreSlim _validateLock = new(1);
     private readonly HttpClient _httpClient = new();
     private readonly string _tokenValidationUrl;
     private readonly ILogger? _logger;
@@ -47,7 +48,7 @@ internal sealed class HelixApiClient
 
     private async Task<(HttpResponseMessage, TimeSpan)> PostAsync(RequestData requestObject, CancellationToken ct)
     {
-        await ValidateToken();
+        await ValidateToken(ct);
         string url = requestObject.GetUrl();
         var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url, requestObject.Body, this.SerializerOptions, ct);
@@ -60,7 +61,7 @@ internal sealed class HelixApiClient
 
     private async Task<(HttpResponseMessage, TimeSpan)> GetAsync(RequestData requestObject, CancellationToken ct)
     {
-        await ValidateToken();
+        await ValidateToken(ct);
         string url = requestObject.GetUrl();
         var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.GetAsync(url, ct);
@@ -73,7 +74,7 @@ internal sealed class HelixApiClient
 
     private async Task<(HttpResponseMessage, TimeSpan)> PutAsync(RequestData requestObject, CancellationToken ct)
     {
-        await ValidateToken();
+        await ValidateToken(ct);
         string url = requestObject.GetUrl();
         var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.PutAsJsonAsync(url, requestObject.Body, this.SerializerOptions, ct);
@@ -86,7 +87,7 @@ internal sealed class HelixApiClient
 
     private async Task<(HttpResponseMessage, TimeSpan)> DeleteAsync(RequestData requestObject, CancellationToken ct)
     {
-        await ValidateToken();
+        await ValidateToken(ct);
         string url = requestObject.GetUrl();
         var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.DeleteAsync(url, ct);
@@ -99,7 +100,7 @@ internal sealed class HelixApiClient
 
     private async Task<(HttpResponseMessage, TimeSpan)> PatchAsync(RequestData requestObject, CancellationToken ct)
     {
-        await ValidateToken();
+        await ValidateToken(ct);
         string url = requestObject.GetUrl();
         string rawContent = JsonSerializer.Serialize(requestObject.Body, this.SerializerOptions);
         var content = new StringContent(rawContent, Encoding.UTF8, "application/json");
@@ -112,65 +113,73 @@ internal sealed class HelixApiClient
         return (response, elapsed);
     }
 
-    internal async ValueTask ValidateToken()
+    internal async ValueTask ValidateToken(CancellationToken ct)
     {
         long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        if (_tokenInfo is not null)
+        await _validateLock.WaitAsync(ct);
+        try
         {
-            var expiresIn = TimeSpan.FromSeconds(_tokenInfo.ReceivedAt + _tokenInfo.ExpiresIn - now);
-            if (_tokenInfo.IsPermaToken)
+            if (_tokenInfo is not null)
             {
-                Log(LogLevel.Trace, "Request sent with access token from user {Username} [No expiry]", _tokenInfo.Login);
+                var expiresIn = TimeSpan.FromSeconds(_tokenInfo.ReceivedAt + _tokenInfo.ExpiresIn - now);
+                if (_tokenInfo.IsPermaToken)
+                {
+                    Log(LogLevel.Trace, "Request sent with access token from user {Username} [No expiry]", _tokenInfo.Login);
+                    return;
+                }
+
+                switch (expiresIn)
+                {
+                    case { TotalSeconds: <= -1 }:
+                        throw new InvalidTokenException(null, $"Access token for user \"{_tokenInfo.Login}\" has expired");
+                    case { TotalHours: < 0 }:
+                        Log(LogLevel.Warning, "Access token for user {Username} expires in {ExpiresInMinutes} minutes", expiresIn.Minutes);
+                        break;
+                    case { TotalDays: < 0 }:
+                        Log(LogLevel.Warning, "Access token for user {Username} expires in {ExpiresInHours} hours", expiresIn.Hours);
+                        break;
+                    default:
+                        Log(LogLevel.Trace, "Request sent with access token from user {Username} [Expires in: {ExpiresIn}]", expiresIn);
+                        break;
+                }
+
                 return;
             }
 
-            switch (expiresIn)
+            HttpResponseMessage response = await _httpClient.GetAsync(_tokenValidationUrl);
+            if (!response.IsSuccessStatusCode)
             {
-                case { TotalSeconds: <= -1 }:
-                    throw new InvalidTokenException(null, $"Access token for user \"{_tokenInfo.Login}\" has expired");
-                case { TotalHours: < 0 }:
-                    Log(LogLevel.Warning, "Access token for user {Username} expires in {ExpiresInMinutes} minutes", expiresIn.Minutes);
-                    break;
-                case { TotalDays: < 0 }:
-                    Log(LogLevel.Warning, "Access token for user {Username} expires in {ExpiresInHours} hours", expiresIn.Hours);
-                    break;
-                default:
-                    Log(LogLevel.Trace, "Request sent with access token from user {Username} [Expires in: {ExpiresIn}]", expiresIn);
-                    break;
+                InvalidToken? invalid = await response.Content.ReadFromJsonAsync<InvalidToken>(options: null, cancellationToken: ct);
+                throw new InvalidTokenException(invalid?.Message, "Provided access token is either invalid or has expired");
             }
 
-            return;
-        }
+            _tokenInfo = await response.Content.ReadFromJsonAsync<TokenInfo>(options: null, cancellationToken: ct);
+            if (_tokenInfo is null)
+                throw new InvalidTokenException(null, "Validating access token failed");
 
-        HttpResponseMessage response = await _httpClient.GetAsync(_tokenValidationUrl);
-        if (!response.IsSuccessStatusCode)
-        {
-            InvalidToken? invalid = await response.Content.ReadFromJsonAsync<InvalidToken>();
-            throw new InvalidTokenException(invalid?.Message, "Provided access token is either invalid or has expired");
-        }
+            _httpClient.DefaultRequestHeaders.Add("Client-Id", $"{_tokenInfo.ClientId}");
+            _tokenInfo.ReceivedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            if (_tokenInfo.IsPermaToken)
+            {
+                Log(
+                    LogLevel.Information,
+                    "Validated permanent access token from user {Username} with {ScopeCount} scopes",
+                    _tokenInfo.Login, _tokenInfo.Scopes.Count
+                );
 
-        _tokenInfo = await response.Content.ReadFromJsonAsync<TokenInfo>();
-        if (_tokenInfo is null)
-            throw new InvalidTokenException(null, "Validating access token failed");
+                return;
+            }
 
-        _httpClient.DefaultRequestHeaders.Add("Client-Id", $"{_tokenInfo.ClientId}");
-        _tokenInfo.ReceivedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        if (_tokenInfo.IsPermaToken)
-        {
             Log(
                 LogLevel.Information,
-                "Validated permanent access token from user {Username} with {ScopeCount} scopes",
-                _tokenInfo.Login, _tokenInfo.Scopes.Count
+                "Validated access token from user {Username} with {ScopeCount} scopes. The token expires at {ExpiresAt}",
+                _tokenInfo.Login, _tokenInfo.Scopes.Count, DateTimeOffset.FromUnixTimeSeconds(_tokenInfo.ReceivedAt + _tokenInfo.ExpiresIn)
             );
-
-            return;
         }
-
-        Log(
-            LogLevel.Information,
-            "Validated access token from user {Username} with {ScopeCount} scopes. The token expires at {ExpiresAt}",
-            _tokenInfo.Login, _tokenInfo.Scopes.Count, DateTimeOffset.FromUnixTimeSeconds(_tokenInfo.ReceivedAt + _tokenInfo.ExpiresIn)
-        );
+        finally
+        {
+            _validateLock.Release();
+        }
     }
 
     private void Log(LogLevel level, string template, params object[] properties) => GetLogger().Log(level, "[MiniTwitch.Helix] " + template, properties);
