@@ -2,4 +2,6 @@
 
 ## Upcoming version
 
-- Minor: Improved handling of WebSocket reads
+### Minor changes
+
+- Improved handling of WebSocket reads
