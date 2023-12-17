@@ -37,34 +37,20 @@ public class Program
 
     static async Task Main()
     {
-        Helix = new HelixWrapper("Access token", 7654321);
+        Helix = new HelixWrapper("Access token", 987654321);
 
-        await GetFirst1000Usernames(12345678);
-        await GetAllUsernames(12345678);
+        var chatters = await GetAllChatters(12345678);
     }
 
-    private static async Task<IReadOnlyList<string>> GetFirst1000Usernames(long broadcasterId)
+    private static async Task<List<string>> GetAllChatters(long broadcasterId)
     {
-        List<string> usernames = new();
+        List<string> usernames = [];
         HelixResult<Chatters> chatters = await Helix.GetChatters(broadcasterId, first: 1000);
 
-        // Make sure the result is a success and the value contains data
-        if (!chatters.Success) return Array.Empty<string>();
-
-        foreach (var chatter in chatters.Value.Data)
+        if (!chatters.Success)
         {
-            usernames.Add(chatter.Username);
+            return [];
         }
-
-        return usernames;
-    }
-
-    private static async Task<IReadOnlyList<string>> GetAllUsernames(long broadcasterId)
-    {
-        List<string> usernames = new();
-        HelixResult<Chatters> chatters = await Helix.GetChatters(broadcasterId, first: 1000);
-        
-        if (!chatters.Success) return Array.Empty<string>();
 
         foreach (var chatter in chatters.Value.Data)
         {
@@ -72,9 +58,12 @@ public class Program
         }
 
         // No more users - return what we got
-        if (!chatters.CanPaginate) return usernames;
+        if (!chatters.CanPaginate)
+        {
+            return usernames;
+        }
 
-        // Continue paginating if the result is a success and there is content
+        // Continue paginating if the result is a success
         while (await chatters.Paginate() is { Success: true } next)
         {
             foreach (var chatter in next.Value.Data)
@@ -83,7 +72,8 @@ public class Program
             }
 
             // Return when pagination is no longer possible
-            if (!next.CanPaginate) return usernames;
+            if (!next.CanPaginate)
+                return usernames;
 
             chatters = next;
         }
