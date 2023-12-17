@@ -224,7 +224,7 @@ public static class Topics
     /// <list type="bullet">
     /// <item><see cref="PubSubClient.OnFollow"/></item>
     /// </list>
-    /// Authentication: No authentication required
+    /// Authentication: Access token with the scope <c>moderator:read:followers</c>
     /// </summary>
     /// <param name="channelId">ID of the channel to observe the events in</param>
     /// <param name="overrideToken">Optional: An access token to override the provided token in <see cref="PubSubClient"/></param>
