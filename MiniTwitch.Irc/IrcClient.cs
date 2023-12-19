@@ -482,7 +482,7 @@ public sealed class IrcClient : IAsyncDisposable
         }
         catch
         {
-            Log(LogLevel.Error, "Failed to join channel #{channel}: Timed out. (Does the channel exist?)", channel);
+            Log(LogLevel.Error, "Failed to join channel #{channel}: Timed out. (Channel may have been renamed or deleted)", channel);
             return false;
         }
     }
@@ -704,7 +704,7 @@ public sealed class IrcClient : IAsyncDisposable
                 Notice notice = new(ref message);
                 if (notice.Type == NoticeType.Msg_channel_suspended)
                 {
-                    Log(LogLevel.Error, "Tried joining suspended channel: #{channel}", notice.Channel.Name);
+                    Log(LogLevel.Error, "Failed to join #{channel}: Channel does not exist anymore.", notice.Channel.Name);
                     _coordinator.ReleaseIfLocked(WaitableEvents.ChannelSuspended);
                 }
                 else if (notice.Type == NoticeType.Bad_auth)
