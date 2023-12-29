@@ -29,7 +29,7 @@ internal readonly struct TopicInfo : IDisposable
         ReadOnlySpan<byte> separators = stackalloc byte[] { dot, quotationMark };
         int end = span[start..].IndexOfAny(separators) + start;
         int topicEnd = span[end..].IndexOf(quotationMark) + end;
-        this.Topic = (MessageTopic)span[start..end].Sum();
+        this.Topic = (MessageTopic)span[start..end].MSum();
         int end2;
         for (int i = 0; end != topicEnd; i++)
         {
