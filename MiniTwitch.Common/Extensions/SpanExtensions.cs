@@ -12,6 +12,23 @@ public static class SpanExtensions
         return sum;
     }
 
+    public static int MSum(this ReadOnlySpan<byte> source)
+    {
+        if (source.Length == 0)
+        {
+            return 0;
+        }
+
+        int m = source[0];
+        int sum = 0;
+        foreach (byte b in source)
+        {
+            sum += b;
+        }
+
+        return m * sum;
+    }
+
     public static int CopyUnescaped(this ReadOnlySpan<byte> source, Span<byte> destination)
     {
         const byte backSlash = (byte)'\\';
