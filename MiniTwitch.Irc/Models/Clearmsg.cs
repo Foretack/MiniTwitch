@@ -45,7 +45,7 @@ public readonly struct Clearmsg : IUnixTimestamped
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
             ReadOnlySpan<byte> tagValue = tag.Value.Span;
 
-            switch (tagKey.Sum())
+            switch (tagKey.MSum())
             {
                 //login
                 case (int)Tags.Login:

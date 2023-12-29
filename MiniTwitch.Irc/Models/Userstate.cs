@@ -65,7 +65,7 @@ public readonly struct Userstate
 
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
             ReadOnlySpan<byte> tagValue = tag.Value.Span;
-            switch (tagKey.Sum())
+            switch (tagKey.MSum())
             {
 
                 //mod

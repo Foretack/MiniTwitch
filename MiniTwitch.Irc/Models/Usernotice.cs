@@ -129,7 +129,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
             ReadOnlySpan<byte> tagValue = tag.Value.Span;
 
-            switch (tagKey.Sum())
+            switch (tagKey.MSum())
             {
                 //id
                 case (int)Tags.Id:
@@ -296,18 +296,22 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
                     recipientDisplayName = TagHelper.GetString(tagValue);
                     break;
 
+                //msg-param-charity-name
                 case (int)Tags.MsgParamCharityName:
                     charityName = TagHelper.GetString(tagValue, intern: true, unescape: true);
                     break;
 
+                //msg-param-donation-amount
                 case (int)Tags.MsgParamDonationAmount:
                     donationAmount = TagHelper.GetInt(tagValue);
                     break;
 
+                //msg-param-exponent
                 case (int)Tags.MsgParamExponent:
                     donationExponent = TagHelper.GetInt(tagValue);
                     break;
 
+                //msg-param-donation-currency
                 case (int)Tags.MsgParamDonationCurrency:
                     donationCurrency = TagHelper.GetEnum<CurrencyCode>(tagValue);
                     break;

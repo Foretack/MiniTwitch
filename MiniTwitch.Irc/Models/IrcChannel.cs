@@ -56,7 +56,7 @@ public readonly struct IrcChannel : IGazatuChannel, IPartedChannel, IBasicChanne
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
             ReadOnlySpan<byte> tagValue = tag.Value.Span;
-            switch (tagKey.Sum())
+            switch (tagKey.MSum())
             {
                 //r9k
                 case (int)Tags.R9K:
