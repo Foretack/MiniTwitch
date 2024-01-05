@@ -2,7 +2,7 @@
 
 internal enum MessageTopic
 {
-    None,
+    None = 31200,
     Polls = 62048,
     Following = 99654,
     AutomodQueue = 131435,

@@ -2,7 +2,7 @@
 
 internal enum MessageType
 {
-    None = 0,
+    None = 31200,
     PONG = 24640,
     MESSAGE = 39809,
     RESPONSE = 51086,
