@@ -182,64 +182,6 @@ public class PrivmsgTests
         Assert.Equal(1687870580760, privmsg.TmiSentTs);
     }
 
-    //[Fact]
-    //public void WithHypeChat()
-    //{
-    //    var privmsg = Privmsg.Construct("@badge-info=subscriber/28;badges=subscriber/24,chatter-cs-go-2022/1;color=#00FFFF;display-name=MoodyJ1;emotes=;first-msg=0;flags=;id=ad4517d0-97b7-4ca1-91eb-f43edf3bf9b3;mod=0;pinned-chat-paid-amount=100;pinned-chat-paid-canonical-amount=100;pinned-chat-paid-currency=GBP;pinned-chat-paid-exponent=2;pinned-chat-paid-is-system-message=0;pinned-chat-paid-level=ONE;returning-chatter=0;room-id=22484632;subscriber=1;tmi-sent-ts=1687470141956;turbo=0;user-id=246651933;user-type= :moodyj1!moodyj1@moodyj1.tmi.twitch.tv PRIVMSG #forsen :f o r s e n");
-
-    //    // Author
-    //    Assert.Equal(246651933, privmsg.Author.Id);
-    //    Assert.Equal(UserType.None, privmsg.Author.Type);
-    //    Assert.True(privmsg.Author.IsSubscriber);
-    //    Assert.Equal("MoodyJ1", privmsg.Author.DisplayName);
-    //    Assert.Equal("moodyj1", privmsg.Author.Name);
-    //    Assert.False(privmsg.Author.IsMod);
-    //    Assert.False(privmsg.Author.IsTurbo);
-    //    Assert.Equal(Color.FromArgb(int.Parse("00FFFF", NumberStyles.HexNumber)).Name, privmsg.Author.ChatColor.Name);
-    //    Assert.Equal("subscriber/28", privmsg.Author.BadgeInfo);
-    //    Assert.Equal("subscriber/24,chatter-cs-go-2022/1", privmsg.Author.Badges);
-    //    Assert.False(privmsg.Author.IsVip);
-
-    //    // No reply
-    //    Assert.False(privmsg.Reply.HasContent);
-    //    Assert.Equal(string.Empty, privmsg.Reply.ParentMessage);
-    //    Assert.Equal(string.Empty, privmsg.Reply.ParentDisplayName);
-    //    Assert.Equal(string.Empty, privmsg.Reply.ParentUsername);
-    //    Assert.Equal(string.Empty, privmsg.Reply.ParentMessageId);
-    //    Assert.Equal(0, privmsg.Reply.ParentUserId);
-    //    Assert.Equal(string.Empty, privmsg.Reply.ParentThreadMessageId);
-    //    Assert.Equal(string.Empty, privmsg.Reply.ParentThreadUsername);
-
-    //    // Is hypechat message
-    //    Assert.True(privmsg.HypeChat.HasContent);
-    //    Assert.Equal(HypeChatLevel.ONE, privmsg.HypeChat.Level);
-    //    Assert.Equal(CurrencyCode.GBP, privmsg.HypeChat.Currency);
-    //    Assert.Equal(2, privmsg.HypeChat.Exponent);
-    //    Assert.Equal(100, privmsg.HypeChat.PaidAmount);
-    //    Assert.False(privmsg.HypeChat.IsSystemMessage);
-    //    Assert.Equal(1, privmsg.HypeChat.GetActualAmount());
-    //    Assert.Equal(TimeSpan.FromSeconds(30), privmsg.HypeChat.GetPinDuration());
-
-    //    // Channel
-    //    Assert.Equal("forsen", privmsg.Channel.Name);
-    //    Assert.Equal(22484632, privmsg.Channel.Id);
-
-    //    // No source
-    //    Assert.Null(privmsg.Source);
-    //    Assert.True(privmsg.ReplyWith(default!, default!).IsCompleted);
-
-    //    Assert.Equal(0, privmsg.Bits);
-    //    Assert.Equal("f o r s e n", privmsg.Content);
-    //    Assert.Equal(string.Empty, privmsg.Emotes);
-    //    Assert.Equal(string.Empty, privmsg.Flags);
-    //    Assert.Equal("ad4517d0-97b7-4ca1-91eb-f43edf3bf9b3", privmsg.Id);
-    //    Assert.False(privmsg.IsAction);
-    //    Assert.False(privmsg.IsFirstMessage);
-    //    Assert.False(privmsg.IsReturningChatter);
-    //    Assert.Equal(string.Empty, privmsg.Nonce);
-    //    Assert.Equal(1687470141956, privmsg.TmiSentTs);
-    //}
-
     [Fact]
     public void WithBits()
     {
