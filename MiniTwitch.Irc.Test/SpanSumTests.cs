@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using MiniTwitch.Common.Extensions;
 using MiniTwitch.Irc.Internal.Enums;
 using Xunit;
 using Xunit.Sdk;
@@ -112,18 +113,6 @@ public class SpanSumTests
     private static int MSum(string s)
     {
         var source = Encoding.UTF8.GetBytes(s);
-        if (source.Length == 0)
-        {
-            return 0;
-        }
-
-        int m = source[0];
-        int sum = 0;
-        foreach (byte b in source)
-        {
-            sum += b;
-        }
-
-        return m * sum;
+        return SpanExtensions.MSum(source);
     }
 }
