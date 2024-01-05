@@ -54,7 +54,7 @@ internal enum Tags
     MsgParamCumulativeMonths = 298987,
     MsgParamRecipientUserName = 312067,
     MsgParamShouldShareStreak = 313048,
-    MsgparamRecipientDisplayName = 345966,
+    MsgParamRecipientDisplayName = 345966,
     MsgParamCharityName = 235876,
     MsgParamDonationAmount = 273699,
     MsgParamExponent = 199143,

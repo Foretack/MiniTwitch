@@ -292,7 +292,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
                     break;
 
                 //msg-param-recipient-display-name
-                case (int)Tags.MsgparamRecipientDisplayName:
+                case (int)Tags.MsgParamRecipientDisplayName:
                     recipientDisplayName = TagHelper.GetString(tagValue);
                     break;
 
