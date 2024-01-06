@@ -140,7 +140,7 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
             ReadOnlySpan<byte> tagValue = tag.Value.Span;
 
-            switch (tagKey.Sum())
+            switch (tagKey.MSum())
             {
                 //id
                 case (int)Tags.Id:
@@ -252,29 +252,9 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
                     replyMessageBody = TagHelper.GetString(tagValue, unescape: true);
                     break;
 
-                //pinned-chat-paid-level
-                case (int)Tags.PinnedChatPaidLevel:
-                    level = TagHelper.GetEnum<HypeChatLevel>(tagValue);
-                    break;
-
-                //pinned-chat-paid-amount
-                case (int)Tags.PinnedChatPaidAmount:
-                    paidAmount = TagHelper.GetInt(tagValue);
-                    break;
-
                 //reply-parent-user-login
                 case (int)Tags.ReplyParentUserLogin:
                     replyUsername = TagHelper.GetString(tagValue);
-                    break;
-
-                //pinned-chat-paid-currency
-                case (int)Tags.PinnedChatPaidCurrency:
-                    currency = TagHelper.GetEnum<CurrencyCode>(tagValue);
-                    break;
-
-                //pinned-chat-paid-exponent
-                case (int)Tags.PinnedChatPaidExponent:
-                    exponent = TagHelper.GetInt(tagValue);
                     break;
 
                 //reply-parent-display-name
@@ -290,11 +270,6 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
                 //reply-thread-parent-user-login
                 case (int)Tags.ReplyThreadParentUserLogin:
                     threadParentUsername = TagHelper.GetString(tagValue);
-                    break;
-
-                //pinned-chat-paid-is-system-message
-                case (int)Tags.PinnedChatPaidIsSystemMessage:
-                    isSystemMessage = TagHelper.GetBool(tagValue);
                     break;
             }
         }

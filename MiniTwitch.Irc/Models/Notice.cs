@@ -37,7 +37,7 @@ public readonly struct Notice : IEquatable<Notice>
             ReadOnlySpan<byte> tagValue = tag.Value.Span;
 
             // JUST in case they add more shit in the future
-            switch (tagKey.Sum())
+            switch (tagKey.MSum())
             {
                 //msg-id
                 case (int)Tags.MsgId:

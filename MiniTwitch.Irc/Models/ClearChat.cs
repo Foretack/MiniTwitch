@@ -45,7 +45,7 @@ public readonly struct Clearchat : IUserTimeout, IUserBan, IChatClear
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
             ReadOnlySpan<byte> tagValue = tag.Value.Span;
 
-            switch (tagKey.Sum())
+            switch (tagKey.MSum())
             {
                 //room-id
                 case (int)Tags.RoomId:

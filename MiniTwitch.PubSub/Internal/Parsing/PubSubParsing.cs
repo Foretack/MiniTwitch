@@ -23,7 +23,7 @@ internal static class PubSubParsing
         }
 
         int end = span[start..].IndexOf(quotationMark) + start;
-        MessageType type = (MessageType)span[start..end].Sum();
+        MessageType type = (MessageType)span[start..end].MSum();
         return type;
     }
 

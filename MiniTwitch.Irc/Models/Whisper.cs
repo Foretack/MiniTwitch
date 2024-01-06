@@ -54,7 +54,7 @@ public readonly struct Whisper
         {
             ReadOnlySpan<byte> tagKey = tag.Key.Span;
             ReadOnlySpan<byte> tagValue = tag.Value.Span;
-            switch (tagKey.Sum())
+            switch (tagKey.MSum())
             {
                 //color
                 case (int)Tags.Color:
