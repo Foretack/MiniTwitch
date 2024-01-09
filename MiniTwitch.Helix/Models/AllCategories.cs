@@ -2025,4 +2025,13 @@ public sealed class AllCategories
 
         return HelixResultFactory.Create<ChatBadges>(this.ApiClient, request, endpoint, cancellationToken);
     }
+
+    public Task<HelixResult<ModeratedChannels>> GetModeratedChannels(CancellationToken cancellationToken = default)
+    {
+        HelixEndpoint endpoint = Endpoints.GetModeratedChannels;
+        var request = new RequestData(_baseUrl, endpoint)
+            .AddParam(QueryParams.UserId, this.UserId);
+
+        return HelixResultFactory.Create<ModeratedChannels>(this.ApiClient, request, endpoint, cancellationToken);
+    }
 }
