@@ -1,6 +1,6 @@
 # MiniTwitch.Irc Changelog
 
-## Upcoming version
+## 1.2.10
 
 ### Minor changes
 
