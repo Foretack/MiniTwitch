@@ -4,16 +4,16 @@
     <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
       <PackageId>MiniTwitch.Common</PackageId>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-      <PackageVersion>1.1.4</PackageVersion>
-      <Version>1.1.4</Version>
+      <PackageVersion>1.1.5</PackageVersion>
+      <Version>1.1.5</Version>
       <ImplicitUsings>enable</ImplicitUsings>
       <Nullable>enable</Nullable>
       <Title>MiniTwitch.Common</Title>
-	  <Description>Common resources for MiniTwitch projects. You do not need to install this package manually.</Description>
+      <Description>Common resources for MiniTwitch projects. You do not need to install this package manually.</Description>
       <Authors>Foretack</Authors>
       <RepositoryUrl>https://github.com/Foretack/MiniTwitch</RepositoryUrl>
       <RepositoryType>git</RepositoryType>
-      <PackageReleaseNotes></PackageReleaseNotes>
+      <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/CHANGELOG.md"))</PackageReleaseNotes>
       <license>MIT</license>
       <PackageLicenseFile>LICENSE</PackageLicenseFile>
       <PackageIcon>icon256.png</PackageIcon>

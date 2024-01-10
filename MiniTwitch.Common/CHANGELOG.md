@@ -1,6 +1,6 @@
 # MiniTwitch.Common Changelog
 
-## Upcoming version
+## 1.1.5
 
 ### Minor changes
 
