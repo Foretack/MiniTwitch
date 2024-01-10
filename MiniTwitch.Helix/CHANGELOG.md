@@ -1,6 +1,6 @@
 # MiniTwitch.Helix Changelog
 
-## Upcoming version
+## 0.2.2-prerelease
 
 ### Minor changes
 

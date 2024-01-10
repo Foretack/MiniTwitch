@@ -2,11 +2,10 @@
 
   <PropertyGroup>
       <LangVersion>latest</LangVersion>
-
       <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
       <PackageId>MiniTwitch.Helix</PackageId>
-      <PackageVersion>0.2.1-prerelease</PackageVersion>
-      <Version>0.2.1-prerelease</Version>
+      <PackageVersion>0.2.2-prerelease</PackageVersion>
+      <Version>0.2.2-prerelease</Version>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
       <Title>MiniTwitch.Helix</Title>
@@ -19,6 +18,7 @@
       <PackageLicenseFile>LICENSE</PackageLicenseFile>
       <PackageReadmeFile>README.md</PackageReadmeFile>
       <PackageIcon>icon256.png</PackageIcon>
+      <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/CHANGELOG.md"))</PackageReleaseNotes>
       <ImplicitUsings>enable</ImplicitUsings>
       <Nullable>enable</Nullable>
       <NoWarn>CS8618,IDE0058,CS1591</NoWarn>
