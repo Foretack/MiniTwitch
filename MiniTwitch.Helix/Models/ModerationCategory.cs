@@ -115,6 +115,8 @@ public sealed class ModerationCategory
         CancellationToken cancellationToken = default)
     => _all.GetShieldModeStatus(broadcasterId, cancellationToken);
 
-    public Task<HelixResult<ModeratedChannels>> GetModeratedChannels(CancellationToken cancellationToken = default)
-    => _all.GetModeratedChannels(cancellationToken);
+    public Task<HelixResult<ModeratedChannels>> GetModeratedChannels(
+        int? first = null,
+        CancellationToken cancellationToken = default)
+    => _all.GetModeratedChannels(first, cancellationToken);
 }

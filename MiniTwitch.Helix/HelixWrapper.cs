@@ -907,6 +907,8 @@ public class HelixWrapper
         CancellationToken cancellationToken = default)
     => _all.GetGlobalChatBadges(cancellationToken);
 
-    public Task<HelixResult<ModeratedChannels>> GetModeratedChannels(CancellationToken cancellationToken = default)
-    => _all.GetModeratedChannels(cancellationToken);
+    public Task<HelixResult<ModeratedChannels>> GetModeratedChannels(
+        int? first = null,
+        CancellationToken cancellationToken = default)
+    => _all.GetModeratedChannels(first, cancellationToken);
 }
