@@ -4,6 +4,7 @@
 
 ### Minor changes
 
+- Added "Get Moderated Channels" endpoint
 - Added a semaphore lock to token validation to ensure consistency
 
 ### Fixes

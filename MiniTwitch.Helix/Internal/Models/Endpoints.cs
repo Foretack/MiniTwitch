@@ -1898,4 +1898,15 @@ internal static class Endpoints
             _ => "Unknown response code"
         }
     };
+
+    public static readonly HelixEndpoint GetModeratedChannels = new()
+    {
+        Method = HttpMethod.Get,
+        Route = "/moderation/channels",
+        SuccessStatusCode = HttpStatusCode.OK,
+        GetResponseMessage = code => code switch
+        {
+            _ => "Unknown response code"
+        }
+    };
 }
