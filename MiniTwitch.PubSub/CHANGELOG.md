@@ -1,8 +1,8 @@
 # MiniTwitch.PubSub Changelog
 
-## Upcoming version
+## 1.0.3
 
-### Fixes
+### Minor changes
 
 - Updated authentication comment for `following.{id}` topic
 

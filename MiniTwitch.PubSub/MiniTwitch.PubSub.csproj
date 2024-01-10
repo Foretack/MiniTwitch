@@ -5,15 +5,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>1.0.2</PackageVersion>
-    <Version>1.0.2</Version>
+    <PackageVersion>1.0.3</PackageVersion>
+    <Version>1.0.3</Version>
     <PackageId>MiniTwitch.PubSub</PackageId>
     <Title>MiniTwitch.Irc</Title>
     <Description>Fast and easy to use async library for Twitch's PubSub service</Description>
     <Authors>Foretack</Authors>
     <PackageTags>PubSub;Twitch;Bots;Client;Events</PackageTags>
+    <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/CHANGELOG.md"))</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/Foretack/MiniTwitch</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <license>MIT</license>
