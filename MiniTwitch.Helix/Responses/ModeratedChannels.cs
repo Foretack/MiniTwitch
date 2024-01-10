@@ -2,9 +2,9 @@
 using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
-public class ModeratedChannels : PaginableResponse<ModeratedChannels.Info>
+public class ModeratedChannels : PaginableResponse<ModeratedChannels.ChannelInfo>
 {
-    public record Info(
+    public record ChannelInfo(
         [property: JsonPropertyName("broadcaster_id")] long Id,
         [property: JsonPropertyName("broadcaster_login")] string Name,
         [property: JsonPropertyName("broadcaster_name")] string DisplayName
