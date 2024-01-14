@@ -79,6 +79,10 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
     /// <para>This tag is not documented <see href="https://dev.twitch.tv/docs/irc/tags/#privmsg-tags"/> </para>
     /// </summary>
     public bool IsReturningChatter { get; init; }
+    /// <summary>
+    /// The ID of the custom reward that was redeemed if the message was sent with a custom reward
+    /// </summary>
+    public string CustomRewardId { get; init; }
 
     /// <inheritdoc/>
     public long TmiSentTs { get; init; }
@@ -133,6 +137,7 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
         long tmiSentTs = 0;
         bool firstMsg = false;
         bool returningChatter = false;
+        string customRewardId = string.Empty;
 
         using IrcTags tags = message.ParseTags();
         foreach (IrcTag tag in tags)
@@ -271,6 +276,11 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
                 case (int)Tags.ReplyThreadParentUserLogin:
                     threadParentUsername = TagHelper.GetString(tagValue);
                     break;
+                
+                //custom-reward-id
+                case (int)Tags.CustomRewardId:
+                    customRewardId = TagHelper.GetString(tagValue);
+                    break;
             }
         }
 
@@ -319,6 +329,7 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
         this.TmiSentTs = tmiSentTs;
         this.IsFirstMessage = firstMsg;
         this.IsReturningChatter = returningChatter;
+        this.CustomRewardId = customRewardId;
     }
 
     /// <summary>
