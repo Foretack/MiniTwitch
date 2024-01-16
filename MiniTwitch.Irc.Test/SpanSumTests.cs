@@ -70,6 +70,7 @@ public class SpanSumTests
         { (int)Tags.EmoteSets, "emote-sets" },
         { (int)Tags.MessageId, "message-id" },
         { (int)Tags.ThreadId, "thread-id" },
+        { (int)Tags.CustomRewardId, "custom-reward-id" }
     };
 
     [Fact]

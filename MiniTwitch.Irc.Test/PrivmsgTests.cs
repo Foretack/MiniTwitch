@@ -239,4 +239,63 @@ public class PrivmsgTests
         Assert.Equal(string.Empty, privmsg.Nonce);
         Assert.Equal(1687597804051, privmsg.TmiSentTs);
     }
+    
+    [Fact]
+    public void WithCustomRewardId()
+    {
+        var privmsg = Privmsg.Construct("@flags=;user-id=49435922;id=235ec71c-f4ed-485b-abd5-e0849d0d6972;emotes=;user-type=;returning-chatter=0;subscriber=1;custom-reward-id=1a0b4553-e01e-4d1f-a250-c9ecadcdc129;display-name=synaxl;mod=0;tmi-sent-ts=1687855313886;turbo=0;room-id=11148817;color=#FF782A;badge-info=subscriber/30;first-msg=0;badges=subscriber/24,twitchconEU2019/1 :synaxl!synaxl@synaxl.tmi.twitch.tv PRIVMSG #pajlada :immer gern Evolution57 Okayge");
+       
+        // Author
+        Assert.Equal(49435922, privmsg.Author.Id);
+        Assert.Equal(UserType.None, privmsg.Author.Type);
+        Assert.True(privmsg.Author.IsSubscriber);
+        Assert.Equal("synaxl", privmsg.Author.DisplayName);
+        Assert.Equal("synaxl", privmsg.Author.Name);
+        Assert.False(privmsg.Author.IsMod);
+        Assert.False(privmsg.Author.IsTurbo);
+        Assert.Equal("FF782A".ToLower(), privmsg.Author.ChatColor.Name);
+        Assert.Equal("subscriber/30", privmsg.Author.BadgeInfo);
+        Assert.Equal("subscriber/24,twitchconEU2019/1", privmsg.Author.Badges);
+        Assert.False(privmsg.Author.IsVip);
+
+        // No reply
+        Assert.False(privmsg.Reply.HasContent);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentMessage);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentDisplayName);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentUsername);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentMessageId);
+        Assert.Equal(0, privmsg.Reply.ParentUserId);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentThreadMessageId);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentThreadUsername);
+
+        // No hypechat
+        Assert.False(privmsg.HypeChat.HasContent);
+        Assert.Equal(HypeChatLevel.None, privmsg.HypeChat.Level);
+        Assert.Equal(CurrencyCode.None, privmsg.HypeChat.Currency);
+        Assert.Equal(0, privmsg.HypeChat.Exponent);
+        Assert.Equal(0, privmsg.HypeChat.PaidAmount);
+        Assert.False(privmsg.HypeChat.IsSystemMessage);
+        Assert.Equal(0, privmsg.HypeChat.GetActualAmount());
+        Assert.Equal(TimeSpan.Zero, privmsg.HypeChat.GetPinDuration());
+
+        // Channel
+        Assert.Equal("pajlada", privmsg.Channel.Name);
+        Assert.Equal(11148817, privmsg.Channel.Id);
+
+        // No source
+        Assert.Null(privmsg.Source);
+        Assert.True(privmsg.ReplyWith(default!, default!).IsCompleted);
+
+        Assert.Equal(0, privmsg.Bits);
+        Assert.Equal("immer gern Evolution57 Okayge", privmsg.Content);
+        Assert.Equal(string.Empty, privmsg.Emotes);
+        Assert.Equal(string.Empty, privmsg.Flags);
+        Assert.Equal("235ec71c-f4ed-485b-abd5-e0849d0d6972", privmsg.Id);
+        Assert.False(privmsg.IsAction);
+        Assert.False(privmsg.IsFirstMessage);
+        Assert.False(privmsg.IsReturningChatter);
+        Assert.Equal(string.Empty, privmsg.Nonce);
+        Assert.Equal(1687855313886, privmsg.TmiSentTs);
+        Assert.Equal("1a0b4553-e01e-4d1f-a250-c9ecadcdc129", privmsg.CustomRewardId);
+    }
 }
