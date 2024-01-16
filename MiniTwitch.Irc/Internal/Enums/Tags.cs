@@ -62,4 +62,5 @@ internal enum Tags
     EmoteSets = 104030,
     MessageId = 108019,
     ThreadId = 102312,
+    CustomRewardId = 159093,
 }
