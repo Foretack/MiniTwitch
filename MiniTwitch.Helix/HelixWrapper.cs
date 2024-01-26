@@ -911,4 +911,9 @@ public class HelixWrapper
         int? first = null,
         CancellationToken cancellationToken = default)
     => _all.GetModeratedChannels(first, cancellationToken);
+    
+    public Task<HelixResult<SentMessage>> SendChatMessage(
+        ChatMessage message,
+        CancellationToken cancellationToken = default)
+    => _all.SendChatMessage(message, cancellationToken);
 }

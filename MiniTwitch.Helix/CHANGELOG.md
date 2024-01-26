@@ -1,4 +1,12 @@
+This changelog is available at: https://github.com/Foretack/MiniTwitch/blob/master/MiniTwitch.Helix/CHANGELOG.md
+
 # MiniTwitch.Helix Changelog
+
+## 0.2.3-prerelease
+
+### Minor changes
+
+- Added "Send Chat Message" endpoint
 
 ## 0.2.2-prerelease
 

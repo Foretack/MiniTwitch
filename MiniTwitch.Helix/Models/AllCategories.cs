@@ -2037,4 +2037,15 @@ public sealed class AllCategories
 
         return HelixResultFactory.Create<ModeratedChannels>(this.ApiClient, request, endpoint, cancellationToken);
     }
+
+    public Task<HelixResult<SentMessage>> SendChatMessage(
+        ChatMessage message,
+        CancellationToken cancellationToken = default)
+    {
+        HelixEndpoint endpoint = Endpoints.SendChatMessage;
+        var request = new RequestData(_baseUrl, endpoint);
+        message.SenderId = this.UserId;
+        request.Body = message;
+        return HelixResultFactory.Create<SentMessage>(this.ApiClient, request, endpoint, cancellationToken);
+    }
 }
