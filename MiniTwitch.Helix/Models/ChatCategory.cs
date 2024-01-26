@@ -90,4 +90,9 @@ public sealed class ChatCategory
         string hexColor,
         CancellationToken cancellationToken = default)
     => _all.UpdateUserChatColor(hexColor, cancellationToken);
+
+    public Task<HelixResult<SentMessage>> SendChatMessage(
+        ChatMessage message,
+        CancellationToken cancellationToken = default)
+    => _all.SendChatMessage(message, cancellationToken);
 }

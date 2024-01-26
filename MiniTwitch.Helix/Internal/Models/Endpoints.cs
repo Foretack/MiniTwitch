@@ -1909,4 +1909,20 @@ internal static class Endpoints
             _ => "Unknown response code"
         }
     };
+
+    public static readonly HelixEndpoint SendChatMessage = new()
+    {
+        Method = HttpMethod.Post,
+        Route = "/chat/messages",
+        SuccessStatusCode = HttpStatusCode.OK,
+        GetResponseMessage = code => code switch
+        {
+            HttpStatusCode.OK => "Successfully sent the specified broadcaster a message.",
+            HttpStatusCode.BadRequest => "The broadcaster_id query parameter is required.\r\nThe ID in the broadcaster_id query parameter is not valid.\r\nThe sender_id query parameter is required.\r\nThe ID in the sender_id query parameter is not valid.\r\nThe text query parameter is required.\r\nThe ID in the reply_parent_message_id query parameter is not valid.",
+            HttpStatusCode.Unauthorized => "The ID in the user_id query parameter must match the user ID in the access token.\r\nThe Authorization header is required and must contain a user access token.\r\nThe user access token must include the user:write:chat scope.\r\nThe access token is not valid.\r\nThe client ID specified in the Client-Id header does not match the client ID specified in the access token.",
+            HttpStatusCode.Forbidden => "The sender is not permitted to send chat messages to the broadcaster’s chat room.",
+            HttpStatusCode.UnprocessableEntity => "The message is too large.",
+            _ => "Unknown response code"
+        }
+    };
 }
