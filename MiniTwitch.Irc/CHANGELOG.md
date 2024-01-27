@@ -1,4 +1,12 @@
+This changelog is available at: https://github.com/Foretack/MiniTwitch/blob/master/MiniTwitch.Irc/CHANGELOG.md
+
 # MiniTwitch.Irc Changelog
+
+# 1.2.11
+
+### Minor changes
+
+- Added `CustomRewardId` property to privmsg struct
 
 ## 1.2.10
 
