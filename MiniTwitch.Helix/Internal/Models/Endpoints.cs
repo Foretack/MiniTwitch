@@ -1928,7 +1928,7 @@ internal static class Endpoints
 
     public static readonly HelixEndpoint GetUserEmotes = new()
     {
-        ManageHeldAutoModMessages = HttpMethod.Get,
+        Method = HttpMethod.Get,
         Route = "/chat/emotes/user",
         SuccessStatusCode = HttpStatusCode.OK,
         GetResponseMessage = code => code switch
@@ -1938,5 +1938,5 @@ internal static class Endpoints
             HttpStatusCode.Unauthorized => "The ID in user_id must match the user ID in the user access token.\r\nThe Authorization header is required and must contain a user access token.\r\nThe user access token must include the user:read:emotes scope.\r\nThe access token is not valid.\r\nThe client ID specified in the Client-Id header does not match the client ID specified in the access token.",
             _ => "Unknown response code"
         }
-    }
+    };
 }

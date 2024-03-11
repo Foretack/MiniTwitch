@@ -14,6 +14,6 @@ public class UserEmotes : PaginableResponse<UserEmotes.Emote>
         [property: JsonPropertyName("format")] IReadOnlyList<string> Format,
         [property: JsonPropertyName("scale")] IReadOnlyList<string> Scale,
         [property: JsonPropertyName("theme_mode")] IReadOnlyList<string> ThemeMode,
-        [property: JsonPropertyName("template")] string Template,
+        [property: JsonPropertyName("template")] string Template
     );
 }
