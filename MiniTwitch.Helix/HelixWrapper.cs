@@ -916,4 +916,9 @@ public class HelixWrapper
         ChatMessage message,
         CancellationToken cancellationToken = default)
     => _all.SendChatMessage(message, cancellationToken);
+
+    public Task<HelixResult<UserEmotes>> GetUserEmotes(
+        long? broadcasterId = null,
+        CancellationToken cancellationToken = default)
+    => _all.GetUserEmotes(broadcasterId, cancellationToken);
 }

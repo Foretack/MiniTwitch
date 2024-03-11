@@ -2048,4 +2048,16 @@ public sealed class AllCategories
         request.Body = message;
         return HelixResultFactory.Create<SentMessage>(this.ApiClient, request, endpoint, cancellationToken);
     }
+
+    public Task<HelixResult<UserEmotes>> GetUserEmotes(
+        long? broadcasterId = null,
+        CancellationToken cancellationToken = default)
+    {
+        HelixEndpoint endpoint = Endpoints.GetUserEmotes;
+        var request = new RequestData(_baseUrl, endpoint)
+            .AddParam(QueryParams.UserId, this.UserId)
+            .AddParam(QueryParams.BroadcasterId, broadcasterId);
+
+        return HelixResultFactory.Create<UserEmotes>(this.ApiClient, request, endpoint, cancellationToken);
+    }
 }
