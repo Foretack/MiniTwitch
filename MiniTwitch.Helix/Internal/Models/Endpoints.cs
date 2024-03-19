@@ -1925,4 +1925,18 @@ internal static class Endpoints
             _ => "Unknown response code"
         }
     };
+
+    public static readonly HelixEndpoint GetUserEmotes = new()
+    {
+        Method = HttpMethod.Get,
+        Route = "/chat/emotes/user",
+        SuccessStatusCode = HttpStatusCode.OK,
+        GetResponseMessage = code => code switch
+        {
+            HttpStatusCode.OK => "Successfully retrieved the emotes.",
+            HttpStatusCode.BadRequest => "The user_id query parameter is required\r\nThe ID in the user_id query parameter is not valid.",
+            HttpStatusCode.Unauthorized => "The ID in user_id must match the user ID in the user access token.\r\nThe Authorization header is required and must contain a user access token.\r\nThe user access token must include the user:read:emotes scope.\r\nThe access token is not valid.\r\nThe client ID specified in the Client-Id header does not match the client ID specified in the access token.",
+            _ => "Unknown response code"
+        }
+    };
 }
