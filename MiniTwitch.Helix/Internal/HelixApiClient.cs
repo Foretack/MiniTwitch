@@ -146,14 +146,14 @@ internal sealed class HelixApiClient
                 return;
             }
 
-            HttpResponseMessage response = await _httpClient.GetAsync(_tokenValidationUrl);
+            HttpResponseMessage response = await _httpClient.GetAsync(_tokenValidationUrl, ct);
             if (!response.IsSuccessStatusCode)
             {
-                InvalidToken? invalid = await response.Content.ReadFromJsonAsync<InvalidToken>(options: null, cancellationToken: ct);
+                InvalidToken? invalid = await response.Content.ReadFromJsonAsync<InvalidToken>(SerializerOptions, cancellationToken: ct);
                 throw new InvalidTokenException(invalid?.Message, "Provided access token is either invalid or has expired");
             }
 
-            _tokenInfo = await response.Content.ReadFromJsonAsync<TokenInfo>(options: null, cancellationToken: ct);
+            _tokenInfo = await response.Content.ReadFromJsonAsync<TokenInfo>(SerializerOptions, cancellationToken: ct);
             if (_tokenInfo is null)
                 throw new InvalidTokenException(null, "Validating access token failed");
 
