@@ -45,10 +45,10 @@ public sealed class SortedHelixWrapper
     public VideosCategory Videos { get; }
 
     public SortedHelixWrapper(
-        string bearerToken, 
-        long userId, 
+        string bearerToken,
+        long userId,
         ILogger? logger = null,
-        string helixBaseUrl = "https://api.twitch.tv/helix", 
+        string helixBaseUrl = "https://api.twitch.tv/helix",
         string tokenValidationUrl = "https://id.twitch.tv/oauth2/validate")
     {
         this.All = new(new HelixApiClient(bearerToken, userId, logger, tokenValidationUrl), helixBaseUrl);

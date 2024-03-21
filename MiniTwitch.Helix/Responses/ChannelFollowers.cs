@@ -9,9 +9,9 @@ public class ChannelFollowers : PaginableResponse<ChannelFollowers.Follower>
     public int Total { get; init; }
 
     public record Follower(
-        [property: JsonPropertyName("user_id")] long FollowerId,
+        long FollowerId,
         [property: JsonPropertyName("user_login")] string FollowerName,
         [property: JsonPropertyName("user_name")] string FollowerDisplayName,
-        [property: JsonPropertyName("followed_at")] DateTime FollowedAt
+        DateTime FollowedAt
     );
 }

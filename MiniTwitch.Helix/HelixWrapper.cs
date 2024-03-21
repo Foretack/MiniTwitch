@@ -26,10 +26,10 @@ public class HelixWrapper
     private readonly AllCategories _all;
 
     public HelixWrapper(
-        string accessToken, 
+        string accessToken,
         long userId,
-        ILogger? logger = null, 
-        string helixBaseUrl = "https://api.twitch.tv/helix", 
+        ILogger? logger = null,
+        string helixBaseUrl = "https://api.twitch.tv/helix",
         string tokenValidationUrl = "https://id.twitch.tv/oauth2/validate")
     {
         _all = new(new HelixApiClient(accessToken, userId, logger, tokenValidationUrl), helixBaseUrl);
@@ -911,7 +911,7 @@ public class HelixWrapper
         int? first = null,
         CancellationToken cancellationToken = default)
     => _all.GetModeratedChannels(first, cancellationToken);
-    
+
     public Task<HelixResult<SentMessage>> SendChatMessage(
         ChatMessage message,
         CancellationToken cancellationToken = default)

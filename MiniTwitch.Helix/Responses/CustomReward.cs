@@ -8,24 +8,24 @@ public class CustomReward : BaseResponse<CustomReward.Reward>
     public record Reward(
         [property: JsonPropertyName("broadcaster_name")] string BroadcasterDisplayName,
         [property: JsonPropertyName("broadcaster_login")] string BroadcasterName,
-        [property: JsonPropertyName("broadcaster_id")] long BroadcasterId,
-        [property: JsonPropertyName("id")] string RewardId,
-        [property: JsonPropertyName("image")] Image? Image,
-        [property: JsonPropertyName("background_color")] string BackgroundColor,
-        [property: JsonPropertyName("is_enabled")] bool IsEnabled,
-        [property: JsonPropertyName("cost")] long Cost,
-        [property: JsonPropertyName("title")] string Title,
-        [property: JsonPropertyName("prompt")] string Prompt,
-        [property: JsonPropertyName("is_user_input_required")] bool IsUserInputRequired,
-        [property: JsonPropertyName("max_per_stream_setting")] MaxPerStreamSetting MaxPerStreamSetting,
-        [property: JsonPropertyName("max_per_user_per_stream_setting")] MaxPerUserPerStreamSetting MaxPerUserPerStreamSetting,
-        [property: JsonPropertyName("global_cooldown_setting")] GlobalCooldownSetting GlobalCooldownSetting,
-        [property: JsonPropertyName("is_paused")] bool IsPaused,
-        [property: JsonPropertyName("is_in_stock")] bool IsInStock,
-        [property: JsonPropertyName("default_image")] Image DefaultImage,
-        [property: JsonPropertyName("should_redemptions_skip_request_queue")] bool ShouldRedemptionsSkipRequestQueue,
+        long BroadcasterId,
+        string RewardId,
+        Image? Image,
+        string BackgroundColor,
+        bool IsEnabled,
+        long Cost,
+        string Title,
+        string Prompt,
+        bool IsUserInputRequired,
+        MaxPerStreamSetting MaxPerStreamSetting,
+        MaxPerUserPerStreamSetting MaxPerUserPerStreamSetting,
+        GlobalCooldownSetting GlobalCooldownSetting,
+        bool IsPaused,
+        bool IsInStock,
+        Image DefaultImage,
+        bool ShouldRedemptionsSkipRequestQueue,
         [property: JsonPropertyName("redemptions_redeemed_current_stream")] int? RedemptionsRedeemedInCurrentStream,
-        [property: JsonPropertyName("cooldown_expires_at")] DateTime? CooldownExpiresAt
+        DateTime? CooldownExpiresAt
     );
 
     public record Image(
@@ -35,17 +35,17 @@ public class CustomReward : BaseResponse<CustomReward.Reward>
     );
 
     public record GlobalCooldownSetting(
-        [property: JsonPropertyName("is_enabled")] bool IsEnabled,
-        [property: JsonPropertyName("global_cooldown_seconds")] long GlobalCooldownSeconds
+        bool IsEnabled,
+        long GlobalCooldownSeconds
     );
 
     public record MaxPerStreamSetting(
-        [property: JsonPropertyName("is_enabled")] bool IsEnabled,
-        [property: JsonPropertyName("max_per_stream")] long MaxPerStream
+        bool IsEnabled,
+        long MaxPerStream
     );
 
     public record MaxPerUserPerStreamSetting(
-        [property: JsonPropertyName("is_enabled")] bool IsEnabled,
-        [property: JsonPropertyName("max_per_user_per_stream")] long MaxPerUserPerStream
+        bool IsEnabled,
+        long MaxPerUserPerStream
     );
 }

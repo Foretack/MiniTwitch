@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
@@ -6,27 +5,27 @@ namespace MiniTwitch.Helix.Responses;
 public class Cheermotes : BaseResponse<Cheermotes.Emote>
 {
     public record Emote(
-        [property: JsonPropertyName("prefix")] string Prefix,
-        [property: JsonPropertyName("tiers")] IReadOnlyList<Tier> Tiers,
-        [property: JsonPropertyName("type")] string Type,
-        [property: JsonPropertyName("order")] int Order,
-        [property: JsonPropertyName("last_updated")] DateTime LastUpdated,
-        [property: JsonPropertyName("is_charitable")] bool IsCharitable
+        string Prefix,
+        IReadOnlyList<Tier> Tiers,
+        string Type,
+        int Order,
+        DateTime LastUpdated,
+        bool IsCharitable
     );
     public record Tier(
-        [property: JsonPropertyName("min_bits")] int MinBits,
-        [property: JsonPropertyName("id")] string Id,
-        [property: JsonPropertyName("color")] string Color,
-        [property: JsonPropertyName("images")] Images Images,
-        [property: JsonPropertyName("can_cheer")] bool CanCheer,
-        [property: JsonPropertyName("show_in_bits_card")] bool ShowInBitsCard
+        int MinBits,
+        string Id,
+        string Color,
+        Images Images,
+        bool CanCheer,
+        bool ShowInBitsCard
     );
     public record Images(
-        [property: JsonPropertyName("dark")] ImageSet Dark,
-        [property: JsonPropertyName("light")] ImageSet Light
+        ImageSet Dark,
+        ImageSet Light
     );
     public record ImageSet(
-        [property: JsonPropertyName("animated")] IDictionary<string, string> Animated,
-        [property: JsonPropertyName("static")] IDictionary<string, string> Static
+        IDictionary<string, string> Animated,
+        IDictionary<string, string> Static
     );
 }

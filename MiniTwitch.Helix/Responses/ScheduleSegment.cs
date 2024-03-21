@@ -8,30 +8,30 @@ public class ScheduleSegment
     public ScheduleData Data { get; init; }
 
     public record Category(
-        [property: JsonPropertyName("id")] string Id,
-        [property: JsonPropertyName("name")] string Name
+        string Id,
+        string Name
     );
 
     public record ScheduleData(
-        [property: JsonPropertyName("segments")] IReadOnlyList<Segment> Segments,
-        [property: JsonPropertyName("broadcaster_id")] long BroadcasterId,
+        IReadOnlyList<Segment> Segments,
+        long BroadcasterId,
         [property: JsonPropertyName("broadcaster_name")] string BroadcasterDisplayName,
         [property: JsonPropertyName("broadcaster_login")] string BroadcasterName,
-        [property: JsonPropertyName("vacation")] Vacation Vacation
+        Vacation Vacation
     );
 
     public record Segment(
-        [property: JsonPropertyName("id")] string Id,
-        [property: JsonPropertyName("start_time")] DateTime StartTime,
-        [property: JsonPropertyName("end_time")] DateTime EndTime,
-        [property: JsonPropertyName("title")] string Title,
-        [property: JsonPropertyName("canceled_until")] DateTime? CanceledUntil,
-        [property: JsonPropertyName("category")] Category Category,
-        [property: JsonPropertyName("is_recurring")] bool IsRecurring
+        string Id,
+        DateTime StartTime,
+        DateTime EndTime,
+        string Title,
+        DateTime? CanceledUntil,
+        Category Category,
+        bool IsRecurring
     );
 
     public record Vacation(
-        [property: JsonPropertyName("start_time")] DateTime StartTime,
-        [property: JsonPropertyName("end_time")] DateTime EndTime
+        DateTime StartTime,
+        DateTime EndTime
     );
 }
