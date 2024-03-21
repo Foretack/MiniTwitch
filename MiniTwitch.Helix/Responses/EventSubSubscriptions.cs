@@ -13,23 +13,23 @@ public class EventSubSubscriptions : PaginableResponse<EventSubSubscriptions.Sub
     public int Total { get; init; }
 
     public record Condition(
-        [property: JsonPropertyName("broadcaster_user_id")] long BroadcasterUserId,
-        [property: JsonPropertyName("user_id")] long UserId
+        [property: JsonPropertyName("broadcaster_user_id")] long BroadcasterId,
+      long UserId
     );
 
     public record Subscription(
-        [property: JsonPropertyName("id")] string Id,
-        [property: JsonPropertyName("status")] string Status,
-        [property: JsonPropertyName("type")] string Type,
-        [property: JsonPropertyName("version")] string Version,
-        [property: JsonPropertyName("condition")] Condition Condition,
-        [property: JsonPropertyName("created_at")] string CreatedAt,
-        [property: JsonPropertyName("transport")] Transport Transport,
-        [property: JsonPropertyName("cost")] int Cost
+        string Id,
+        string Status,
+        string Type,
+        string Version,
+        Condition Condition,
+        string CreatedAt,
+        Transport Transport,
+        int Cost
     );
 
     public record Transport(
-        [property: JsonPropertyName("method")] string Method,
-        [property: JsonPropertyName("callback")] string Callback
+        string Method,
+        string Callback
     );
 }

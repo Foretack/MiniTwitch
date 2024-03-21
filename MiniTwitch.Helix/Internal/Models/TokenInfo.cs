@@ -1,12 +1,10 @@
-﻿using System.Text.Json.Serialization;
-
-namespace MiniTwitch.Helix.Internal.Models;
+﻿namespace MiniTwitch.Helix.Internal.Models;
 
 internal record TokenInfo(
-    [property: JsonPropertyName("client_id")] string ClientId,
-    [property: JsonPropertyName("login")] string Login,
-    [property: JsonPropertyName("scopes")] IReadOnlyList<string> Scopes,
-    [property: JsonPropertyName("expires_in")] int ExpiresIn
+    string ClientId,
+    string Login,
+    IReadOnlyList<string> Scopes,
+    int ExpiresIn
 )
 {
     public long ReceivedAt { get; set; }

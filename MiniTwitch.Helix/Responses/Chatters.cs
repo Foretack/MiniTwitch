@@ -9,7 +9,7 @@ public class Chatters : PaginableResponse<Chatters.Chatter>
     public int Total { get; init; }
 
     public record Chatter(
-        [property: JsonPropertyName("user_id")] long UserId,
+      long UserId,
         [property: JsonPropertyName("user_login")] string Username,
         [property: JsonPropertyName("user_name")] string UserDisplayName
     );

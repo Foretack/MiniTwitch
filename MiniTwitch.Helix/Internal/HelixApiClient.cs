@@ -33,7 +33,7 @@ internal sealed class HelixApiClient
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
         _tokenValidationUrl = tokenValidationUrl;
         _logger = logger;
-        UserId = userId;
+        this.UserId = userId;
     }
 
     public Task<(HttpResponseMessage, TimeSpan)> RequestAsync(RequestData requestObject, CancellationToken ct) => requestObject._method switch

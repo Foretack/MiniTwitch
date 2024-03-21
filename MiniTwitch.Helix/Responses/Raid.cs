@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
@@ -6,7 +5,7 @@ namespace MiniTwitch.Helix.Responses;
 public class Raid : BaseResponse<Raid.Info>
 {
     public record Info(
-        [property: JsonPropertyName("created_at")] DateTime CreatedAt,
-        [property: JsonPropertyName("is_mature")] bool IsMature
+        DateTime CreatedAt,
+        bool IsMature
     );
 }

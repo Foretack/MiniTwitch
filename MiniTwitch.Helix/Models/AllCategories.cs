@@ -11,7 +11,7 @@ namespace MiniTwitch.Helix.Models;
 public sealed class AllCategories
 {
     internal HelixApiClient ApiClient { get; }
-    private long UserId => ApiClient.UserId;
+    private long UserId => this.ApiClient.UserId;
 
     private readonly string _baseUrl;
 
@@ -931,7 +931,7 @@ public sealed class AllCategories
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.UpdateChannelGuestStarSettings;
-        var request = new RequestData(_baseUrl, endpoint)
+        RequestData request = new RequestData(_baseUrl, endpoint)
         {
             Body = body
         }.AddParam(QueryParams.BroadcasterId, this.UserId);
@@ -2031,7 +2031,7 @@ public sealed class AllCategories
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetModeratedChannels;
-        var request = new RequestData(_baseUrl, endpoint)
+        RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.UserId, this.UserId)
             .AddParam(QueryParams.First, first);
 
@@ -2054,7 +2054,7 @@ public sealed class AllCategories
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetUserEmotes;
-        var request = new RequestData(_baseUrl, endpoint)
+        RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.UserId, this.UserId)
             .AddParam(QueryParams.BroadcasterId, broadcasterId);
 

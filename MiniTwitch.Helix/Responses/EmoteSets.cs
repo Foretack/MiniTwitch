@@ -9,12 +9,12 @@ public class EmoteSets : BaseResponse<EmoteSets.Emote>
     public string Template { get; init; }
 
     public record Emote(
-        [property: JsonPropertyName("id")] string Id,
-        [property: JsonPropertyName("name")] string Name,
-        [property: JsonPropertyName("images")] Images Images,
-        [property: JsonPropertyName("emote_type")] string EmoteType,
-        [property: JsonPropertyName("emote_set_id")] string EmoteSetId,
-        [property: JsonPropertyName("owner_id")] long OwnerId,
+        string Id,
+        string Name,
+        Images Images,
+        string EmoteType,
+        string EmoteSetId,
+        long OwnerId,
         [property: JsonPropertyName("format")] IReadOnlyList<string> Formats,
         [property: JsonPropertyName("scale")] IReadOnlyList<string> Scales,
         [property: JsonPropertyName("theme_mode")] IReadOnlyList<string> ThemeModes
