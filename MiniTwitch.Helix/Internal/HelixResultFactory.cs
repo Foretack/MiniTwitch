@@ -30,7 +30,7 @@ internal static class HelixResultFactory
         T? toObject;
         try
         {
-            toObject = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
+            toObject = await response.Content.ReadFromJsonAsync<T>(HelixApiClient.SerializerOptions, cancellationToken: cancellationToken);
             if (toObject is null)
             {
                 return new HelixResult<T>()
