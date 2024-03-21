@@ -14,7 +14,7 @@ namespace MiniTwitch.Helix.Internal;
 internal sealed class HelixApiClient
 {
     public DefaultMiniTwitchLogger<HelixWrapper> Logger { get; } = new();
-    public JsonSerializerOptions SerializerOptions { get; init; } = new()
+    internal static JsonSerializerOptions SerializerOptions { get; } = new()
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         NumberHandling = JsonNumberHandling.AllowReadingFromString,
@@ -51,7 +51,7 @@ internal sealed class HelixApiClient
         await ValidateToken(ct);
         string url = requestObject.GetUrl();
         var sw = Stopwatch.StartNew();
-        HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url, requestObject.Body, this.SerializerOptions, ct);
+        HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url, requestObject.Body, SerializerOptions, ct);
         sw.Stop();
         TimeSpan elapsed = sw.Elapsed;
         LogLevel logLevel = response.IsSuccessStatusCode ? LogLevel.Debug : LogLevel.Warning;
@@ -77,7 +77,7 @@ internal sealed class HelixApiClient
         await ValidateToken(ct);
         string url = requestObject.GetUrl();
         var sw = Stopwatch.StartNew();
-        HttpResponseMessage response = await _httpClient.PutAsJsonAsync(url, requestObject.Body, this.SerializerOptions, ct);
+        HttpResponseMessage response = await _httpClient.PutAsJsonAsync(url, requestObject.Body, SerializerOptions, ct);
         sw.Stop();
         TimeSpan elapsed = sw.Elapsed;
         LogLevel logLevel = response.IsSuccessStatusCode ? LogLevel.Debug : LogLevel.Warning;
@@ -102,7 +102,7 @@ internal sealed class HelixApiClient
     {
         await ValidateToken(ct);
         string url = requestObject.GetUrl();
-        string rawContent = JsonSerializer.Serialize(requestObject.Body, this.SerializerOptions);
+        string rawContent = JsonSerializer.Serialize(requestObject.Body, SerializerOptions);
         var content = new StringContent(rawContent, Encoding.UTF8, "application/json");
         var sw = Stopwatch.StartNew();
         HttpResponseMessage response = await _httpClient.PatchAsync(url, content, ct);
