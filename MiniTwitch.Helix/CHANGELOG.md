@@ -2,11 +2,25 @@ This changelog is available at: https://github.com/Foretack/MiniTwitch/blob/mast
 
 # MiniTwitch.Helix Changelog
 
+## Upcoming release
+
+### Minor changes
+
+- Added "Get User Emotes" endpoint
+
+### Development changes
+
+- Updated naming policy used for (de)serialization
+
+****
+
 ## 0.2.3-prerelease
 
 ### Minor changes
 
 - Added "Send Chat Message" endpoint
+
+****
 
 ## 0.2.2-prerelease
 
