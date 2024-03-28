@@ -9,10 +9,10 @@ public readonly struct ConfigurationSegment
 
     public required string ExtensionId { get; init; }
 
-    [JsonConverter(typeof(EnumToString<ConfigSegmentType, SnakeCase>))]
+    [JsonConverter(typeof(EnumConverter<ConfigSegmentType, SnakeCase>))]
     public required ConfigSegmentType Segment { get; init; }
 
-    [JsonConverter(typeof(LongToString))]
+    [JsonConverter(typeof(OptionalLongConverter))]
     public long? BroadcasterId { get; init; }
 
     public string Content { get; init; }
