@@ -4,6 +4,10 @@ using System.Text;
 
 namespace MiniTwitch.Helix.Internal.Json;
 
+/// <summary>
+/// Reads long? from string. Writes long as string. <br/>
+/// NOTE: This does not do any validation.
+/// </summary>
 internal class OptionalLongConverter : JsonConverter<long?>
 {
     public override long? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -30,6 +34,10 @@ internal class OptionalLongConverter : JsonConverter<long?>
     }
 }
 
+/// <summary>
+/// Reads long from string. Writes long as string. <br/>
+/// NOTE: This does not do any validation.
+/// </summary>
 internal class LongConverter : JsonConverter<long>
 {
     public override long Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -47,6 +55,10 @@ internal class LongConverter : JsonConverter<long>
     public override void Write(Utf8JsonWriter writer, long value, JsonSerializerOptions options) => writer.WriteStringValue(value.ToString());
 }
 
+/// <summary>
+/// Reads int from string. Writes int as string. <br/>
+/// NOTE: This does not do any validation.
+/// </summary>
 internal class IntConverter : JsonConverter<int>
 {
     public override int Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -64,17 +76,17 @@ internal class IntConverter : JsonConverter<int>
     public override void Write(Utf8JsonWriter writer, int value, JsonSerializerOptions options) => writer.WriteStringValue(value.ToString());
 }
 
-internal class EnumConverter<TEnum, ICase> : JsonConverter<TEnum>
-    where ICase : ICaseConverter, new()
+/// <summary>
+/// Deserializes snake_case strings to PascalCase enum members. Serialization goes in reverse
+/// </summary>
+internal class EnumConverter<TEnum> : JsonConverter<TEnum>
 {
-    private static readonly ICaseConverter _case = new ICase();
-
     public override TEnum Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType == JsonTokenType.String)
         {
             string? enumAsString = reader.GetString();
-            if (Enum.TryParse(typeof(TEnum), _case.ConvertFromCase(enumAsString), out object? enumMember))
+            if (Enum.TryParse(typeof(TEnum), SnakeCase.Instance.ConvertFromCase(enumAsString), out object? enumMember))
                 return (TEnum)enumMember!;
         }
 
@@ -86,10 +98,13 @@ internal class EnumConverter<TEnum, ICase> : JsonConverter<TEnum>
         if (value is null)
             writer.WriteNullValue();
         else
-            writer.WriteStringValue(_case.ConvertToCase(value.ToString()));
+            writer.WriteStringValue(SnakeCase.Instance.ConvertToCase(value.ToString()));
     }
 }
 
+/// <summary>
+/// Converts TimeSpans to int (seconds) in serialization. Deserialization not supported.
+/// </summary>
 internal class TimeSpanToSeconds : JsonConverter<TimeSpan>
 {
     public override TimeSpan Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
