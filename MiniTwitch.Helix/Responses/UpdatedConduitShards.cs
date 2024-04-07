@@ -4,7 +4,7 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class UpdatedConduitShards : BaseResponse<ConduitShard>
+public class UpdatedConduitShards : BaseResponse<ConduitShards.Shard>
 {
     public IReadOnlyList<Error> Errors { get; init; }
 
