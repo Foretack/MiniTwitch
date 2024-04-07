@@ -7,8 +7,6 @@ namespace MiniTwitch.Helix.Responses;
 [JsonConverter(typeof(ConduitTransportConverter))]
 public abstract record ConduitTransport()
 {
-    public string Method { get; }
-
     public sealed record WebSocket(string SessionId, DateTime ConnectedAt, DateTime DisconnectedAt) : ConduitTransport();
     public sealed record Webhook(string Callback) : ConduitTransport();
 }

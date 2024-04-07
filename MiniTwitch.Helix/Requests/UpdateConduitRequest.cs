@@ -15,6 +15,7 @@ public readonly struct UpdateConduitRequest
 
         public string SessionId { get; init; }
 
+        [property: JsonPropertyName("callback")]
         public string CallbackUrl { get; init; }
 
         public string Secret { get; init; }

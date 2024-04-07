@@ -663,7 +663,7 @@ public sealed class AllCategories
             Body = new
             {
                 conduit_id = conduitId,
-                shards = body
+                shards = new[] { body }
             }
         };
 

@@ -130,8 +130,8 @@ public class ConduitTransportConverter : JsonConverter<ConduitTransport>
         {
             return method.GetString() switch
             {
-                "webhook" => root.Deserialize<ConduitTransport.Webhook>(),
-                "websocket" => root.Deserialize<ConduitTransport.WebSocket>(),
+                "webhook" => root.Deserialize<ConduitTransport.Webhook>(options),
+                "websocket" => root.Deserialize<ConduitTransport.WebSocket>(options),
                 _ => throw new JsonException($"Unknown method: {method.GetString()}")
             };
         }

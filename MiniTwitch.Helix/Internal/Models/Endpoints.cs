@@ -568,7 +568,7 @@ internal static class Endpoints
     {
         Method = HttpMethod.Patch,
         Route = "/eventsub/conduits/shards",
-        SuccessStatusCode = HttpStatusCode.OK,
+        SuccessStatusCode = HttpStatusCode.Accepted,
         GetResponseMessage = code => code switch
         {
             HttpStatusCode.Accepted => "Successfully retrieved shards.",
