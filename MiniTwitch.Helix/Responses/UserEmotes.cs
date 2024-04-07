@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using MiniTwitch.Helix.Internal.Json;
 using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
@@ -9,7 +11,7 @@ public class UserEmotes : PaginableResponse<UserEmotes.Emote>
         string Name,
         string EmoteType,
         string EmoteSetId,
-        string OwnerId,
+        [property: JsonConverter(typeof(OptionalLongConverter))] long? OwnerId,
         IReadOnlyList<string> Format,
         IReadOnlyList<string> Scale,
         IReadOnlyList<string> ThemeMode,

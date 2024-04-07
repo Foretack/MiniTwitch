@@ -5,7 +5,7 @@ namespace MiniTwitch.Helix.Requests;
 
 public readonly struct NewPoll
 {
-    [JsonConverter(typeof(LongToString))]
+    [JsonConverter(typeof(LongConverter))]
     public required long BroadcasterId { get; init; }
     public required string Title { get; init; }
     public required IEnumerable<Choice> Choices { get; init; }

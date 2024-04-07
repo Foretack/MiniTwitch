@@ -5,7 +5,7 @@ namespace MiniTwitch.Helix.Requests;
 
 public readonly struct NewCommercial
 {
-    [JsonConverter(typeof(LongToString))]
+    [JsonConverter(typeof(LongConverter))]
     public required long BroadcasterId { get; init; }
     public required int Length { get; init; }
 }

@@ -5,7 +5,7 @@ namespace MiniTwitch.Helix.Requests;
 
 public readonly struct UserToBan
 {
-    [JsonConverter(typeof(LongToString))]
+    [JsonConverter(typeof(LongConverter))]
     public required long UserId { get; init; }
     [JsonConverter(typeof(TimeSpanToSeconds))]
     public TimeSpan? Duration { get; init; }
