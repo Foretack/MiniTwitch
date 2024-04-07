@@ -62,4 +62,6 @@ internal static class QueryParams
     public const string FromUserId = "from_user_id";
     public const string ToUserId = "to_user_id";
     public const string After = "after";
+    public const string ShardCount = "shard_count";
+    public const string ConduitId = "conduit_id";
 }

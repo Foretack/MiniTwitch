@@ -595,6 +595,99 @@ public sealed class AllCategories
         return HelixResultFactory.Create<Clips>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
+    public Task<HelixResult<Conduits>> GetConduits(
+        CancellationToken cancellationToken = default)
+    {
+        HelixEndpoint endpoint = Endpoints.GetConduits;
+        RequestData request = new RequestData(_baseUrl, endpoint);
+
+        return HelixResultFactory.Create<Conduits>(this.ApiClient, request, endpoint, cancellationToken);
+    }
+
+    public Task<HelixResult<Conduits>> CreateConduits(
+        int shardCount,
+        CancellationToken cancellationToken = default)
+    {
+        HelixEndpoint endpoint = Endpoints.CreateConduits;
+        RequestData request = new RequestData(_baseUrl, endpoint)
+            .AddParam(QueryParams.ShardCount, shardCount);
+
+        return HelixResultFactory.Create<Conduits>(this.ApiClient, request, endpoint, cancellationToken);
+    }
+
+    public Task<HelixResult<Conduits>> UpdateConduits(
+        string id,
+        int shardCount,
+        CancellationToken cancellationToken = default)
+    {
+        HelixEndpoint endpoint = Endpoints.UpdateConduits;
+        RequestData request = new RequestData(_baseUrl, endpoint)
+            .AddParam(QueryParams.Id, id)
+            .AddParam(QueryParams.ShardCount, shardCount);
+
+        return HelixResultFactory.Create<Conduits>(this.ApiClient, request, endpoint, cancellationToken);
+    }
+
+    public Task<HelixResult> DeleteConduits(
+        string id,
+        CancellationToken cancellationToken = default)
+    {
+        HelixEndpoint endpoint = Endpoints.DeleteConduits;
+        RequestData request = new RequestData(_baseUrl, endpoint)
+            .AddParam(QueryParams.Id, id);
+
+        return HelixResultFactory.Create(this.ApiClient, request, endpoint, cancellationToken);
+    }
+
+    public Task<HelixResult<ConduitShards>> GetConduitShards(
+        string conduitId,
+        ConduitShardStatus? status = null,
+        CancellationToken cancellationToken = default)
+    {
+        HelixEndpoint endpoint = Endpoints.GetConduitShards;
+        RequestData request = new RequestData(_baseUrl, endpoint)
+            .AddParam(QueryParams.ConduitId, conduitId)
+            .AddParam(QueryParams.Status, status?.ToString().ToLower());
+
+        return HelixResultFactory.Create<ConduitShards>(this.ApiClient, request, endpoint, cancellationToken);
+    }
+
+    public Task<HelixResult<UpdatedConduitShards>> UpdateConduitShards(
+        string conduitId,
+        UpdateConduitRequest body,
+        CancellationToken cancellationToken = default)
+    {
+        HelixEndpoint endpoint = Endpoints.UpdateConduitShards;
+        var request = new RequestData(_baseUrl, endpoint)
+        {
+            Body = new
+            {
+                conduit_id = conduitId,
+                shards = body
+            }
+        };
+
+        return HelixResultFactory.Create<UpdatedConduitShards>(this.ApiClient, request, endpoint, cancellationToken);
+    }
+
+    public Task<HelixResult<UpdatedConduitShards>> UpdateConduitShards(
+        string conduitId,
+        IEnumerable<UpdateConduitRequest> body,
+        CancellationToken cancellationToken = default)
+    {
+        HelixEndpoint endpoint = Endpoints.UpdateConduitShards;
+        var request = new RequestData(_baseUrl, endpoint)
+        {
+            Body = new
+            {
+                conduit_id = conduitId,
+                shards = body
+            }
+        };
+
+        return HelixResultFactory.Create<UpdatedConduitShards>(this.ApiClient, request, endpoint, cancellationToken);
+    }
+
     public Task<HelixResult<ContentClassificationLabels>> GetContentClassificationLabels(
         LabelLocale? locale = null,
         CancellationToken cancellationToken = default)

@@ -284,6 +284,44 @@ public class HelixWrapper
         CancellationToken cancellationToken = default)
     => _all.GetClips(broadcasterId, gameId, ids, startedAt, endedAt, first, isFeatured, cancellationToken);
 
+    public Task<HelixResult<Conduits>> GetConduits(
+        CancellationToken cancellationToken = default)
+    => _all.GetConduits(cancellationToken);
+
+    public Task<HelixResult<Conduits>> CreateConduits(
+        int shardCount,
+        CancellationToken cancellationToken = default)
+    => _all.CreateConduits(shardCount, cancellationToken);
+
+    public Task<HelixResult<Conduits>> UpdateConduits(
+        string id,
+        int shardCount,
+        CancellationToken cancellationToken = default)
+    => _all.UpdateConduits(id, shardCount, cancellationToken);
+
+    public Task<HelixResult> DeleteConduits(
+        string id,
+        CancellationToken cancellationToken = default)
+    => _all.DeleteConduits(id, cancellationToken);
+
+    public Task<HelixResult<ConduitShards>> GetConduitShards(
+        string conduitId,
+        ConduitShardStatus? status = null,
+        CancellationToken cancellationToken = default)
+    => _all.GetConduitShards(conduitId, status, cancellationToken);
+
+    public Task<HelixResult<UpdatedConduitShards>> UpdateConduitShards(
+        string conduitId,
+        UpdateConduitRequest body,
+        CancellationToken cancellationToken = default)
+    => _all.UpdateConduitShards(conduitId, body, cancellationToken);
+
+    public Task<HelixResult<UpdatedConduitShards>> UpdateConduitShards(
+        string conduitId,
+        IEnumerable<UpdateConduitRequest> body,
+        CancellationToken cancellationToken = default)
+    => _all.UpdateConduitShards(conduitId, body, cancellationToken);
+
     public Task<HelixResult<ContentClassificationLabels>> GetContentClassificationLabels(
         LabelLocale? locale = null,
         CancellationToken cancellationToken = default)
