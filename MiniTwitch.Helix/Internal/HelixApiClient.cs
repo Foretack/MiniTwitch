@@ -170,6 +170,16 @@ internal sealed class HelixApiClient
                 return;
             }
 
+            if (_tokenInfo.Login is null)
+            {
+                Log(
+                    LogLevel.Information,
+                    "Validated app access token. The token expires at {ExpiresAt}",
+                    DateTimeOffset.FromUnixTimeSeconds(_tokenInfo.ReceivedAt + _tokenInfo.ExpiresIn)
+                );
+                return;
+            }
+
             Log(
                 LogLevel.Information,
                 "Validated access token from user {Username} with {ScopeCount} scopes. The token expires at {ExpiresAt}",
