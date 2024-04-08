@@ -491,6 +491,94 @@ internal static class Endpoints
         }
     };
 
+    public static readonly HelixEndpoint GetConduits = new()
+    {
+        Method = HttpMethod.Get,
+        Route = "/eventsub/conduits",
+        SuccessStatusCode = HttpStatusCode.OK,
+        GetResponseMessage = code => code switch
+        {
+            HttpStatusCode.OK => "Successfully retrieved conduits",
+            HttpStatusCode.Unauthorized => "Authorization header required with an app access token.",
+            _ => "Unknown response code"
+        }
+    };
+
+    public static readonly HelixEndpoint CreateConduits = new()
+    {
+        Method = HttpMethod.Post,
+        Route = "/eventsub/conduits",
+        SuccessStatusCode = HttpStatusCode.OK,
+        GetResponseMessage = code => code switch
+        {
+            HttpStatusCode.OK => "Conduit created.",
+            HttpStatusCode.BadRequest => "Invalid shard count.",
+            HttpStatusCode.Unauthorized => "Authorization header required with an app access token.",
+            HttpStatusCode.TooManyRequests => "Conduit limit reached.",
+            _ => "Unknown response code"
+        }
+    };
+
+    public static readonly HelixEndpoint UpdateConduits = new()
+    {
+        Method = HttpMethod.Patch,
+        Route = "/eventsub/conduits",
+        SuccessStatusCode = HttpStatusCode.OK,
+        GetResponseMessage = code => code switch
+        {
+            HttpStatusCode.OK => "Conduit updated.",
+            HttpStatusCode.BadRequest => "Invalid shard count.\r\nThe id query parameter is required.",
+            HttpStatusCode.Unauthorized => "Authorization header required with an app access token.",
+            HttpStatusCode.NotFound => "Conduit not found.\r\nConduit’s owner must match the client ID in the access token.",
+            _ => "Unknown response code"
+        }
+    };
+
+    public static readonly HelixEndpoint DeleteConduits = new()
+    {
+        Method = HttpMethod.Delete,
+        Route = "/eventsub/conduits",
+        SuccessStatusCode = HttpStatusCode.NoContent,
+        GetResponseMessage = code => code switch
+        {
+            HttpStatusCode.NoContent => "Successfully deleted the conduit.",
+            HttpStatusCode.BadRequest => "The id query parameter is required.",
+            HttpStatusCode.Unauthorized => "Authorization header required with an app access token.",
+            HttpStatusCode.NotFound => "Conduit not found.\r\nConduit’s owner must match the client ID in the access token.",
+            _ => "Unknown response code"
+        }
+    };
+
+    public static readonly HelixEndpoint GetConduitShards = new()
+    {
+        Method = HttpMethod.Get,
+        Route = "/eventsub/conduits/shards",
+        SuccessStatusCode = HttpStatusCode.OK,
+        GetResponseMessage = code => code switch
+        {
+            HttpStatusCode.OK => "Successfully retrieved shards.",
+            HttpStatusCode.BadRequest => "The id query parameter is required.",
+            HttpStatusCode.Unauthorized => "Authorization header required with an app access token.",
+            HttpStatusCode.NotFound => "Conduit not found.\r\nConduit’s owner must match the client ID in the access token.",
+            _ => "Unknown response code"
+        }
+    };
+
+    public static readonly HelixEndpoint UpdateConduitShards = new()
+    {
+        Method = HttpMethod.Patch,
+        Route = "/eventsub/conduits/shards",
+        SuccessStatusCode = HttpStatusCode.Accepted,
+        GetResponseMessage = code => code switch
+        {
+            HttpStatusCode.Accepted => "Successfully retrieved shards.",
+            HttpStatusCode.BadRequest => "The id query parameter is required.",
+            HttpStatusCode.Unauthorized => "Authorization header required with an app access token.",
+            HttpStatusCode.NotFound => "Conduit not found.\r\nConduit’s owner must match the client ID in the access token.",
+            _ => "Unknown response code"
+        }
+    };
+
     public static readonly HelixEndpoint GetContentClassificationLabels = new()
     {
         Method = HttpMethod.Get,
