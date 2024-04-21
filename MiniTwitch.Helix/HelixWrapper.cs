@@ -963,8 +963,8 @@ public class HelixWrapper
     public Task<HelixResult<UnbanRequests>> GetUnbanRequests(
         long broadcasterId,
         UnbanRequestStatus status,
-        long? userId,
-        int? first,
+        long? userId = null,
+        int? first = null,
         CancellationToken cancellationToken = default)
     => _all.GetUnbanRequests(broadcasterId, status, userId, first, cancellationToken);
 }

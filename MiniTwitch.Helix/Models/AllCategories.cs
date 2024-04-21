@@ -2158,8 +2158,8 @@ public sealed class AllCategories
     public Task<HelixResult<UnbanRequests>> GetUnbanRequests(
         long broadcasterId,
         UnbanRequestStatus status,
-        long? userId,
-        int? first,
+        long? userId = null,
+        int? first = null,
         CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetUnbanRequests;
