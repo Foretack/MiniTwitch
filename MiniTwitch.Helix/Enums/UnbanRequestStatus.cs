@@ -1,5 +1,9 @@
-﻿namespace MiniTwitch.Helix.Enums;
+﻿using System.Text.Json.Serialization;
+using MiniTwitch.Helix.Internal.Json;
 
+namespace MiniTwitch.Helix.Enums;
+
+[JsonConverter(typeof(EnumConverter<UnbanRequestStatus>))]
 public enum UnbanRequestStatus
 {
     /// <summary>

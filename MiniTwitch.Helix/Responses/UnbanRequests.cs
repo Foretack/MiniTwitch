@@ -13,18 +13,19 @@ public class UnbanRequests : PaginableResponse<UnbanRequests.Request>
         string BroadcasterName,
         [property: JsonPropertyName("broadcaster_name")]
         string BroadcasterDisplayName,
-        long ModeratorId,
+        [property: JsonConverter(typeof(OptionalLongConverter))]
+        long? ModeratorId,
         [property: JsonPropertyName("moderator_login")]
-        string ModeratorName,
+        string? ModeratorName,
         [property: JsonPropertyName("moderator_name")]
-        string ModeratorDisplayName,
+        string? ModeratorDisplayName,
         long UserId,
         [property: JsonPropertyName("user_login")]
         string UserName,
         [property: JsonPropertyName("user_name")]
         string UserDisplayName,
         string Text,
-        [property: JsonConverter(typeof(EnumConverter<UnbanRequestStatus>))]
+        //[property: JsonConverter(typeof(EnumConverter<UnbanRequestStatus>))]
         UnbanRequestStatus Status,
         DateTime CreatedAt,
         DateTime? ResolvedAt,

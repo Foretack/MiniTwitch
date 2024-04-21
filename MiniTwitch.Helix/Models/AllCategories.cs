@@ -2166,7 +2166,7 @@ public sealed class AllCategories
         RequestData request = new RequestData(_baseUrl, endpoint)
             .AddParam(QueryParams.BroadcasterId, broadcasterId)
             .AddParam(QueryParams.ModeratorId, this.UserId)
-            .AddParam(QueryParams.Status, status)
+            .AddParam(QueryParams.Status, status.ToString().ToLower())
             .AddParam(QueryParams.UserId, userId)
             .AddParam(QueryParams.First, first);
 
