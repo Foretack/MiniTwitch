@@ -1,248 +1,161 @@
-﻿using System.Buffers;
-using System.Net.WebSockets;
-using System.Text;
-using Microsoft.Extensions.Logging;
-using MiniTwitch.Common.Internal.Models;
+﻿using System.Net.WebSockets;
 
 namespace MiniTwitch.Common;
-public sealed class WebSocketClient : IAsyncDisposable
+public sealed class WebSocketClient
 {
-    #region Properties
-    internal static ArrayPool<byte> BytePool { get; } = ArrayPool<byte>.Create(4096, 8);
-    public bool IsConnected => _client is not null && _client.State == WebSocketState.Open;
-    #endregion
+    public bool IsConnected => _ws?.State is WebSocketState.Open;
+    public WebSocketState State => _ws.State;
+    public event Action<WebSocketClient> ReadSignal = default!;
 
-    #region Events
-    public event Func<Task> OnConnect = default!;
-    public event Func<Task> OnReconnect = default!;
-    public event Func<Task> OnDisconnect = default!;
-    public event Action<ReadOnlyMemory<byte>> OnData = default!;
-    public event Action<LogLevel, string, object[]> OnLog = default!;
-    public event Action<Exception, string, object[]> OnLogEx = default!;
-    #endregion
+    private readonly Memory<byte> _buffer = new byte[ushort.MaxValue];
+    private readonly Uri _uri;
+    private readonly SemaphoreSlim _readLock = new(1);
+    private readonly SemaphoreSlim _lock = new(1);
 
-    #region Fields
-    private readonly SemaphoreSlim _reconnectionLock = new(0);
-    private readonly SemaphoreSlim _receiveLock = new(1);
-    private readonly SemaphoreSlim _sendLock = new(1);
-    private readonly TimeSpan _reconnectDelay;
-    private readonly ByteBucket _bucket;
-    private CancellationTokenSource _cts;
-    private ClientWebSocket _client = new();
-    private Uri _uri = default!;
-    private Task _receiveTask = default!;
-    private bool _reconnecting = false;
-    #endregion
+    private ClientWebSocket _ws;
+    private CancellationTokenSource? _cts = default!;
+    private Task? _reader = Task.CompletedTask;
+    private ushort _cursor = 0;
 
-    #region Init
-    public WebSocketClient(TimeSpan reconnectionDelay, short bufferSize = 4096)
+    public WebSocketClient(Uri uri)
     {
-        _bucket = new ByteBucket(bufferSize);
-        _reconnectDelay = reconnectionDelay;
-        _cts = new CancellationTokenSource();
-    }
-    #endregion
-
-    #region Controls
-    public async Task Start(Uri uri, CancellationToken cancellationToken = default)
-    {
-        // The ClientWebSocket cannot be reused once it is aborted
-        if (_client.State == WebSocketState.Aborted)
-        {
-            Log(LogLevel.Error, "Cannot start WebSocket in aborted state");
-            return;
-        }
-
-        // Make sure buffers are clear before starting
-        _bucket.Clear();
-
-        // Set URI for reconnects
         _uri = uri;
-        Log(LogLevel.Trace, "Connecting to {uri} ...", uri);
-
-        // Connect
-        await _client.ConnectAsync(uri, cancellationToken);
-
-        // Make sure _cts isn't cancelled
-        if (_cts.IsCancellationRequested)
-            _cts = new();
-
-        // Start receiving data
-        _receiveTask = Task.Factory.StartNew(Receive, TaskCreationOptions.LongRunning);
-        await Task.Delay(250, cancellationToken);
-
-        // Invoke OnConnect if this is the first time connecting
-        if (this.IsConnected)
-        {
-            if (!_reconnecting)
-                await OnConnect.Invoke();
-            else // This is a reconnect. So we want to invoke OnReconnect instead, which happens in Restart()
-                _ = _reconnectionLock.Release();
-        }
+        _ws = new();
     }
 
-    private async Task Stop(CancellationToken cancellationToken = default)
+    public async Task<bool> Connect(CancellationToken cancellationToken = default)
     {
-        WebSocketCloseStatus status = _client.CloseStatus ?? WebSocketCloseStatus.NormalClosure;
-        string? description = _client.CloseStatusDescription;
+        await _lock.WaitAsync(cancellationToken);
+        try
+        {
+            if (this.IsConnected)
+            {
+                return true;
+            }
 
-        await _client.CloseAsync(status, description, cancellationToken);
-        //await _client.CloseOutputAsync(status, description, cancellationToken);
+            if (this.State is WebSocketState.Aborted or WebSocketState.Closed)
+            {
+                _ws.Dispose();
+                _ws = new();
+            }
+
+            await _ws.ConnectAsync(_uri, cancellationToken);
+            for (int i = 0; i < 25 && !cancellationToken.IsCancellationRequested; i++)
+            {
+                if (!this.IsConnected)
+                {
+                    await Task.Delay(100, cancellationToken);
+                }
+            }
+
+            if (!this.IsConnected)
+            {
+                return false;
+            }
+
+            if (_cts?.IsCancellationRequested is false)
+            {
+                _cts?.Cancel();
+                _cts?.Dispose();
+            }
+
+            _cts = new();
+            _reader?.Dispose();
+            _reader = Task.Factory.StartNew(ReadLoop, TaskCreationOptions.LongRunning);
+            return true;
+        }
+        finally
+        {
+            _lock.Release();
+        }
     }
 
     public async Task Disconnect(CancellationToken cancellationToken = default)
     {
-        _cts.Cancel();
-        // Need to be connected to do this
-        if (this.IsConnected)
-            await Stop(cancellationToken);
-
-        _client.Dispose();
-        await OnDisconnect.Invoke();
-        if (_receiveTask.IsFaulted || _receiveTask.IsCanceled)
-            _receiveTask.Dispose();
-    }
-
-    public async Task Restart(TimeSpan delay, CancellationToken cancellationToken = default)
-    {
-        // Sometimes the method gets invoked twice in a short span of time
-        // The whole purpose of this _reconnecting field is to stop that
-        if (_reconnecting)
-            return;
-
-        _reconnecting = true;
-
-        Log(LogLevel.Critical, "The WebSocket client is restarting in {delay}", delay);
-        // Attempt to disconnect
-        await Disconnect(cancellationToken);
-
-        // Re-instantiate the client
-        _client = new ClientWebSocket();
-
-        // Wait the delay
-        await Task.Delay(_reconnectDelay, cancellationToken);
-        Log(LogLevel.Debug, "Finished waiting for reconnection delay");
-
-        // Attempt to start the client again
-        await Start(_uri, cancellationToken);
-        Log(LogLevel.Trace, "If the WebSocket doesn't reconnect in 10 seconds you will see a warning");
-
-        // Keep trying until you reconnect
-        if (!await _reconnectionLock.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken))
-        {
-            Log(LogLevel.Warning, "WebSocket reconnect failed. Retrying...");
-            _reconnecting = false; // Set to false otherwise the method returns early
-            await Restart(_reconnectDelay, cancellationToken);
-            return;
-        }
-
-        Log(LogLevel.Information, "Successfully reconnected!");
-        _reconnecting = false;
-        await OnReconnect.Invoke();
-    }
-    #endregion
-
-    #region Communication
-    private async Task Receive()
-    {
-        while (this.IsConnected)
-        {
-            try
-            {
-                await _receiveLock.WaitAsync(_cts.Token);
-                // Continue if not at the end of message
-                if (!await _bucket.FillFrom(_client, _cts.Token))
-                    continue;
-
-                ReadOnlyMemory<byte> message = _bucket.Drain();
-                OnData?.Invoke(message);
-            }
-            catch (WebSocketException wse)
-            {
-                Log(LogLevel.Critical, "An error occurred while receiving data from the WebSocket connection: {msg}",
-                    wse.Message);
-                break;
-            }
-            catch (InvalidOperationException)
-            {
-                Log(LogLevel.Warning, "Tried to receive data, but the WebSocket client is not connected");
-                break;
-            }
-            catch (TaskCanceledException) when (_cts.IsCancellationRequested)
-            {
-                // Break loop to exit method
-                break;
-            }
-            catch (Exception ex)
-            {
-                LogException(ex, "Exception caught in data receiver: ");
-            }
-            finally
-            {
-                _ = _receiveLock.Release();
-            }
-        }
-
-        // Don't restart if it's a user disconnect
-        if (!_cts.IsCancellationRequested)
-            await Restart(_reconnectDelay);
-    }
-
-    public async ValueTask SendAsync(string data, bool sensitive = false, CancellationToken cancellationToken = default)
-    {
-        var (written, bytes) = StringToBytes(data);
-        if (!await _sendLock.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken).ConfigureAwait(false))
-        {
-            Log(LogLevel.Warning, "{Method} timed out after 10 seconds.", nameof(SendAsync));
-            return;
-        }
-        else if (!this.IsConnected)
-        {
-            Log(LogLevel.Warning, "Cannot send data in non-connect state. ({State})", _client.State);
-        }
-
-        if (!sensitive)
-            Log(LogLevel.Debug, "Sending data: {Message}", data);
-
+        await _lock.WaitAsync(cancellationToken);
         try
         {
-            await _client!.SendAsync(new ReadOnlyMemory<byte>(bytes)[..written], WebSocketMessageType.Text, true, cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            LogException(ex, "Exception caught whilst trying to send data.");
+            _cts?.Cancel();
+            _cts?.Dispose();
+            _reader?.Dispose();
+            WebSocketCloseStatus status = _ws.CloseStatus ?? WebSocketCloseStatus.NormalClosure;
+            string? description = _ws.CloseStatusDescription;
+            if (this.IsConnected)
+            {
+                await _ws.CloseAsync(status, description, cancellationToken);
+            }
         }
         finally
         {
-            BytePool.Return(bytes, true);
-            _ = _sendLock.Release();
+            _lock.Release();
         }
     }
-    #endregion
 
-    #region Helpers
-    private void Log(LogLevel level, string template, params object[] properties) => OnLog?.Invoke(level, template, properties);
-
-    private void LogException(Exception ex, string template, params object[] properties) => OnLogEx?.Invoke(ex, template, properties);
-
-    private static (int, byte[]) StringToBytes(string s)
+    private async Task ReadLoop()
     {
-        ReadOnlySpan<char> chars = s;
-        byte[] bytes = BytePool.Rent(chars.Length * sizeof(char));
-        int written = Encoding.UTF8.GetBytes(chars, bytes.AsSpan());
-        return (written, bytes);
-    }
-    #endregion
-
-    public async ValueTask DisposeAsync()
-    {
-        if (this.IsConnected)
+        while (_cts?.IsCancellationRequested is false)
         {
-            await Disconnect();
-            return;
+            await _readLock.WaitAsync(_cts.Token);
+            try
+            {
+                if (!this.IsConnected)
+                {
+                    continue;
+                }
+
+                var r = await _ws.ReceiveAsync(_buffer[_cursor..], _cts.Token);
+                int newCursor = _cursor + r.Count;
+                _cursor = checked((ushort)newCursor);
+                switch (r.MessageType)
+                {
+                    case WebSocketMessageType.Close:
+                        _cts?.Cancel();
+                        break;
+
+                    case WebSocketMessageType.Text when r.EndOfMessage:
+                        ReadSignal?.Invoke(this);
+                        _cursor = 0;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex) when (ex is InvalidOperationException or WebSocketException or TaskCanceledException)
+            {
+                _cursor = 0;
+                if (_cts.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                break;
+            }
         }
 
-        await OnDisconnect.Invoke();
-        Log(LogLevel.Debug, "Disposed {name}", nameof(WebSocketClient));
+        await Connect();
+    }
+
+    public ReadOnlyMemory<byte> Read()
+    {
+        if (_readLock.CurrentCount != 0)
+        {
+            return Array.Empty<byte>();
+        }
+
+
+        try
+        {
+            return _buffer[.._cursor];
+        }
+        finally
+        {
+            _readLock.Release();
+        }
+    }
+
+    public ValueTask Write(ReadOnlyMemory<byte> bytes, CancellationToken cancellationToken = default)
+    {
+        return _ws.SendAsync(bytes, WebSocketMessageType.Text, true, cancellationToken);
     }
 }
