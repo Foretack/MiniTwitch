@@ -1,4 +1,5 @@
-﻿using MiniTwitch.Helix.Requests;
+﻿using MiniTwitch.Helix.Enums;
+using MiniTwitch.Helix.Requests;
 using MiniTwitch.Helix.Responses;
 
 namespace MiniTwitch.Helix.Models;
@@ -119,4 +120,12 @@ public sealed class ModerationCategory
         int? first = null,
         CancellationToken cancellationToken = default)
     => _all.GetModeratedChannels(first, cancellationToken);
+
+    public Task<HelixResult<UnbanRequests>> GetUnbanRequests(
+        long broadcasterId,
+        UnbanRequestStatus status,
+        long? userId = null,
+        int? first = null,
+        CancellationToken cancellationToken = default)
+    => _all.GetUnbanRequests(broadcasterId, status, userId, first, cancellationToken);
 }

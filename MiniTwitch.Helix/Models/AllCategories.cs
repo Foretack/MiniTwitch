@@ -2153,4 +2153,23 @@ public sealed class AllCategories
 
         return HelixResultFactory.Create<UserEmotes>(this.ApiClient, request, endpoint, cancellationToken);
     }
+
+
+    public Task<HelixResult<UnbanRequests>> GetUnbanRequests(
+        long broadcasterId,
+        UnbanRequestStatus status,
+        long? userId = null,
+        int? first = null,
+        CancellationToken cancellationToken = default)
+    {
+        HelixEndpoint endpoint = Endpoints.GetUnbanRequests;
+        RequestData request = new RequestData(_baseUrl, endpoint)
+            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.ModeratorId, this.UserId)
+            .AddParam(QueryParams.Status, status.ToString().ToLower())
+            .AddParam(QueryParams.UserId, userId)
+            .AddParam(QueryParams.First, first);
+
+        return HelixResultFactory.Create<UnbanRequests>(this.ApiClient, request, endpoint, cancellationToken);
+    }
 }
