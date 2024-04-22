@@ -2041,4 +2041,19 @@ internal static class Endpoints
             _ => "Unknown response code"
         }
     };
+
+    public static readonly HelixEndpoint ResolveUnbanRequests = new()
+    {
+        Method = HttpMethod.Patch,
+        Route = "/moderation/unban_requests",
+        SuccessStatusCode = HttpStatusCode.OK,
+        GetResponseMessage = code => code switch
+        {
+            HttpStatusCode.OK => "Successfully resolved the unban request.",
+            HttpStatusCode.BadRequest => "The broadcaster_id query parameter is required.\r\nThe ID in the broadcaster_id query parameter is not valid.\r\nThe moderator_id query parameter is required.\r\nThe ID in the moderator_id query parameter is not valid.\r\nThe pagination cursor is not valid.\r\nThe broadcaster is not receiving unban requests\r\nInvalid requested update",
+            HttpStatusCode.Unauthorized => "The ID in moderator_id must match the user ID in the user access token.\r\nThe Authorization header is required and must contain a user access token.\r\nThe user access token must include the moderator:manage:unban_requests scope.\r\nThe access token is not valid.\r\nThe client ID specified in the Client-Id header does not match the client ID specified in the access token.",
+            HttpStatusCode.NotFound => "The unban request ID was not found.",
+            _ => "Unknown response code"
+        }
+    };
 }

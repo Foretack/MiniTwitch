@@ -64,4 +64,6 @@ internal static class QueryParams
     public const string After = "after";
     public const string ShardCount = "shard_count";
     public const string ConduitId = "conduit_id";
+    public const string UnbanRequestId = "unban_request_id";
+    public const string ResolutionText = "resolution_text";
 }
