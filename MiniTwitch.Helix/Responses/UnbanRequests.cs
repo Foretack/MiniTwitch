@@ -25,7 +25,6 @@ public class UnbanRequests : PaginableResponse<UnbanRequests.Request>
         [property: JsonPropertyName("user_name")]
         string UserDisplayName,
         string Text,
-        //[property: JsonConverter(typeof(EnumConverter<UnbanRequestStatus>))]
         UnbanRequestStatus Status,
         DateTime CreatedAt,
         DateTime? ResolvedAt,
