@@ -2154,7 +2154,6 @@ public sealed class AllCategories
         return HelixResultFactory.Create<UserEmotes>(this.ApiClient, request, endpoint, cancellationToken);
     }
 
-
     public Task<HelixResult<UnbanRequests>> GetUnbanRequests(
         long broadcasterId,
         UnbanRequestStatus status,
@@ -2169,6 +2168,24 @@ public sealed class AllCategories
             .AddParam(QueryParams.Status, status.ToString().ToLower())
             .AddParam(QueryParams.UserId, userId)
             .AddParam(QueryParams.First, first);
+
+        return HelixResultFactory.Create<UnbanRequests>(this.ApiClient, request, endpoint, cancellationToken);
+    }
+
+    public Task<HelixResult<UnbanRequests>> ResolveUnbanRequests(
+        long broadcasterId,
+        string unbanRequestId,
+        UnbanRequestStatus status,
+        string? resolutionText = null,
+        CancellationToken cancellationToken = default)
+    {
+        HelixEndpoint endpoint = Endpoints.ResolveUnbanRequests;
+        RequestData request = new RequestData(_baseUrl, endpoint)
+            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.ModeratorId, this.UserId)
+            .AddParam(QueryParams.UnbanRequestId, unbanRequestId)
+            .AddParam(QueryParams.Status, status.ToString().ToLower())
+            .AddParam(QueryParams.ResolutionText, resolutionText);
 
         return HelixResultFactory.Create<UnbanRequests>(this.ApiClient, request, endpoint, cancellationToken);
     }

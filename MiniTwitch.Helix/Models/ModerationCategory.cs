@@ -128,4 +128,12 @@ public sealed class ModerationCategory
         int? first = null,
         CancellationToken cancellationToken = default)
     => _all.GetUnbanRequests(broadcasterId, status, userId, first, cancellationToken);
+
+    public Task<HelixResult<UnbanRequests>> ResolveUnbanRequests(
+        long broadcasterId,
+        string unbanRequestId,
+        UnbanRequestStatus status,
+        string? resolutionText = null,
+        CancellationToken cancellationToken = default)
+    => _all.ResolveUnbanRequests(broadcasterId, unbanRequestId, status, resolutionText, cancellationToken);
 }
