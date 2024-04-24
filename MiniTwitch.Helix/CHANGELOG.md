@@ -2,14 +2,18 @@ This changelog is available at: https://github.com/Foretack/MiniTwitch/blob/mast
 
 # MiniTwitch.Helix Changelog
 
-## Upcoming release
+## 0.3.0-prerelease
 
 ### Minor changes
+- Added `Get User Emotes` endpoint (#83)
+- Added Conduit endpoints (#87)
+- Added `Get Unban Requests` endpoint (#91)
+- Added `Resolve Unban Requests` endpoint (#93)
 
-- Added "Get User Emotes" endpoint
+### Fixes
+- Fixed NullReferenceException when attempting to validate certain token types
 
 ### Development changes
-
 - Updated naming policy used for (de)serialization
 
 ****
