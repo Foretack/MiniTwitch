@@ -4,8 +4,8 @@
       <LangVersion>latest</LangVersion>
       <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
       <PackageId>MiniTwitch.Helix</PackageId>
-      <PackageVersion>0.3.0-prerelease</PackageVersion>
-      <Version>0.3.0-prerelease</Version>
+      <PackageVersion>0.3.1-prerelease</PackageVersion>
+      <Version>0.3.1-prerelease</Version>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
       <Title>MiniTwitch.Helix</Title>

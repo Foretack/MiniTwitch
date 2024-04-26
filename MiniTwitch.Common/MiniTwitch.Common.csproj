@@ -4,8 +4,8 @@
     <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
       <PackageId>MiniTwitch.Common</PackageId>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-      <PackageVersion>1.1.6</PackageVersion>
-      <Version>1.1.6</Version>
+      <PackageVersion>1.1.7</PackageVersion>
+      <Version>1.1.7</Version>
       <ImplicitUsings>enable</ImplicitUsings>
       <Nullable>enable</Nullable>
       <Title>MiniTwitch.Common</Title>
