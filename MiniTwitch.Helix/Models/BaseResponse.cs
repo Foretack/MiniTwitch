@@ -4,5 +4,5 @@ namespace MiniTwitch.Helix.Models;
 
 public abstract class BaseResponse<T>
 {
-    public required IReadOnlyList<T> Data { get; init; }
+    public IReadOnlyList<T> Data { get; init; }
 }

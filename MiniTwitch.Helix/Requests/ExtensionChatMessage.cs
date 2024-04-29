@@ -1,8 +1,15 @@
 ﻿namespace MiniTwitch.Helix.Requests;
 
-public readonly struct ExtensionChatMessage
+public class ExtensionChatMessage
 {
-    public required string Text { get; init; }
-    public required string ExtensionId { get; init; }
-    public required string ExtensionVersion { get; init; }
+    public string Text { get; }
+    public string ExtensionId { get; }
+    public string ExtensionVersion { get; }
+
+    public ExtensionChatMessage(string text, string extensionId, string extensionVersion)
+    {
+        this.Text = text;
+        this.ExtensionId = extensionId;
+        this.ExtensionVersion = extensionVersion;
+    }
 }

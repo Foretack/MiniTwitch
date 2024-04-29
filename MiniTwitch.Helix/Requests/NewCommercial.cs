@@ -3,9 +3,15 @@ using MiniTwitch.Helix.Internal.Json;
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct NewCommercial
+public class NewCommercial
 {
     [JsonConverter(typeof(LongConverter))]
-    public required long BroadcasterId { get; init; }
-    public required int Length { get; init; }
+    public long BroadcasterId { get; }
+    public int Length { get; }
+
+    public NewCommercial(long broadcasterId, int length)
+    {
+        this.BroadcasterId = broadcasterId;
+        this.Length = length;
+    }
 }

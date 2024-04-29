@@ -3,19 +3,41 @@ using MiniTwitch.Helix.Internal.Json;
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct NewPoll
+public class NewPoll
 {
     [JsonConverter(typeof(LongConverter))]
-    public required long BroadcasterId { get; init; }
-    public required string Title { get; init; }
-    public required IEnumerable<Choice> Choices { get; init; }
+    public long BroadcasterId { get; }
+    public string Title { get; }
+    public IEnumerable<Choice> Choices { get; }
     [JsonConverter(typeof(TimeSpanToSeconds))]
-    public required TimeSpan Duration { get; init; }
-    public bool? ChannelPointsVotingEnabled { get; init; }
-    public int? ChannelPointsPerVote { get; init; }
+    public TimeSpan Duration { get; }
+    public bool? ChannelPointsVotingEnabled { get; }
+    public int? ChannelPointsPerVote { get; }
 
     public class Choice
     {
-        public required string Title { get; init; }
+        public string Title { get; }
+
+        public Choice(string title)
+        {
+            this.Title = title;
+        }
+    }
+
+    public NewPoll(
+        long broadcasterId,
+        string title,
+        IEnumerable<string> choices,
+        TimeSpan duration,
+        bool? channelPointsVotingEnabled = null,
+        int? channelPointsPerVote = null
+    )
+    {
+        this.BroadcasterId = broadcasterId;
+        this.Title = title;
+        this.Choices = choices.Select(x => new Choice(x));
+        this.Duration = duration;
+        this.ChannelPointsVotingEnabled = channelPointsVotingEnabled;
+        this.ChannelPointsPerVote = channelPointsPerVote;
     }
 }

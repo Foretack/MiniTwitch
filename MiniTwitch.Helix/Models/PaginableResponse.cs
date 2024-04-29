@@ -5,5 +5,5 @@ namespace MiniTwitch.Helix.Models;
 
 public abstract class PaginableResponse<T> : BaseResponse<T>, IPaginable
 {
-    public required Pagination Pagination { get; init; }
+    public Pagination Pagination { get; init; }
 }

@@ -2,22 +2,41 @@
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct UpdateConduitRequest
+public class UpdateConduitRequest
 {
     [property: JsonPropertyName("id")]
-    public required string ShardId { get; init; }
+    public string ShardId { get; }
 
-    public required ShardTransport Transport { get; init; }
+    public ShardTransport Transport { get; }
 
-    public struct ShardTransport
+    public class ShardTransport
     {
-        public required string Method { get; init; }
+        public string Method { get; }
 
-        public string SessionId { get; init; }
+        public string? SessionId { get; }
 
         [property: JsonPropertyName("callback")]
-        public string CallbackUrl { get; init; }
+        public string? CallbackUrl { get; }
 
-        public string Secret { get; init; }
+        public string? Secret { get; }
+
+        public ShardTransport(
+            string method,
+            string? sessionId = null,
+            string? callbackUrl = null,
+            string? secret = null
+        )
+        {
+            this.Method = method;
+            this.SessionId = sessionId;
+            this.CallbackUrl = callbackUrl;
+            this.Secret = secret;
+        }
+    }
+
+    public UpdateConduitRequest(string shardId, ShardTransport transport)
+    {
+        this.ShardId = shardId;
+        this.Transport = transport;
     }
 };

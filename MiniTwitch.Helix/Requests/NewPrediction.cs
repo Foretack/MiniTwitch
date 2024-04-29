@@ -3,17 +3,35 @@ using MiniTwitch.Helix.Internal.Json;
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct NewPrediction
+public class NewPrediction
 {
     [JsonConverter(typeof(LongConverter))]
-    public required long BroadcasterId { get; init; }
-    public required string Title { get; init; }
-    public required IEnumerable<Outcome> Outcomes { get; init; }
+    public long BroadcasterId { get; }
+    public string Title { get; }
+    public IEnumerable<Outcome> Outcomes { get; }
     [JsonConverter(typeof(TimeSpanToSeconds))]
-    public required TimeSpan PredictionWindow { get; init; }
+    public TimeSpan PredictionWindow { get; }
 
     public class Outcome
     {
-        public required string Title { get; init; }
+        public string Title { get; }
+
+        public Outcome(string title)
+        {
+            this.Title = title;
+        }
+    }
+
+    public NewPrediction(
+        long broadcasterId,
+        string title,
+        IEnumerable<string> outcomes,
+        TimeSpan predictionWindow
+    )
+    {
+        this.BroadcasterId = broadcasterId;
+        this.Title = title;
+        this.Outcomes = outcomes.Select(x => new Outcome(x));
+        this.PredictionWindow = predictionWindow;
     }
 }
