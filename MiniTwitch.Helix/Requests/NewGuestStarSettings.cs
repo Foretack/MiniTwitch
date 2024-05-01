@@ -1,10 +1,25 @@
 ﻿namespace MiniTwitch.Helix.Requests;
 
-public readonly struct NewGuestStarSettings
+public class NewGuestStarSettings
 {
-    public bool? IsModeratorSendLiveEnabled { get; init; }
-    public int? SlotCount { get; init; }
-    public bool? IsBrowserSourceAudioEnabled { get; init; }
-    public string? GroupLayout { get; init; }
-    public bool? RegenerateBrowserSources { get; init; }
+    public bool? IsModeratorSendLiveEnabled { get; }
+    public int? SlotCount { get; }
+    public bool? IsBrowserSourceAudioEnabled { get; }
+    public string? GroupLayout { get; }
+    public bool? RegenerateBrowserSources { get; }
+
+    public NewGuestStarSettings(
+        bool? isModeratorSendLiveEnabled = null,
+        int? slotCount = null,
+        bool? isBrowserSourceAudioEnabled = null,
+        string? groupLayout = null,
+        bool? regenerateBrowserSources = null
+    )
+    {
+        this.IsModeratorSendLiveEnabled = isModeratorSendLiveEnabled;
+        this.SlotCount = slotCount;
+        this.IsBrowserSourceAudioEnabled = isBrowserSourceAudioEnabled;
+        this.GroupLayout = groupLayout;
+        this.RegenerateBrowserSources = regenerateBrowserSources;
+    }
 }

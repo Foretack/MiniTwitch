@@ -1,6 +1,6 @@
 ﻿namespace MiniTwitch.Helix.Enums;
 
-public enum ContentLabelid
+public enum ContentLabelId
 {
     DrugsIntoxication,
     SexualThemes,

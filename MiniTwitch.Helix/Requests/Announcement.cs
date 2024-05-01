@@ -4,9 +4,15 @@ using MiniTwitch.Helix.Internal.Json;
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct Announcement
+public class Announcement
 {
-    public required string Message { get; init; }
+    public string Message { get; }
     [JsonConverter(typeof(EnumConverter<AnnouncementColor?>))]
-    public AnnouncementColor? Color { get; init; }
+    public AnnouncementColor? Color { get; }
+
+    public Announcement(string message, AnnouncementColor? color = null)
+    {
+        this.Message = message;
+        this.Color = color;
+    }
 }

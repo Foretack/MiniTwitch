@@ -3,11 +3,18 @@ using MiniTwitch.Helix.Internal.Json;
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct UserToBan
+public class UserToBan
 {
     [JsonConverter(typeof(LongConverter))]
-    public required long UserId { get; init; }
+    public long UserId { get; }
     [JsonConverter(typeof(TimeSpanToSeconds))]
-    public TimeSpan? Duration { get; init; }
-    public string Reason { get; init; }
+    public TimeSpan? Duration { get; }
+    public string? Reason { get; }
+
+    public UserToBan(long userId, TimeSpan? duration = null, string? reason = null)
+    {
+        this.UserId = userId;
+        this.Duration = duration;
+        this.Reason = reason;
+    }
 }

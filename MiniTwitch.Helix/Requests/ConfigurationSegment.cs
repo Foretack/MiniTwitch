@@ -4,18 +4,33 @@ using MiniTwitch.Helix.Internal.Json;
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct ConfigurationSegment
+public class ConfigurationSegment
 {
 
-    public required string ExtensionId { get; init; }
+    public string ExtensionId { get; }
 
     [JsonConverter(typeof(EnumConverter<ConfigSegmentType>))]
-    public required ConfigSegmentType Segment { get; init; }
+    public ConfigSegmentType Segment { get; }
 
     [JsonConverter(typeof(OptionalLongConverter))]
-    public long? BroadcasterId { get; init; }
+    public long? BroadcasterId { get; }
 
-    public string Content { get; init; }
+    public string? Content { get; }
 
-    public string Version { get; init; }
+    public string? Version { get; }
+
+    public ConfigurationSegment(
+        string extensionId, 
+        ConfigSegmentType segment, 
+        long? broadcasterId = null, 
+        string? content = null, 
+        string? version = null
+    )
+    {
+        this.ExtensionId = extensionId;
+        this.Segment = segment;
+        this.BroadcasterId = broadcasterId;
+        this.Content = content!;
+        this.Version = version!;
+    }
 }

@@ -4,15 +4,34 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Requests;
 
-public readonly struct NewChannelInformation
+public class NewChannelInformation
 {
-    public string GameId { get; init; }
-    public string BroadcasterLanguage { get; init; }
-    public string Title { get; init; }
+    public string? GameId { get; }
+    public string? BroadcasterLanguage { get; }
+    public string? Title { get; }
     [JsonConverter(typeof(TimeSpanToSeconds))]
-    public TimeSpan? Delay { get; init; }
-    public IEnumerable<string> Tags { get; init; }
+    public TimeSpan? Delay { get; }
+    public IEnumerable<string>? Tags { get; }
     [JsonPropertyName("content_classification_labels")]
-    public IEnumerable<ContentClassificationLabel> ClassificationLabels { get; init; }
-    public bool? IsBrandedContent { get; init; }
+    public IEnumerable<ContentClassificationLabel>? ClassificationLabels { get; }
+    public bool? IsBrandedContent { get; }
+
+    public NewChannelInformation(
+        string? gameId = null,
+        string? broadcasterLanguage = null,
+        string? title = null,
+        TimeSpan? delay = null,
+        IEnumerable<string>? tags = null,
+        IEnumerable<ContentClassificationLabel>? classificationLabels = null,
+        bool? isBrandedContent = null
+    )
+    {
+        this.GameId = gameId;
+        this.BroadcasterLanguage = broadcasterLanguage;
+        this.Title = title;
+        this.Delay = delay;
+        this.Tags = tags;
+        this.ClassificationLabels = classificationLabels;
+        this.IsBrandedContent = isBrandedContent;
+    }
 }

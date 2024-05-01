@@ -1,16 +1,36 @@
 ﻿namespace MiniTwitch.Helix.Requests;
 
-public readonly struct NewSubscription
+public class NewSubscription
 {
-    public required string Type { get; init; }
-    public required string Version { get; init; }
-    public required EventsubTransport Transport { get; init; }
+    public string Type { get; }
+    public string Version { get; }
+    public EventsubTransport Transport { get; }
 
     public readonly struct EventsubTransport
     {
-        public required string Method { get; init; }
-        public string Callback { get; init; }
-        public string Secret { get; init; }
-        public string SessionId { get; init; }
+        public string Method { get; }
+        public string? Callback { get; }
+        public string? Secret { get; }
+        public string? SessionId { get; }
+
+        public EventsubTransport(
+            string method,
+            string? callback = null,
+            string? secret = null,
+            string? sessionId = null
+        )
+        {
+            this.Method = method;
+            this.Callback = callback;
+            this.Secret = secret;
+            this.SessionId = sessionId;
+        }
+    }
+
+    public NewSubscription(string type, string version, EventsubTransport transport)
+    {
+        this.Type = type;
+        this.Version = version;
+        this.Transport = transport;
     }
 }

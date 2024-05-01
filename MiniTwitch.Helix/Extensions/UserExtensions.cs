@@ -33,7 +33,7 @@ public static class UserExtensions
         TimeSpan? duration = null,
         string? reason = null,
         CancellationToken cancellationToken = default)
-    => wrapper.BanUser(channelId, new() { UserId = target.Id, Duration = duration, Reason = reason! }, cancellationToken);
+    => wrapper.BanUser(channelId, new(target.Id, duration, reason), cancellationToken);
 
     public static Task<HelixResult> Unban(
         this IHelixUserTarget target,
@@ -76,7 +76,7 @@ public static class UserExtensions
         TimeSpan? duration = null,
         string? reason = null,
         CancellationToken cancellationToken = default)
-    => wrapper.All.BanUser(channelId, new() { UserId = target.Id, Duration = duration, Reason = reason! }, cancellationToken);
+    => wrapper.All.BanUser(channelId, new(target.Id, duration, reason), cancellationToken);
 
     public static Task<HelixResult> Unban(
         this IHelixUserTarget target,

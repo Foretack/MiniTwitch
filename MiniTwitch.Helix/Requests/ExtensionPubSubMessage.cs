@@ -5,12 +5,20 @@ namespace MiniTwitch.Helix.Requests;
 
 public readonly struct ExtensionPubSubMessage
 {
-    public required IEnumerable<string> Target { get; init; }
+    public IEnumerable<string> Target { get; }
 
     [JsonConverter(typeof(LongConverter))]
-    public required long BroadcasterId { get; init; }
+    public long BroadcasterId { get; }
 
-    public required string Message { get; init; }
+    public string Message { get; }
 
-    public bool? IsGlobalBroadcast { get; init; }
+    public bool? IsGlobalBroadcast { get; }
+
+    public ExtensionPubSubMessage(IEnumerable<string> target, long broadcasterId, string message, bool? isGlobalBroadcast)
+    {
+        this.Target = target;
+        this.BroadcasterId = broadcasterId;
+        this.Message = message;
+        this.IsGlobalBroadcast = isGlobalBroadcast;
+    }
 }

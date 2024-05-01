@@ -1,8 +1,15 @@
 ﻿namespace MiniTwitch.Helix.Requests;
 
-public readonly struct ExtensionRequiredConfiguration
+public class ExtensionRequiredConfiguration
 {
-    public required string ExtensionId { get; init; }
-    public required string ExtensionVersion { get; init; }
-    public required string RequiredConfiguration { get; init; }
+    public string ExtensionId { get; }
+    public string ExtensionVersion { get; }
+    public string RequiredConfiguration { get; }
+
+    public ExtensionRequiredConfiguration(string extensionId, string extensionVersion, string requiredConfiguration)
+    {
+        this.ExtensionId = extensionId;
+        this.ExtensionVersion = extensionVersion;
+        this.RequiredConfiguration = requiredConfiguration;
+    }
 }

@@ -2,8 +2,14 @@
 
 namespace MiniTwitch.Helix.Models;
 
-public readonly struct ContentClassificationLabel
+public class ContentClassificationLabel
 {
-    public required ContentLabelid Id { get; init; }
-    public required bool IsEnabled { get; init; }
+    public ContentLabelId Id { get; }
+    public bool IsEnabled { get; }
+
+    public ContentClassificationLabel(ContentLabelId id, bool isEnabled)
+    {
+        this.Id = id;
+        this.IsEnabled = isEnabled;
+    }
 }

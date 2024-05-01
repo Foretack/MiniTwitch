@@ -115,11 +115,6 @@ internal static class HelixResultFactory
         }
 
         TimeSpan resetsIn = resets - now < 0 ? TimeSpan.Zero : TimeSpan.FromSeconds(resets - now);
-        return new()
-        {
-            Limit = limit,
-            Remaining = remaining,
-            ResetsIn = resetsIn
-        };
+        return new(limit, remaining, resetsIn);
     }
 }
