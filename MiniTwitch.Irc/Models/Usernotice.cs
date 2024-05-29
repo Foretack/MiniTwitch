@@ -67,6 +67,8 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
     public int ViewerCount { get; init; }
     /// <inheritdoc/>
     public bool ShouldShareStreak { get; init; }
+    /// <inheritdoc/>
+    public ulong CommunityGiftId { get; init; }
 
     /// <inheritdoc/>
     public long TmiSentTs { get; init; } = default;
@@ -116,6 +118,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
         int totalGiftCount = 0;
         int viewerCount = 0;
         bool shouldShareStreak = false;
+        ulong communityGiftId = 0;
 
         string charityName = string.Empty;
         int donationAmount = 0;
@@ -276,6 +279,11 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
                     giftCount = TagHelper.GetInt(tagValue);
                     break;
 
+                //msg-param-community-gift-id
+                case (int)Tags.MsgParamCommunityGiftId:
+                    communityGiftId = TagHelper.GetULong(tagValue);
+                    break;
+
                 //msg-param-cumulative-months
                 case (int)Tags.MsgParamCumulativeMonths:
                     cumulativeMonths = TagHelper.GetInt(tagValue);
@@ -373,6 +381,7 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
         this.CharityName = charityName;
         this.DonationAmount = actualDonationAmount;
         this.DonationCurrency = donationCurrency;
+        this.CommunityGiftId = communityGiftId;
     }
 
     /// <summary>

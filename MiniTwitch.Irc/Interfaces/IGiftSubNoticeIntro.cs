@@ -24,4 +24,8 @@ public interface IGiftSubNoticeIntro : IUsernotice
     /// The tier of the gift subscriptions
     /// </summary>
     SubPlan SubPlan { get; }
+    /// <summary>
+    /// Id of the gift message to link it with <see cref="IGiftSubNotice"/> messages
+    /// </summary>
+    ulong CommunityGiftId { get; }
 }

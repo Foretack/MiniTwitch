@@ -59,6 +59,7 @@ public class SpanSumTests
         { (int)Tags.MsgParamSubPlanName, "msg-param-sub-plan-name" },
         { (int)Tags.MsgParamStreakMonths, "msg-param-streak-months" },
         { (int)Tags.MsgParamMassGiftCount, "msg-param-mass-gift-count" },
+        { (int)Tags.MsgParamCommunityGiftId, "msg-param-community-gift-id" },
         { (int)Tags.MsgParamCumulativeMonths, "msg-param-cumulative-months" },
         { (int)Tags.MsgParamRecipientUserName, "msg-param-recipient-user-name" },
         { (int)Tags.MsgParamShouldShareStreak, "msg-param-should-share-streak" },
