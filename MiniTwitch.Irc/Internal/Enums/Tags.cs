@@ -51,6 +51,7 @@ internal enum Tags
     MsgParamSubPlanName = 240890,
     MsgParamStreakMonths = 251354,
     MsgParamMassGiftCount = 267159,
+    MsgParamCommunityGiftId = 290376,
     MsgParamCumulativeMonths = 298987,
     MsgParamRecipientUserName = 312067,
     MsgParamShouldShareStreak = 313048,

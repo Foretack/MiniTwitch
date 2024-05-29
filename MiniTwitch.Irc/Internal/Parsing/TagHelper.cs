@@ -54,6 +54,11 @@ internal static class TagHelper
         return span[0] == dash ? -1 * ParseLong(span[1..]) : ParseLong(span);
     }
 
+    public static ulong GetULong(ReadOnlySpan<byte> span)
+    {
+        return ParseULong(span);
+    }
+
     public static TEnum GetEnum<TEnum>(ReadOnlySpan<byte> span, bool useTry = true)
     where TEnum : struct
     {
@@ -114,6 +119,20 @@ internal static class TagHelper
         {
             result *= 10L;
             result += b - numBase;
+        }
+
+        return result;
+    }
+
+    private static ulong ParseULong(ReadOnlySpan<byte> span)
+    {
+        const byte numBase = (byte)'0';
+
+        ulong result = 0;
+        foreach (byte b in span)
+        {
+            result *= 10L;
+            result += (ulong)b - numBase;
         }
 
         return result;
