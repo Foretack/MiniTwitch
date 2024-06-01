@@ -5,8 +5,8 @@
     <PackageId>MiniTwitch.Irc</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageVersion>1.2.12</PackageVersion>
-    <Version>1.2.12</Version>
+    <PackageVersion>1.2.15</PackageVersion>
+    <Version>1.2.15</Version>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>MiniTwitch.Irc</Title>

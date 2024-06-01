@@ -2,6 +2,12 @@ This changelog is available at: https://github.com/Foretack/MiniTwitch/blob/mast
 
 # MiniTwitch.Irc Changelog
 
+# 1.2.13
+
+### Minor changes
+
+- Added support for `msg-param-community-gift-id` tag for gift usernotice
+
 # 1.2.11
 
 ### Minor changes
