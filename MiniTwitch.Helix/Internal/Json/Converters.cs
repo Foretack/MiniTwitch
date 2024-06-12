@@ -1,6 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text;
 using System.Text.Json;
-using System.Text;
+using System.Text.Json.Serialization;
 using MiniTwitch.Helix.Responses;
 
 namespace MiniTwitch.Helix.Internal.Json;
@@ -13,13 +13,18 @@ internal class OptionalLongConverter : JsonConverter<long?>
 {
     public override long? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if (reader.ValueSpan.Length == 0)
+        return ReadLong(reader.ValueSpan);
+    }
+
+    internal static long? ReadLong(ReadOnlySpan<byte> bytes)
+    {
+        if (bytes.Length == 0)
         {
             return null;
         }
 
-        Span<char> chars = stackalloc char[reader.ValueSpan.Length];
-        int written = Encoding.UTF8.GetChars(reader.ValueSpan, chars);
+        Span<char> chars = stackalloc char[bytes.Length];
+        int written = Encoding.UTF8.GetChars(bytes, chars);
         return long.TryParse(chars, out var l) ? l : null;
     }
 
@@ -43,13 +48,18 @@ internal class LongConverter : JsonConverter<long>
 {
     public override long Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if (reader.ValueSpan.Length == 0)
+        return ReadLong(reader.ValueSpan);
+    }
+
+    internal static long ReadLong(ReadOnlySpan<byte> bytes)
+    {
+        if (bytes.Length == 0)
         {
             return default;
         }
 
-        Span<char> chars = stackalloc char[reader.ValueSpan.Length];
-        int written = Encoding.UTF8.GetChars(reader.ValueSpan, chars);
+        Span<char> chars = stackalloc char[bytes.Length];
+        int written = Encoding.UTF8.GetChars(bytes, chars);
         return long.TryParse(chars, out var l) ? l : default;
     }
 
@@ -64,13 +74,18 @@ internal class IntConverter : JsonConverter<int>
 {
     public override int Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if (reader.ValueSpan.Length == 0)
+        return ReadInt(reader.ValueSpan);
+    }
+
+    internal static int ReadInt(ReadOnlySpan<byte> bytes)
+    {
+        if (bytes.Length == 0)
         {
             return default;
         }
 
-        Span<char> chars = stackalloc char[reader.ValueSpan.Length];
-        int written = Encoding.UTF8.GetChars(reader.ValueSpan, chars);
+        Span<char> chars = stackalloc char[bytes.Length];
+        int written = Encoding.UTF8.GetChars(bytes, chars);
         return int.TryParse(chars, out var i) ? i : default;
     }
 
@@ -86,9 +101,18 @@ internal class EnumConverter<TEnum> : JsonConverter<TEnum>
     {
         if (reader.TokenType == JsonTokenType.String)
         {
-            string? enumAsString = reader.GetString();
-            if (Enum.TryParse(typeof(TEnum), SnakeCase.Instance.ConvertFromCase(enumAsString), out object? enumMember))
-                return (TEnum)enumMember!;
+            ReadEnum(reader.GetString());
+        }
+
+        throw new JsonException();
+    }
+
+
+    internal static TEnum ReadEnum(string? enumString)
+    {
+        if (Enum.TryParse(typeof(TEnum), SnakeCase.Instance.ConvertFromCase(enumString), out object? enumMember))
+        {
+            return (TEnum)enumMember!;
         }
 
         throw new JsonException();
