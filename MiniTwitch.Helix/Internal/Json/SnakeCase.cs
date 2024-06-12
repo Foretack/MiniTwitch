@@ -6,8 +6,10 @@ internal class SnakeCase : ICaseConverter
 
     public string? ConvertFromCase(string? str)
     {
-        if (str is null)
-            return null;
+        if (string.IsNullOrEmpty(str))
+        {
+            return str;
+        }
 
         const char underscore = '_';
 
@@ -27,8 +29,10 @@ internal class SnakeCase : ICaseConverter
 
     public string? ConvertToCase(string? str)
     {
-        if (str is null)
-            return null;
+        if (string.IsNullOrEmpty(str))
+        {
+            return str;
+        }
 
         const char underscore = '_';
 
