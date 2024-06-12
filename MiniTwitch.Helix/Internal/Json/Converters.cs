@@ -115,7 +115,7 @@ internal class EnumConverter<TEnum> : JsonConverter<TEnum>
             return (TEnum)enumMember!;
         }
 
-        throw new JsonException();
+        return default!;
     }
 
     public override void Write(Utf8JsonWriter writer, TEnum value, JsonSerializerOptions options)
