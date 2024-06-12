@@ -135,7 +135,9 @@ internal class TimeSpanToSeconds : JsonConverter<TimeSpan>
     public override TimeSpan Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         => throw new NotSupportedException("Converter should only be used for writing");
 
-    public override void Write(Utf8JsonWriter writer, TimeSpan value, JsonSerializerOptions options) => writer.WriteNumberValue((int)value.TotalSeconds);
+    public override void Write(Utf8JsonWriter writer, TimeSpan value, JsonSerializerOptions options) => writer.WriteNumberValue(AsSeconds(value));
+
+    internal static int AsSeconds(TimeSpan ts) => (int)ts.TotalSeconds;
 }
 
 /// <summary>
@@ -149,7 +151,11 @@ public class ConduitTransportConverter : JsonConverter<ConduitTransport>
     public override ConduitTransport? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var root = JsonDocument.ParseValue(ref reader).RootElement;
+        return ReadTransport(root, options);
+    }
 
+    internal static ConduitTransport? ReadTransport(JsonElement root, JsonSerializerOptions options)
+    {
         if (root.TryGetProperty("method", out var method))
         {
             return method.GetString() switch
