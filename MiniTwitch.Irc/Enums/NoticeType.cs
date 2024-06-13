@@ -138,5 +138,9 @@ public enum NoticeType
     /// <summary>
     /// Indicates that you tried to reply to a message that cannot be replied to
     /// </summary>
-    Invalid_parent
+    Invalid_parent,
+    /// <summary>
+    /// Indicates that you received a warning that must be acknowledged in a browser
+    /// </summary>
+    Msg_warned,
 }
