@@ -20,6 +20,7 @@ internal enum Tags
     RoomId = 79230,
     SubsOnly = 108100,
     EmoteOnly = 104333,
+    AnimationId = 117370,
     TmiSentTs = 126788,
     BanDuration = 119560,
     TargetMsgId = 147204,
