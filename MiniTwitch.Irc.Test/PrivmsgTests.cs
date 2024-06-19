@@ -239,12 +239,12 @@ public class PrivmsgTests
         Assert.Equal(string.Empty, privmsg.Nonce);
         Assert.Equal(1687597804051, privmsg.TmiSentTs);
     }
-    
+
     [Fact]
     public void WithCustomRewardId()
     {
         var privmsg = Privmsg.Construct("@flags=;user-id=49435922;id=235ec71c-f4ed-485b-abd5-e0849d0d6972;emotes=;user-type=;returning-chatter=0;subscriber=1;custom-reward-id=1a0b4553-e01e-4d1f-a250-c9ecadcdc129;display-name=synaxl;mod=0;tmi-sent-ts=1687855313886;turbo=0;room-id=11148817;color=#FF782A;badge-info=subscriber/30;first-msg=0;badges=subscriber/24,twitchconEU2019/1 :synaxl!synaxl@synaxl.tmi.twitch.tv PRIVMSG #pajlada :immer gern Evolution57 Okayge");
-       
+
         // Author
         Assert.Equal(49435922, privmsg.Author.Id);
         Assert.Equal(UserType.None, privmsg.Author.Type);
@@ -297,5 +297,108 @@ public class PrivmsgTests
         Assert.Equal(string.Empty, privmsg.Nonce);
         Assert.Equal(1687855313886, privmsg.TmiSentTs);
         Assert.Equal("1a0b4553-e01e-4d1f-a250-c9ecadcdc129", privmsg.CustomRewardId);
+    }
+
+    [Fact]
+    public void AnimatedMessage()
+    {
+        var privmsg = Privmsg.Construct("@tmi-sent-ts=1718428504630;id=763b536a-1591-4503-abd2-f57245e2509f;room-id=641972806;user-id=268704573;display-name=xOJGxRIZZO;badges=bits/100;badge-info=;color=#FF4500;flags=;user-type=;emotes=;msg-id=animated-message;animation-id=rainbow-eclipse :xojgxrizzo!xojgxrizzo@xojgxrizzo.tmi.twitch.tv PRIVMSG #kaicenat :JAYSHAWN NALGAS IS GOATED");
+        // Author
+        Assert.Equal(268704573, privmsg.Author.Id);
+        Assert.Equal(UserType.None, privmsg.Author.Type);
+        Assert.False(privmsg.Author.IsSubscriber);
+        Assert.Equal("xOJGxRIZZO", privmsg.Author.DisplayName);
+        Assert.Equal("xojgxrizzo", privmsg.Author.Name);
+        Assert.False(privmsg.Author.IsMod);
+        Assert.False(privmsg.Author.IsTurbo);
+        Assert.Equal("FF4500".ToLower(), privmsg.Author.ChatColor.Name);
+        Assert.Empty(privmsg.Author.BadgeInfo);
+        Assert.Equal("bits/100", privmsg.Author.Badges);
+        Assert.False(privmsg.Author.IsVip);
+
+        // No reply
+        Assert.False(privmsg.Reply.HasContent);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentMessage);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentDisplayName);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentUsername);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentMessageId);
+        Assert.Equal(0, privmsg.Reply.ParentUserId);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentThreadMessageId);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentThreadUsername);
+
+        // Channel
+        Assert.Equal("kaicenat", privmsg.Channel.Name);
+        Assert.Equal(641972806, privmsg.Channel.Id);
+
+        Assert.Equal(0, privmsg.Bits);
+        Assert.Equal("JAYSHAWN NALGAS IS GOATED", privmsg.Content);
+        Assert.Empty(privmsg.Emotes);
+        Assert.Empty(privmsg.Flags);
+        Assert.Equal("763b536a-1591-4503-abd2-f57245e2509f", privmsg.Id);
+        Assert.False(privmsg.IsAction);
+        Assert.False(privmsg.IsFirstMessage);
+        Assert.False(privmsg.IsReturningChatter);
+        Assert.Empty(privmsg.Nonce);
+        Assert.Equal(1718428504630, privmsg.TmiSentTs);
+        Assert.Empty(privmsg.CustomRewardId);
+
+        // Animated
+        Assert.True(privmsg.Animation.IsAnimated);
+        Assert.Equal(AnimationId.RainbowEclipse, privmsg.Animation.AnimationId);
+
+        // Not gigantified
+        Assert.False(privmsg.IsGigantifiedEmoteMessage);
+    }
+
+    [Fact]
+    public void WithGiganticEmote()
+    {
+        var privmsg = Privmsg.Construct("@tmi-sent-ts=1718432119583;turbo=1;first-msg=1;emote-only=1;id=69249344-c303-415f-b8da-cb36381b1bb3;room-id=641972806;user-id=241634307;display-name=Timelus_;badges=turbo/1;badge-info=;color=#8A2BE2;flags=;user-type=;emotes=41:0-7;msg-id=gigantified-emote-message :timelus_!timelus_@timelus_.tmi.twitch.tv PRIVMSG #kaicenat :Kreygasm");
+
+        // Author
+        Assert.Equal(241634307, privmsg.Author.Id);
+        Assert.Equal(UserType.None, privmsg.Author.Type);
+        Assert.False(privmsg.Author.IsSubscriber);
+        Assert.Equal("Timelus_", privmsg.Author.DisplayName);
+        Assert.Equal("timelus_", privmsg.Author.Name);
+        Assert.False(privmsg.Author.IsMod);
+        Assert.True(privmsg.Author.IsTurbo);
+        Assert.Equal("8A2BE2".ToLower(), privmsg.Author.ChatColor.Name);
+        Assert.Empty(privmsg.Author.BadgeInfo);
+        Assert.Equal("turbo/1", privmsg.Author.Badges);
+        Assert.False(privmsg.Author.IsVip);
+
+        // No reply
+        Assert.False(privmsg.Reply.HasContent);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentMessage);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentDisplayName);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentUsername);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentMessageId);
+        Assert.Equal(0, privmsg.Reply.ParentUserId);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentThreadMessageId);
+        Assert.Equal(string.Empty, privmsg.Reply.ParentThreadUsername);
+
+        // Channel
+        Assert.Equal("kaicenat", privmsg.Channel.Name);
+        Assert.Equal(641972806, privmsg.Channel.Id);
+
+        Assert.Equal(0, privmsg.Bits);
+        Assert.Equal("Kreygasm", privmsg.Content);
+        Assert.Equal("41:0-7", privmsg.Emotes);
+        Assert.Empty(privmsg.Flags);
+        Assert.Equal("69249344-c303-415f-b8da-cb36381b1bb3", privmsg.Id);
+        Assert.False(privmsg.IsAction);
+        Assert.True(privmsg.IsFirstMessage);
+        Assert.False(privmsg.IsReturningChatter);
+        Assert.Empty(privmsg.Nonce);
+        Assert.Equal(1718432119583, privmsg.TmiSentTs);
+        Assert.Empty(privmsg.CustomRewardId);
+
+        // Not Animated
+        Assert.False(privmsg.Animation.IsAnimated);
+        Assert.Equal(AnimationId.None, privmsg.Animation.AnimationId);
+
+        // Gigantified
+        Assert.True(privmsg.IsGigantifiedEmoteMessage);
     }
 }
