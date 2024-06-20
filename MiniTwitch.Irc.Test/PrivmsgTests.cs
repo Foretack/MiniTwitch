@@ -344,7 +344,7 @@ public class PrivmsgTests
 
         // Animated
         Assert.True(privmsg.Animation.IsAnimated);
-        Assert.Equal(AnimationId.RainbowEclipse, privmsg.Animation.AnimationId);
+        Assert.Equal("rainbow-eclipse", privmsg.Animation.AnimationId);
 
         // Not gigantified
         Assert.False(privmsg.IsGigantifiedEmoteMessage);
@@ -396,7 +396,7 @@ public class PrivmsgTests
 
         // Not Animated
         Assert.False(privmsg.Animation.IsAnimated);
-        Assert.Equal(AnimationId.None, privmsg.Animation.AnimationId);
+        Assert.Equal(string.Empty, privmsg.Animation.AnimationId);
 
         // Gigantified
         Assert.True(privmsg.IsGigantifiedEmoteMessage);

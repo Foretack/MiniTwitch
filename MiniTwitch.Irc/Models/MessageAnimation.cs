@@ -1,6 +1,4 @@
-﻿using MiniTwitch.Irc.Enums;
-
-namespace MiniTwitch.Irc.Models;
+﻿namespace MiniTwitch.Irc.Models;
 
 /// <summary>
 /// Struct that holds information about message animations
@@ -14,5 +12,5 @@ public readonly struct MessageAnimation
     /// <summary>
     /// Message animation
     /// </summary>
-    public AnimationId AnimationId { get; init; }
+    public string AnimationId { get; init; }
 }

@@ -148,7 +148,7 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
         string customRewardId = string.Empty;
         bool gigantified = false;
         bool animated = false;
-        AnimationId animation = AnimationId.None;
+        string animation = string.Empty;
 
         using IrcTags tags = message.ParseTags();
         foreach (IrcTag tag in tags)
@@ -249,12 +249,7 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
 
                 //animation-id
                 case (int)Tags.AnimationId:
-                    animation = tagValue.Sum() switch
-                    {
-                        653 => AnimationId.Simmer,
-                        1540 => AnimationId.RainbowEclipse,
-                        _ => AnimationId.UNKNOWN,
-                    };
+                    animation = TagHelper.GetString(tagValue, intern: true);
                     break;
 
                 //tmi-sent-ts
