@@ -83,6 +83,14 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
     /// The ID of the custom reward that was redeemed if the message was sent with a custom reward
     /// </summary>
     public string CustomRewardId { get; init; }
+    /// <summary>
+    /// Information about the message animation.
+    /// </summary>
+    public MessageAnimation Animation { get; init; }
+    /// <summary>
+    /// Whether the emotes in the message are gigantified
+    /// </summary>
+    public bool IsGigantifiedEmoteMessage { get; init; }
 
     /// <inheritdoc/>
     public long TmiSentTs { get; init; }
@@ -138,6 +146,9 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
         bool firstMsg = false;
         bool returningChatter = false;
         string customRewardId = string.Empty;
+        bool gigantified = false;
+        bool animated = false;
+        string animation = string.Empty;
 
         using IrcTags tags = message.ParseTags();
         foreach (IrcTag tag in tags)
@@ -207,6 +218,20 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
                     firstMsg = TagHelper.GetBool(tagValue);
                     break;
 
+                //msg-id
+                case (int)Tags.MsgId:
+                    switch (tagValue.Sum())
+                    {
+                        case 2516:
+                            gigantified = true;
+                            break;
+
+                        case 1621:
+                            animated = true;
+                            break;
+                    }
+                    break;
+
                 //user-type
                 case (int)Tags.UserType when tagValue.Length > 0:
                     userType = (UserType)tagValue.Sum();
@@ -220,6 +245,11 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
                 //subscriber
                 case (int)Tags.Subscriber:
                     sub = TagHelper.GetBool(tagValue);
+                    break;
+
+                //animation-id
+                case (int)Tags.AnimationId:
+                    animation = TagHelper.GetString(tagValue, intern: true);
                     break;
 
                 //tmi-sent-ts
@@ -276,7 +306,7 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
                 case (int)Tags.ReplyThreadParentUserLogin:
                     threadParentUsername = TagHelper.GetString(tagValue);
                     break;
-                
+
                 //custom-reward-id
                 case (int)Tags.CustomRewardId:
                     customRewardId = TagHelper.GetString(tagValue);
@@ -330,6 +360,12 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
         this.IsFirstMessage = firstMsg;
         this.IsReturningChatter = returningChatter;
         this.CustomRewardId = customRewardId;
+        this.IsGigantifiedEmoteMessage = gigantified;
+        this.Animation = new MessageAnimation()
+        {
+            IsAnimated = animated,
+            AnimationId = animation
+        };
     }
 
     /// <summary>
