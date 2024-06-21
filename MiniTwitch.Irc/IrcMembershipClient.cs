@@ -24,6 +24,10 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     /// The action to invoke when an exception is caught within an event
     /// </summary>
     public Action<Exception> ExceptionHandler { get; set; } = default!;
+    /// <summary>
+    /// Whether the client is currently connected
+    /// </summary>
+    public bool IsConnected => _ws.IsConnected;
     #endregion
 
     #region Events

@@ -9,8 +9,8 @@ using MiniTwitch.PubSub.Internal;
 using MiniTwitch.PubSub.Internal.Enums;
 using MiniTwitch.PubSub.Internal.Models;
 using MiniTwitch.PubSub.Internal.Parsing;
-using MiniTwitch.PubSub.Payloads;
 using MiniTwitch.PubSub.Models;
+using MiniTwitch.PubSub.Payloads;
 
 namespace MiniTwitch.PubSub;
 
@@ -33,6 +33,10 @@ public sealed class PubSubClient : IAsyncDisposable
     /// <para>Can be toggled with <see cref="DefaultMiniTwitchLogger{T}.Enabled"/></para>
     /// </summary>
     public DefaultMiniTwitchLogger<PubSubClient> DefaultLogger { get; } = new();
+    /// <summary>
+    /// Whether the client is currently connected
+    /// </summary>
+    public bool IsConnected => _ws.IsConnected;
     #endregion
 
     #region Events
