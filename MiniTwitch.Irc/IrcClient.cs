@@ -30,6 +30,10 @@ public sealed class IrcClient : IAsyncDisposable
     /// <para>Can be toggled with <see cref="DefaultMiniTwitchLogger{T}.Enabled"/></para>
     /// </summary>
     public DefaultMiniTwitchLogger<IrcChannel> DefaultLogger { get; } = new();
+    /// <summary>
+    /// Whether the client is currently connected
+    /// </summary>
+    public bool IsConnected => _ws.IsConnected;
 
     internal ClientOptions Options { get; init; }
     #endregion
