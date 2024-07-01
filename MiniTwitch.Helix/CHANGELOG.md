@@ -2,6 +2,17 @@ This changelog is available at: https://github.com/Foretack/MiniTwitch/blob/mast
 
 # MiniTwitch.Helix Changelog
 
+## Upcoming version
+
+### Breaking changes
+- `SortedHelixWrapper` has been removed
+
+### Minor Changes
+- Changing the token of `HelixWrapper` is now possible through `HelixWrapper.Client.ChangeToken()`
+
+### Fixes
+- Fixed an exception that occurs when empty strings are provided to SnakeCase.ConvertToCase
+
 ## 0.3.0-prerelease
 
 ### Minor changes

@@ -11,9 +11,9 @@ using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Internal;
 
-internal sealed class HelixApiClient
+public sealed class HelixApiClient
 {
-    public DefaultMiniTwitchLogger<HelixWrapper> Logger { get; } = new();
+    internal DefaultMiniTwitchLogger<HelixWrapper> Logger { get; } = new();
     internal static JsonSerializerOptions SerializerOptions { get; } = new()
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
@@ -28,7 +28,7 @@ internal sealed class HelixApiClient
     private readonly ILogger? _logger;
     private TokenInfo? _tokenInfo;
 
-    public HelixApiClient(string token, long userId, ILogger? logger, string tokenValidationUrl)
+    internal HelixApiClient(string token, long userId, ILogger? logger, string tokenValidationUrl)
     {
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
         _tokenValidationUrl = tokenValidationUrl;
@@ -36,7 +36,15 @@ internal sealed class HelixApiClient
         this.UserId = userId;
     }
 
-    public Task<(HttpResponseMessage, TimeSpan)> RequestAsync(RequestData requestObject, CancellationToken ct) => requestObject._method switch
+    public void ChangeToken(string newToken, long newUserId)
+    {
+        _httpClient.DefaultRequestHeaders.Remove("Authorization");
+        _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {newToken}");
+        this.UserId = newUserId;
+        _tokenInfo = null;
+    }
+
+    internal Task<(HttpResponseMessage, TimeSpan)> RequestAsync(RequestData requestObject, CancellationToken ct) => requestObject._method switch
     {
         "POST" => PostAsync(requestObject, ct),
         "GET" => GetAsync(requestObject, ct),
@@ -177,6 +185,7 @@ internal sealed class HelixApiClient
                     "Validated app access token. The token expires at {ExpiresAt}",
                     DateTimeOffset.FromUnixTimeSeconds(_tokenInfo.ReceivedAt + _tokenInfo.ExpiresIn)
                 );
+
                 return;
             }
 

@@ -24,6 +24,9 @@ MiniTwitch.Helix conveniently wraps the Twitch Helix API and exposes them throug
 
 This example demonstrates the usage of `HelixWrapper` and `HelixResult<T>.Paginate()`
 
+> [!IMPORTANT]  
+> You may notice that some requests have missing parameters. This is because the user ID is supplied by the library to requests that require the user ID of the provided token
+
 ```csharp
 using MiniTwitch.Helix;
 using MiniTwitch.Helix.Models;
