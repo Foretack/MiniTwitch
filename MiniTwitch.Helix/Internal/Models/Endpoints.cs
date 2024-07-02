@@ -2056,4 +2056,21 @@ internal static class Endpoints
             _ => "Unknown response code"
         }
     };
+
+    public static readonly HelixEndpoint WarnChatUser = new()
+    {
+        Method = HttpMethod.Post,
+        Route = "moderation/warnings",
+        SuccessStatusCode = HttpStatusCode.OK,
+        GetResponseMessage = code => code switch
+        {
+            HttpStatusCode.OK => "Successfully warn a user.",
+            HttpStatusCode.BadRequest => "The broadcaster_id query parameter is required.\r\nThe moderator_id query parameter is required.\r\nThe user_id query parameter is required.\r\nThe reason query parameter is required.\r\nThe text in the reason field is too long.\r\nThe user specified in the user_id may not be warned.",
+            HttpStatusCode.Unauthorized => "The ID in moderator_id must match the user ID in the user access token.\r\nThe Authorization header is required and must contain a user access token.\r\nThe user access token must include the moderator:manage:warnings scope.\r\nThe access token is not valid.\r\nThe client ID specified in the Client-Id header does not match the client ID specified in the access token.",
+            HttpStatusCode.Forbidden => "The user in moderator_id is not one of the broadcaster’s moderators.",
+            HttpStatusCode.Conflict => "You may not update the user’s warning state while someone else is updating the state. For example, someone else is currently warning the user or the user is acknowledging an existing warning. Please retry your request.",
+            HttpStatusCode.TooManyRequests => "The app has exceeded the number of requests it may make per minute for this broadcaster.",
+            _ => "Unknown response code"
+        }
+    };
 }
