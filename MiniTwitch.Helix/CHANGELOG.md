@@ -9,6 +9,7 @@ This changelog is available at: https://github.com/Foretack/MiniTwitch/blob/mast
 
 ### Minor Changes
 - Changing the token of `HelixWrapper` is now possible through `HelixWrapper.Client.ChangeToken()`
+- Added `Warn Chat User` endpoint
 
 ### Fixes
 - Fixed an exception that occurs when empty strings are provided to SnakeCase.ConvertToCase

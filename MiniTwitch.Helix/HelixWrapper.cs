@@ -2208,4 +2208,23 @@ public class HelixWrapper
 
         return HelixResultFactory.Create<UnbanRequests>(Client, request, endpoint, cancellationToken);
     }
+
+    public Task<HelixResult<WarnInfo>> WarnChatUser(
+        long broadcasterId,
+        long userId,
+        string reason,
+        CancellationToken cancellationToken = default)
+    {
+        HelixEndpoint endpoint = Endpoints.WarnChatUser;
+        RequestData request = new RequestData(_baseUrl, endpoint)
+            .AddParam(QueryParams.BroadcasterId, broadcasterId)
+            .AddParam(QueryParams.ModeratorId, this.UserId);
+
+        request.Body = new
+        {
+            data = new Warning(userId, reason)
+        };
+
+        return HelixResultFactory.Create<WarnInfo>(Client, request, endpoint, cancellationToken);
+    }
 }
