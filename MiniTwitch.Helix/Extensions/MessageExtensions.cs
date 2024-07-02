@@ -11,11 +11,4 @@ public static class MessageExtensions
         long channelId,
         CancellationToken cancellationToken = default)
     => wrapper.DeleteChatMessages(channelId, message.Id, cancellationToken);
-
-    public static Task<HelixResult> Delete(
-        this IHelixMessageTarget message,
-        SortedHelixWrapper wrapper,
-        long channelId,
-        CancellationToken cancellationToken = default)
-    => wrapper.All.DeleteChatMessages(channelId, message.Id, cancellationToken);
 }

@@ -48,47 +48,4 @@ public static class UserExtensions
         string message,
         CancellationToken cancellationToken = default)
     => wrapper.SendWhisper(target.Id, message, cancellationToken);
-
-    public static Task<HelixResult> Block(
-        this IHelixUserTarget target,
-        SortedHelixWrapper wrapper,
-        string? sourceContext = null,
-        string? reason = null,
-        CancellationToken cancellationToken = default)
-    => wrapper.All.BlockUser(target.Id, sourceContext, reason, cancellationToken);
-
-    public static Task<HelixResult> Unblock(
-        this IHelixUserTarget target,
-        SortedHelixWrapper wrapper,
-        CancellationToken cancellationToken = default)
-    => wrapper.All.UnblockUser(target.Id, cancellationToken);
-
-    public static Task<HelixResult<Users>> GetInfo(
-        this IHelixUserTarget target,
-        SortedHelixWrapper wrapper,
-        CancellationToken cancellationToken = default)
-    => wrapper.All.GetUsers(target.Id, cancellationToken: cancellationToken);
-
-    public static Task<HelixResult<BannedUser>> Ban(
-        this IHelixUserTarget target,
-        SortedHelixWrapper wrapper,
-        long channelId,
-        TimeSpan? duration = null,
-        string? reason = null,
-        CancellationToken cancellationToken = default)
-    => wrapper.All.BanUser(channelId, new(target.Id, duration, reason), cancellationToken);
-
-    public static Task<HelixResult> Unban(
-        this IHelixUserTarget target,
-        SortedHelixWrapper wrapper,
-        long channelId,
-        CancellationToken cancellationToken = default)
-    => wrapper.All.UnbanUser(channelId, target.Id, cancellationToken);
-
-    public static Task<HelixResult> SendWhisper(
-        this IHelixUserTarget target,
-        SortedHelixWrapper wrapper,
-        string message,
-        CancellationToken cancellationToken = default)
-    => wrapper.All.SendWhisper(target.Id, message, cancellationToken);
 }
