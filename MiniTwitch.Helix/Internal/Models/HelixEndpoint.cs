@@ -6,5 +6,4 @@ internal class HelixEndpoint
 {
     public HttpMethod Method { get; init; } = default!;
     public string Route { get; init; } = default!;
-    public HttpStatusCode SuccessStatusCode { get; init; } = HttpStatusCode.OK;
 }
