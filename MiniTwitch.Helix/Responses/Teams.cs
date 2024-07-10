@@ -1,8 +1,9 @@
 using System.Text.Json.Serialization;
+using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class Teams
+public class Teams : BaseResponse<Teams.Team>
 {
     public record Team(
         IReadOnlyList<User> Users,

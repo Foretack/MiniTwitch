@@ -1,6 +1,8 @@
+using MiniTwitch.Helix.Models;
+
 namespace MiniTwitch.Helix.Responses;
 
-public class ActiveExtensions
+public class ActiveExtensions : BaseResponse
 {
     public ExtensionsData Data { get; init; }
 

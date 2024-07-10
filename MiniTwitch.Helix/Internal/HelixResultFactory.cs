@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Text.Json;
 using MiniTwitch.Helix.Internal.Models;
 using MiniTwitch.Helix.Models;
 
@@ -12,20 +13,9 @@ internal static class HelixResultFactory
 
     public static async Task<HelixResult<T>> Create<T>(HelixApiClient client, RequestData request, HelixEndpoint endpoint,
         CancellationToken cancellationToken)
+        where T : IBaseResponse
     {
         (HttpResponseMessage response, TimeSpan elapsed) = await client.RequestAsync(request, cancellationToken);
-        // Because some endpoints don't have appropriate success status codes, .IsSuccessStatusCode should be checked first
-        if (!response.IsSuccessStatusCode && response.StatusCode != endpoint.SuccessStatusCode)
-        {
-            return new HelixResult<T>()
-            {
-                Success = false,
-                Message = endpoint.GetResponseMessage(response.StatusCode),
-                StatusCode = response.StatusCode,
-                Elapsed = elapsed,
-                Value = default!
-            };
-        }
 
         T? toObject;
         try
@@ -60,10 +50,23 @@ internal static class HelixResultFactory
             };
         }
 
+        if (toObject is { Error: not null, Message: not null })
+        {
+            return new HelixResult<T>()
+            {
+                Success = false,
+                Message = toObject.Message,
+                StatusCode = response.StatusCode,
+                Elapsed = elapsed,
+                Value = default!,
+                Ratelimit = GetRateLimit(response)
+            };
+        }
+
         return new HelixResult<T>()
         {
             Success = true,
-            Message = endpoint.GetResponseMessage(response.StatusCode),
+            Message = null,
             StatusCode = response.StatusCode,
             Elapsed = elapsed,
             Value = toObject,
@@ -76,10 +79,37 @@ internal static class HelixResultFactory
         CancellationToken cancellationToken)
     {
         (HttpResponseMessage response, TimeSpan elapsed) = await client.RequestAsync(request, cancellationToken);
+
+        if (response.StatusCode == endpoint.SuccessStatusCode)
+        {
+            return new HelixResult()
+            {
+                Success = true,
+                Message = null,
+                StatusCode = response.StatusCode,
+                Elapsed = elapsed,
+                Ratelimit = GetRateLimit(response)
+            };
+        }
+
+        string? message = string.Empty;
+        try
+        {
+            var element = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
+
+            message = element.TryGetProperty("message", out var value)
+                ? value.GetString()
+                : string.Empty;
+        }
+        catch
+        {
+            // Ignore deserialization errors
+        }
+
         return new HelixResult()
         {
-            Success = response.StatusCode == endpoint.SuccessStatusCode,
-            Message = endpoint.GetResponseMessage(response.StatusCode),
+            Success = false,
+            Message = message,
             StatusCode = response.StatusCode,
             Elapsed = elapsed,
             Ratelimit = GetRateLimit(response)

@@ -15,9 +15,9 @@ public readonly struct HelixResult : IHelixResult
     /// </summary>
     public HttpStatusCode StatusCode { get; init; }
     /// <summary>
-    /// Contains a message clarifying the meaning of the status code in <see cref="StatusCode"/>
+    /// Contains a message clarifying the error in the response. Check <see cref="Success"/> before using this value.
     /// </summary>
-    public string Message { get; init; }
+    public string? Message { get; init; }
     /// <summary>
     /// The amount of time the request took to get a response
     /// </summary>
@@ -36,7 +36,7 @@ public readonly struct HelixResult : IHelixResult
 /// <summary>
 /// Contains the data about the result of a request to the Twitch Helix API.
 /// </summary>
-public readonly struct HelixResult<TResult> : IHelixResult
+public readonly struct HelixResult<TResult> : IHelixResult where TResult : IBaseResponse
 {
     /// <summary>
     /// The response's content as <typeparamref name="TResult"/>
@@ -48,9 +48,9 @@ public readonly struct HelixResult<TResult> : IHelixResult
     /// </summary>
     public HttpStatusCode StatusCode { get; init; }
     /// <summary>
-    /// Contains a message clarifying the meaning of the status code in <see cref="StatusCode"/>
+    /// Contains a message clarifying the error in the response. Check <see cref="Success"/> before using this value.
     /// </summary>
-    public string Message { get; init; }
+    public string? Message { get; init; }
     /// <summary>
     /// The amount of time the request took to get a response
     /// </summary>
