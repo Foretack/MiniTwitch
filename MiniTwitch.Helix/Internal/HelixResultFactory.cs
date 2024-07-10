@@ -96,8 +96,8 @@ internal static class HelixResultFactory
 
         return new HelixResult()
         {
-            Success = false,
-            Message = message,
+            Success = true,
+            Message = null,
             StatusCode = response.StatusCode,
             Elapsed = elapsed,
             Ratelimit = GetRateLimit(response)
