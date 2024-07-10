@@ -13,14 +13,28 @@ internal static class HelixResultFactory
 
     public static async Task<HelixResult<T>> Create<T>(HelixApiClient client, RequestData request, HelixEndpoint endpoint,
         CancellationToken cancellationToken)
-        where T : IBaseResponse
     {
         (HttpResponseMessage response, TimeSpan elapsed) = await client.RequestAsync(request, cancellationToken);
 
-        T? toObject;
         try
         {
-            toObject = await response.Content.ReadFromJsonAsync<T>(HelixApiClient.SerializerOptions, cancellationToken: cancellationToken);
+            var responseJson = await response.Content.ReadFromJsonAsync<JsonElement>(HelixApiClient.SerializerOptions, cancellationToken);
+
+            if (TryGetErrorMessage(responseJson, out var message))
+            {
+                return new HelixResult<T>()
+                {
+                    Success = false,
+                    Message = message,
+                    StatusCode = response.StatusCode,
+                    Elapsed = elapsed,
+                    Value = default!,
+                    Ratelimit = GetRateLimit(response)
+                };
+            }
+
+            var toObject = responseJson.Deserialize<T>(HelixApiClient.SerializerOptions);
+
             if (toObject is null)
             {
                 return new HelixResult<T>()
@@ -34,6 +48,17 @@ internal static class HelixResultFactory
                     Ratelimit = GetRateLimit(response)
                 };
             }
+
+            return new HelixResult<T>()
+            {
+                Success = true,
+                Message = null,
+                StatusCode = response.StatusCode,
+                Elapsed = elapsed,
+                Value = toObject,
+                HelixTask = new() { Endpoint = endpoint, Client = client, Request = request },
+                Ratelimit = GetRateLimit(response)
+            };
         }
         catch (Exception ex)
         {
@@ -49,30 +74,6 @@ internal static class HelixResultFactory
                 Value = default!
             };
         }
-
-        if (toObject is { Error: not null, Message: not null })
-        {
-            return new HelixResult<T>()
-            {
-                Success = false,
-                Message = toObject.Message,
-                StatusCode = response.StatusCode,
-                Elapsed = elapsed,
-                Value = default!,
-                Ratelimit = GetRateLimit(response)
-            };
-        }
-
-        return new HelixResult<T>()
-        {
-            Success = true,
-            Message = null,
-            StatusCode = response.StatusCode,
-            Elapsed = elapsed,
-            Value = toObject,
-            HelixTask = new() { Endpoint = endpoint, Client = client, Request = request },
-            Ratelimit = GetRateLimit(response)
-        };
     }
 
     public static async Task<HelixResult> Create(HelixApiClient client, RequestData request, HelixEndpoint endpoint,
@@ -80,30 +81,17 @@ internal static class HelixResultFactory
     {
         (HttpResponseMessage response, TimeSpan elapsed) = await client.RequestAsync(request, cancellationToken);
 
-        if (response.StatusCode == endpoint.SuccessStatusCode)
+        var responseJson = await response.Content.ReadFromJsonAsync<JsonElement>(HelixApiClient.SerializerOptions, cancellationToken);
+        if (TryGetErrorMessage(responseJson, out var message))
         {
             return new HelixResult()
             {
-                Success = true,
-                Message = null,
+                Success = false,
+                Message = message,
                 StatusCode = response.StatusCode,
                 Elapsed = elapsed,
                 Ratelimit = GetRateLimit(response)
             };
-        }
-
-        string? message = string.Empty;
-        try
-        {
-            var element = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
-
-            message = element.TryGetProperty("message", out var value)
-                ? value.GetString()
-                : string.Empty;
-        }
-        catch
-        {
-            // Ignore deserialization errors
         }
 
         return new HelixResult()
@@ -114,6 +102,20 @@ internal static class HelixResultFactory
             Elapsed = elapsed,
             Ratelimit = GetRateLimit(response)
         };
+    }
+
+    private static bool TryGetErrorMessage(JsonElement body, out string? message)
+    {
+        if (body.TryGetProperty("error", out var _) &&
+            body.TryGetProperty("message", out var errorMessage))
+        {
+            message = errorMessage.GetString();
+
+            return true;
+        }
+
+        message = null;
+        return false;
     }
 
     private static RequestRatelimit GetRateLimit(HttpResponseMessage response)

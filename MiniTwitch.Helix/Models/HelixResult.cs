@@ -36,7 +36,7 @@ public readonly struct HelixResult : IHelixResult
 /// <summary>
 /// Contains the data about the result of a request to the Twitch Helix API.
 /// </summary>
-public readonly struct HelixResult<TResult> : IHelixResult where TResult : IBaseResponse
+public readonly struct HelixResult<TResult> : IHelixResult
 {
     /// <summary>
     /// The response's content as <typeparamref name="TResult"/>

@@ -1,9 +1,8 @@
 using System.Text.Json.Serialization;
-using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
 
-public class UpdatedScheduleSegment : BaseResponse
+public class UpdatedScheduleSegment
 {
 
     [JsonPropertyName("data")]
