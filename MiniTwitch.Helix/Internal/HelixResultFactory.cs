@@ -74,6 +74,10 @@ internal static class HelixResultFactory
                 Value = default!
             };
         }
+        finally
+        {
+            response.Dispose();
+        }
     }
 
     public static async Task<HelixResult> Create(HelixApiClient client, RequestData request, HelixEndpoint endpoint,
