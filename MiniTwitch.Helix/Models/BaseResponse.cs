@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace MiniTwitch.Helix.Models;
+﻿namespace MiniTwitch.Helix.Models;
 
 public abstract class BaseResponse<T>
 {

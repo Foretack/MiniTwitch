@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Text.Json;
 using MiniTwitch.Helix.Internal.Models;
 using MiniTwitch.Helix.Models;
 
@@ -14,23 +15,26 @@ internal static class HelixResultFactory
         CancellationToken cancellationToken)
     {
         (HttpResponseMessage response, TimeSpan elapsed) = await client.RequestAsync(request, cancellationToken);
-        // Because some endpoints don't have appropriate success status codes, .IsSuccessStatusCode should be checked first
-        if (!response.IsSuccessStatusCode && response.StatusCode != endpoint.SuccessStatusCode)
-        {
-            return new HelixResult<T>()
-            {
-                Success = false,
-                Message = endpoint.GetResponseMessage(response.StatusCode),
-                StatusCode = response.StatusCode,
-                Elapsed = elapsed,
-                Value = default!
-            };
-        }
 
-        T? toObject;
         try
         {
-            toObject = await response.Content.ReadFromJsonAsync<T>(HelixApiClient.SerializerOptions, cancellationToken: cancellationToken);
+            var responseJson = await response.Content.ReadFromJsonAsync<JsonElement>(HelixApiClient.SerializerOptions, cancellationToken);
+
+            if (TryGetErrorMessage(responseJson, out var message))
+            {
+                return new HelixResult<T>()
+                {
+                    Success = false,
+                    Message = message,
+                    StatusCode = response.StatusCode,
+                    Elapsed = elapsed,
+                    Value = default!,
+                    Ratelimit = GetRateLimit(response)
+                };
+            }
+
+            var toObject = responseJson.Deserialize<T>(HelixApiClient.SerializerOptions);
+
             if (toObject is null)
             {
                 return new HelixResult<T>()
@@ -44,6 +48,17 @@ internal static class HelixResultFactory
                     Ratelimit = GetRateLimit(response)
                 };
             }
+
+            return new HelixResult<T>()
+            {
+                Success = true,
+                Message = null,
+                StatusCode = response.StatusCode,
+                Elapsed = elapsed,
+                Value = toObject,
+                HelixTask = new() { Endpoint = endpoint, Client = client, Request = request },
+                Ratelimit = GetRateLimit(response)
+            };
         }
         catch (Exception ex)
         {
@@ -59,31 +74,48 @@ internal static class HelixResultFactory
                 Value = default!
             };
         }
-
-        return new HelixResult<T>()
-        {
-            Success = true,
-            Message = endpoint.GetResponseMessage(response.StatusCode),
-            StatusCode = response.StatusCode,
-            Elapsed = elapsed,
-            Value = toObject,
-            HelixTask = new() { Endpoint = endpoint, Client = client, Request = request },
-            Ratelimit = GetRateLimit(response)
-        };
     }
 
     public static async Task<HelixResult> Create(HelixApiClient client, RequestData request, HelixEndpoint endpoint,
         CancellationToken cancellationToken)
     {
         (HttpResponseMessage response, TimeSpan elapsed) = await client.RequestAsync(request, cancellationToken);
+
+        var responseJson = await response.Content.ReadFromJsonAsync<JsonElement>(HelixApiClient.SerializerOptions, cancellationToken);
+        if (TryGetErrorMessage(responseJson, out var message))
+        {
+            return new HelixResult()
+            {
+                Success = false,
+                Message = message,
+                StatusCode = response.StatusCode,
+                Elapsed = elapsed,
+                Ratelimit = GetRateLimit(response)
+            };
+        }
+
         return new HelixResult()
         {
-            Success = response.StatusCode == endpoint.SuccessStatusCode,
-            Message = endpoint.GetResponseMessage(response.StatusCode),
+            Success = true,
+            Message = null,
             StatusCode = response.StatusCode,
             Elapsed = elapsed,
             Ratelimit = GetRateLimit(response)
         };
+    }
+
+    private static bool TryGetErrorMessage(JsonElement body, out string? message)
+    {
+        if (body.TryGetProperty("error", out var _) &&
+            body.TryGetProperty("message", out var errorMessage))
+        {
+            message = errorMessage.GetString();
+
+            return true;
+        }
+
+        message = null;
+        return false;
     }
 
     private static RequestRatelimit GetRateLimit(HttpResponseMessage response)

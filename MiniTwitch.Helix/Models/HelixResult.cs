@@ -15,9 +15,9 @@ public readonly struct HelixResult : IHelixResult
     /// </summary>
     public HttpStatusCode StatusCode { get; init; }
     /// <summary>
-    /// Contains a message clarifying the meaning of the status code in <see cref="StatusCode"/>
+    /// Contains a message clarifying the error in the response. Check <see cref="Success"/> before using this value.
     /// </summary>
-    public string Message { get; init; }
+    public string? Message { get; init; }
     /// <summary>
     /// The amount of time the request took to get a response
     /// </summary>
@@ -48,9 +48,9 @@ public readonly struct HelixResult<TResult> : IHelixResult
     /// </summary>
     public HttpStatusCode StatusCode { get; init; }
     /// <summary>
-    /// Contains a message clarifying the meaning of the status code in <see cref="StatusCode"/>
+    /// Contains a message clarifying the error in the response. Check <see cref="Success"/> before using this value.
     /// </summary>
-    public string Message { get; init; }
+    public string? Message { get; init; }
     /// <summary>
     /// The amount of time the request took to get a response
     /// </summary>
