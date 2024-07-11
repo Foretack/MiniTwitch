@@ -86,6 +86,7 @@ internal static class HelixResultFactory
         (HttpResponseMessage response, TimeSpan elapsed) = await client.RequestAsync(request, cancellationToken);
 
         var responseJson = await response.Content.ReadFromJsonAsync<JsonElement>(HelixApiClient.SerializerOptions, cancellationToken);
+        response.Dispose();
         if (TryGetErrorMessage(responseJson, out var message))
         {
             return new HelixResult()
