@@ -853,6 +853,6 @@ internal static class Endpoints
     public static readonly HelixEndpoint WarnChatUser = new()
     {
         Method = HttpMethod.Post,
-        Route = "moderation/warnings",
+        Route = "/moderation/warnings",
     };
 }
