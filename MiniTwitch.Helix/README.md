@@ -1,7 +1,6 @@
 # MiniTwitch.Helix (Pre-release)
 
-MiniTwitch.Helix conveniently wraps the Twitch Helix API and exposes them through the `HelixWrapper` and `SortedHelixWrapper` classes. The difference between the two classes is that `HelixWrapper` exposes all endpoints as methods directly on the class, while `SortedHelixWrapper` exposes them through categories (i.e `HelixWrapper.BanUser()` vs `SortedHelixWrapper.Moderation.BanUser()`)
-
+MiniTwitch.Helix conveniently wraps the Twitch Helix API and exposes them through the `HelixWrapper`class.
 ## Features
 
 - Contains all generally available and beta Helix API endpoints
@@ -9,7 +8,7 @@ MiniTwitch.Helix conveniently wraps the Twitch Helix API and exposes them throug
 - Returns meaningful information about responses with `HelixResult`:
 	- **HelixResult.Success**: Whether the request was successful
 	- **HelixResult.StatusCode**: Status code of the response
-	- **HelixResult.Message**: Contains a message clarifying the meaning of the status code
+	- **HelixResult.Message**: Contains the error message for the request, if not successful
 	- **HelixResult.Elapsed**: The amount of time the request took to get a response
 	- **HelixResult.RateLimit.Limit**: Maximum amount of requests that can be made in a period
 	- **HelixResult.RateLimit.Remaining**: The amount of requests that can be made before the ratelimit resets
@@ -78,6 +77,7 @@ public class Program
             if (!next.CanPaginate)
                 return usernames;
 
+            // Assign the new page to the old one so we move forward
             chatters = next;
         }
 

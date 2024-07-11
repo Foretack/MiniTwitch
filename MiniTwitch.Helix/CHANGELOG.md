@@ -2,17 +2,22 @@ This changelog is available at: https://github.com/Foretack/MiniTwitch/blob/mast
 
 # MiniTwitch.Helix Changelog
 
-## Upcoming version
+## 0.4.0-prerelease
 
 ### Breaking changes
-- `SortedHelixWrapper` has been removed
+- `SortedHelixWrapper` has been removed (#110)
 
 ### Minor Changes
-- Changing the token of `HelixWrapper` is now possible through `HelixWrapper.Client.ChangeToken()`
-- Added `Warn Chat User` endpoint
+- Changing the token of `HelixWrapper` is now possible through `HelixWrapper.Client.ChangeToken()` (#110)
+- Added `Warn Chat User` endpoint (#111)
+- Error messages are now provided from Helix responses rather than scraped data (#115)
 
 ### Fixes
 - Fixed an exception that occurs when empty strings are provided to SnakeCase.ConvertToCase
+- Fixed an exception that occurs when calling `GetChatSettings()` on a channel that does not have any special modes enabled 
+- The HttpResponseMessage from making calls with HttpClient now gets disposed (#118)
+
+****
 
 ## 0.3.0-prerelease
 
