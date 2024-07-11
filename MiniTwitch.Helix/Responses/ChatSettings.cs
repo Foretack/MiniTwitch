@@ -7,13 +7,13 @@ public class ChatSettings : BaseResponse<ChatSettings.Settings>
     public record Settings(
         long BroadcasterId,
         bool SlowMode,
-        int SlowModeWaitTime,
+        int? SlowModeWaitTime,
         bool FollowerMode,
-        int FollowerModeDuration,
+        int? FollowerModeDuration,
         bool SubscriberMode,
         bool EmoteMode,
         bool UniqueChatMode,
         bool NonModeratorChatDelay,
-        int NonModeratorChatDelayDuration
+        int? NonModeratorChatDelayDuration
     );
 }
