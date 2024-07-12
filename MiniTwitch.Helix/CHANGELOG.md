@@ -2,6 +2,13 @@ This changelog is available at: https://github.com/Foretack/MiniTwitch/blob/mast
 
 # MiniTwitch.Helix Changelog
 
+## 0.4.1-prerelease
+
+### Fixes
+-  Fix getting JsonException when a result without value is a success (#119)
+
+****
+
 ## 0.4.0-prerelease
 
 ### Breaking changes
