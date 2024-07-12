@@ -19,9 +19,9 @@ internal static class HelixResultFactory
         try
         {
             var responseJson = await response.Content.ReadFromJsonAsync<JsonElement>(HelixApiClient.SerializerOptions, cancellationToken);
-
             if (TryGetErrorMessage(responseJson, out var message))
             {
+                // Failure
                 return new HelixResult<T>()
                 {
                     Success = false,
@@ -34,9 +34,9 @@ internal static class HelixResultFactory
             }
 
             var toObject = responseJson.Deserialize<T>(HelixApiClient.SerializerOptions);
-
             if (toObject is null)
             {
+                // Deserialization failure
                 return new HelixResult<T>()
                 {
                     Success = false,
@@ -49,6 +49,7 @@ internal static class HelixResultFactory
                 };
             }
 
+            // Success
             return new HelixResult<T>()
             {
                 Success = true,
@@ -62,6 +63,7 @@ internal static class HelixResultFactory
         }
         catch (Exception ex)
         {
+            // Deserialization exception
             return new HelixResult<T>()
             {
                 Success = false,
@@ -85,28 +87,52 @@ internal static class HelixResultFactory
     {
         (HttpResponseMessage response, TimeSpan elapsed) = await client.RequestAsync(request, cancellationToken);
 
-        var responseJson = await response.Content.ReadFromJsonAsync<JsonElement>(HelixApiClient.SerializerOptions, cancellationToken);
-        response.Dispose();
-        if (TryGetErrorMessage(responseJson, out var message))
+        try
         {
+            if (!response.IsSuccessStatusCode)
+            {
+                var responseJson = await response.Content.ReadFromJsonAsync<JsonElement>(HelixApiClient.SerializerOptions, cancellationToken);
+                _ = TryGetErrorMessage(responseJson, out var message);
+                // Failure
+                // 'message' is always passed in case some responses don't include it
+                return new HelixResult()
+                {
+                    Success = false,
+                    Message = message,
+                    StatusCode = response.StatusCode,
+                    Elapsed = elapsed,
+                    Ratelimit = GetRateLimit(response)
+                };
+            }
+
+            // Success
             return new HelixResult()
             {
-                Success = false,
-                Message = message,
+                Success = true,
+                Message = null,
                 StatusCode = response.StatusCode,
                 Elapsed = elapsed,
                 Ratelimit = GetRateLimit(response)
             };
         }
-
-        return new HelixResult()
+        catch (Exception ex)
         {
-            Success = true,
-            Message = null,
-            StatusCode = response.StatusCode,
-            Elapsed = elapsed,
-            Ratelimit = GetRateLimit(response)
-        };
+            // Failure without json
+            return new HelixResult()
+            {
+                Success = false,
+                Message = $"Deserialization failure.\n" +
+                    $"{ex.Message}\n" +
+                    $"{ex.StackTrace}\n\n" +
+                    await response.Content.ReadAsStringAsync(cancellationToken),
+                StatusCode = response.StatusCode,
+                Elapsed = elapsed
+            };
+        }
+        finally
+        {
+            response.Dispose();
+        }
     }
 
     private static bool TryGetErrorMessage(JsonElement body, out string? message)
