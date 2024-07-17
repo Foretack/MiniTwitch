@@ -41,6 +41,9 @@ public class HelixWrapper
         this.UserId = userId;
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#start-commercial">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Commercial>> StartCommercial(
         NewCommercial body,
         CancellationToken cancellationToken = default)
@@ -54,6 +57,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Commercial>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-extension-analytics">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ExtensionAnalytics>> GetExtensionAnalytics(
         string? extensionId = null,
         AnalyticsType? type = null,
@@ -73,6 +79,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ExtensionAnalytics>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-game-analytics">API Reference</see>
+    ///</summary>
     public Task<HelixResult<GameAnalytics>> GetGameAnalytics(
         string? gameId = null,
         AnalyticsType? type = null,
@@ -92,6 +101,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<GameAnalytics>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-bits-leaderboard">API Reference</see>
+    ///</summary>
     public Task<HelixResult<BitsLeaderboard>> GetBitsLeaderboard(
         int? count = null,
         BitsLeaderboardPeriod? period = null,
@@ -109,6 +121,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<BitsLeaderboard>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-cheermotes">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Cheermotes>> GetCheermotes(
         long? broadcasterId = null,
         CancellationToken cancellationToken = default)
@@ -120,6 +135,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Cheermotes>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-extension-transactions">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ExtensionTransactions>> GetExtensionTransactions(
         string extensionId,
         string? id = null,
@@ -135,6 +153,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ExtensionTransactions>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-extension-transactions">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ExtensionTransactions>> GetExtensionTransactions(
         string extensionId,
         IEnumerable<string>? ids = null,
@@ -150,6 +171,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ExtensionTransactions>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-channel-information">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ChannelsInformation>> GetChannelInformation(
         long broadcasterId,
         CancellationToken cancellationToken = default)
@@ -161,6 +185,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ChannelsInformation>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-channel-information">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ChannelsInformation>> GetChannelInformation(
         IEnumerable<long> broadcasterIds,
         CancellationToken cancellationToken = default)
@@ -172,6 +199,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ChannelsInformation>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#modify-channel-information">API Reference</see>
+    ///</summary>
     public Task<HelixResult> ModifyChannelInformation(
         NewChannelInformation body,
         CancellationToken cancellationToken = default)
@@ -184,6 +214,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-channel-editors">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ChannelEditors>> GetChannelEditors(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetChannelEditors;
@@ -193,6 +226,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ChannelEditors>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-followed-channels">API Reference</see>
+    ///</summary>
     public Task<HelixResult<FollowedChannels>> GetFollowedChannels(
         long? broadcasterId = null,
         int? first = null,
@@ -207,6 +243,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<FollowedChannels>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-channel-followers">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ChannelFollowers>> GetChannelFollowers(
         long? userId = null,
         int? first = null,
@@ -221,6 +260,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ChannelFollowers>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#create-custom-rewards">API Reference</see>
+    ///</summary>
     public Task<HelixResult<CustomReward>> CreateCustomReward(
         NewCustomReward body,
         CancellationToken cancellationToken = default)
@@ -233,6 +275,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<CustomReward>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#delete-custom-reward">API Reference</see>
+    ///</summary>
     public Task<HelixResult> DeleteCustomReward(
         string id,
         CancellationToken cancellationToken = default)
@@ -245,6 +290,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-custom-reward">API Reference</see>
+    ///</summary>
     public Task<HelixResult<CustomReward>> GetCustomReward(
         string? id = null,
         bool onlyManageableRewards = false,
@@ -259,6 +307,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<CustomReward>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-custom-reward">API Reference</see>
+    ///</summary>
     public Task<HelixResult<CustomReward>> GetCustomReward(
         IEnumerable<string>? ids = null,
         bool onlyManageableRewards = false,
@@ -273,6 +324,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<CustomReward>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-custom-reward-redemption">API Reference</see>
+    ///</summary>
     public Task<HelixResult<CustomRewardRedemptions>> GetCustomRewardRedemption(
         string rewardId,
         RewardRedemptionStatus status,
@@ -293,6 +347,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<CustomRewardRedemptions>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-custom-reward-redemption">API Reference</see>
+    ///</summary>
     public Task<HelixResult<CustomRewardRedemptions>> GetCustomRewardRedemption(
         string rewardId,
         RewardRedemptionStatus status,
@@ -313,6 +370,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<CustomRewardRedemptions>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-custom-reward">API Reference</see>
+    ///</summary>
     public Task<HelixResult<CustomReward>> UpdateCustomReward(
         string id,
         UpdatedCustomReward body,
@@ -327,6 +387,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<CustomReward>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-redemption-status">API Reference</see>
+    ///</summary>
     public Task<HelixResult<CustomRewardRedemption>> UpdateRedemptionStatus(
         string id,
         string rewardId,
@@ -347,6 +410,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<CustomRewardRedemption>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-redemption-status">API Reference</see>
+    ///</summary>
     public Task<HelixResult<CustomRewardRedemptions>> UpdateRedemptionStatus(
         IEnumerable<string> ids,
         string rewardId,
@@ -367,6 +433,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<CustomRewardRedemptions>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-charity-campaign">API Reference</see>
+    ///</summary>
     public Task<HelixResult<CharityCampaign>> GetCharityCampaign(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetCharityCampaign;
@@ -376,6 +445,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<CharityCampaign>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-charity-campaign-donations">API Reference</see>
+    ///</summary>
     public Task<HelixResult<CharityCampaignDonations>> GetCharityCampaignDonations(
         int? first = null,
         CancellationToken cancellationToken = default)
@@ -388,6 +460,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<CharityCampaignDonations>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-chatters">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Chatters>> GetChatters(
         long broadcasterId,
         int? first = null,
@@ -402,6 +477,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Chatters>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-channel-emotes">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Emotes>> GetChannelEmotes(
         long broadcasterId,
         CancellationToken cancellationToken = default)
@@ -413,6 +491,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Emotes>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-global-emotes">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Emotes>> GetGlobalEmotes(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetGlobalEmotes;
@@ -420,6 +501,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Emotes>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-emote-sets">API Reference</see>
+    ///</summary>
     public Task<HelixResult<EmoteSets>> GetEmoteSets(
         string emoteSetId,
         CancellationToken cancellationToken = default)
@@ -431,6 +515,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<EmoteSets>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-emote-sets">API Reference</see>
+    ///</summary>
     public Task<HelixResult<EmoteSets>> GetEmoteSets(
         IEnumerable<string> emoteSetIds,
         CancellationToken cancellationToken = default)
@@ -442,6 +529,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<EmoteSets>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-chat-settings">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ChatSettings>> GetChatSettings(
         long broadcasterId,
         long? moderatorId = null,
@@ -455,6 +545,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ChatSettings>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-chat-settings">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ChatSettings>> UpdateChatSettings(
         long broadcasterId,
         NewChatSettings body,
@@ -469,6 +562,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ChatSettings>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-user-block-list">API Reference</see>
+    ///</summary>
     public Task<HelixResult<BlockList>> GetUserBlockList(
         int? first = null,
         CancellationToken cancellationToken = default)
@@ -481,6 +577,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<BlockList>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#send-chat-announcement">API Reference</see>
+    ///</summary>
     public Task<HelixResult> SendChatAnnouncement(
         long broadcasterId,
         Announcement body,
@@ -495,6 +594,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#send-a-shoutout">API Reference</see>
+    ///</summary>
     public Task<HelixResult> SendAShoutout(
         long fromBroadcasterId,
         long toBroadcasterId,
@@ -509,6 +611,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-user-chat-color">API Reference</see>
+    ///</summary>
     public Task<HelixResult<UsersChatColor>> GetUserChatColor(
         long userId,
         CancellationToken cancellationToken = default)
@@ -520,6 +625,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<UsersChatColor>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-user-chat-color">API Reference</see>
+    ///</summary>
     public Task<HelixResult<UsersChatColor>> GetUserChatColor(
         IEnumerable<long> userIds,
         CancellationToken cancellationToken = default)
@@ -531,6 +639,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<UsersChatColor>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-user-chat-color">API Reference</see>
+    ///</summary>
     public Task<HelixResult> UpdateUserChatColor(
         ChatColor color,
         CancellationToken cancellationToken = default)
@@ -543,6 +654,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-user-chat-color">API Reference</see>
+    ///</summary>
     public Task<HelixResult> UpdateUserChatColor(
         string hexColor,
         CancellationToken cancellationToken = default)
@@ -555,6 +669,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#create-clip">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Clip>> CreateClip(
         long broadcasterId,
         bool? hasDelay = null,
@@ -568,6 +685,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Clip>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-clips">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Clips>> GetClips(
         long broadcasterId,
         long gameId,
@@ -591,6 +711,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Clips>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-clips">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Clips>> GetClips(
         long broadcasterId,
         long gameId,
@@ -614,6 +737,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Clips>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-conduits">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Conduits>> GetConduits(
         CancellationToken cancellationToken = default)
     {
@@ -623,6 +749,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Conduits>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#create-conduits">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Conduits>> CreateConduits(
         int shardCount,
         CancellationToken cancellationToken = default)
@@ -634,6 +763,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Conduits>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-conduits">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Conduits>> UpdateConduits(
         string id,
         int shardCount,
@@ -647,6 +779,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Conduits>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#delete-conduit">API Reference</see>
+    ///</summary>
     public Task<HelixResult> DeleteConduits(
         string id,
         CancellationToken cancellationToken = default)
@@ -658,6 +793,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-conduit-shards">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ConduitShards>> GetConduitShards(
         string conduitId,
         ConduitShardStatus? status = null,
@@ -671,6 +809,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ConduitShards>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-conduit-shards">API Reference</see>
+    ///</summary>
     public Task<HelixResult<UpdatedConduitShards>> UpdateConduitShards(
         string conduitId,
         UpdateConduitRequest body,
@@ -689,6 +830,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<UpdatedConduitShards>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-conduit-shards">API Reference</see>
+    ///</summary>
     public Task<HelixResult<UpdatedConduitShards>> UpdateConduitShards(
         string conduitId,
         IEnumerable<UpdateConduitRequest> body,
@@ -707,6 +851,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<UpdatedConduitShards>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-content-classification-labels">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ContentClassificationLabels>> GetContentClassificationLabels(
         LabelLocale? locale = null,
         CancellationToken cancellationToken = default)
@@ -718,6 +865,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ContentClassificationLabels>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-drops-entitlements">API Reference</see>
+    ///</summary>
     public Task<HelixResult<DropsEntitlements>> GetDropsEntitlements(
         string? id = null,
         long? userId = null,
@@ -737,6 +887,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<DropsEntitlements>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-drops-entitlements">API Reference</see>
+    ///</summary>
     public Task<HelixResult<DropsEntitlements>> GetDropsEntitlements(
         IEnumerable<string>? ids = null,
         long? userId = null,
@@ -756,6 +909,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<DropsEntitlements>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-drops-entitlements">API Reference</see>
+    ///</summary>
     public Task<HelixResult<UpdatedDropsEntitlements>> UpdateDropsEntitlements(
         IEnumerable<string>? entitlementIds = null,
         FulfillmentStatus? fulfillmentStatus = null,
@@ -770,6 +926,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<UpdatedDropsEntitlements>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-extension-configuration-segment">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Responses.ExtensionConfigurationSegment>> GetExtensionConfigurationSegment(
         string extensionId,
         ConfigSegmentType segment,
@@ -786,6 +945,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Responses.ExtensionConfigurationSegment>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-extension-configuration-segment">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Responses.ExtensionConfigurationSegment>> GetExtensionConfigurationSegment(
         string extensionId,
         IEnumerable<ConfigSegmentType> segments,
@@ -802,6 +964,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Responses.ExtensionConfigurationSegment>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#set-extension-configuration-segment">API Reference</see>
+    ///</summary>
     public Task<HelixResult> SetExtensionConfigurationSegment(
         ConfigurationSegment body,
         CancellationToken cancellationToken = default)
@@ -814,6 +979,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#set-extension-required-configuration">API Reference</see>
+    ///</summary>
     public Task<HelixResult> SetExtensionRequiredConfiguration(
         long broadcasterId,
         ExtensionRequiredConfiguration body,
@@ -827,6 +995,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#send-extension-pubsub-message">API Reference</see>
+    ///</summary>
     public Task<HelixResult> SendExtensionPubSubMessage(
         ExtensionPubSubMessage body,
         CancellationToken cancellationToken = default)
@@ -839,6 +1010,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-extension-live-channels">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ExtensionLiveChannels>> GetExtensionLiveChannels(
         string extensionId,
         int? first = null,
@@ -852,6 +1026,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ExtensionLiveChannels>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-extension-secrets">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ExtensionSecrets>> GetExtensionSecrets(
         string extensionId,
         CancellationToken cancellationToken = default)
@@ -863,6 +1040,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ExtensionSecrets>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#create-extension-secret">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ExtensionSecrets>> CreateExtensionSecret(
         string extensionId,
         int? delay = null,
@@ -876,6 +1056,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ExtensionSecrets>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#send-extension-chat-message">API Reference</see>
+    ///</summary>
     public Task<HelixResult> SendExtensionChatMessage(
         long broadcasterId,
         ExtensionChatMessage body,
@@ -889,6 +1072,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-extensions">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ChannelExtensions>> GetExtensions(
         string extensionId,
         string? extensionVersion = null,
@@ -902,6 +1088,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ChannelExtensions>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-released-extensions">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ReleasedExtensions>> GetReleasedExtensions(
         string extensionId,
         string? extensionVersion = null,
@@ -915,6 +1104,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ReleasedExtensions>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-extension-bits-products">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ExtensionBitsProducts>> GetExtensionBitsProducts(
         bool? shouldIncludeAll = null,
         CancellationToken cancellationToken = default)
@@ -926,6 +1118,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ExtensionBitsProducts>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-extension-bits-product">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ExtensionBitsProducts>> UpdateExtensionBitsProduct(
         UpdatedBitsProduct body,
         CancellationToken cancellationToken = default)
@@ -938,6 +1133,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ExtensionBitsProducts>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#create-eventsub-subscription">API Reference</see>
+    ///</summary>
     public Task<HelixResult<CreatedSubscription>> CreateEventSubSubscription(
         NewSubscription body,
         CancellationToken cancellationToken = default)
@@ -950,6 +1148,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<CreatedSubscription>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#delete-eventsub-subscription">API Reference</see>
+    ///</summary>
     public Task<HelixResult> DeleteEventSubSubscription(
         string id,
         CancellationToken cancellationToken = default)
@@ -961,6 +1162,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-eventsub-subscriptions">API Reference</see>
+    ///</summary>
     public Task<HelixResult<EventSubSubscriptions>> GetEventSubSubscriptions(
         EventSubStatus? status = null,
         string? type = null,
@@ -976,6 +1180,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<EventSubSubscriptions>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-top-games">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Games>> GetTopGames(
         int? first = null,
         CancellationToken cancellationToken = default)
@@ -987,6 +1194,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Games>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-games">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Games>> GetGames(
         string? id = null,
         string? name = null,
@@ -1002,6 +1212,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Games>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-games">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Games>> GetGames(
         IEnumerable<string>? ids = null,
         IEnumerable<string>? names = null,
@@ -1017,6 +1230,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Games>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-creator-goals">API Reference</see>
+    ///</summary>
     public Task<HelixResult<CreatorGoals>> GetCreatorGoals(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetCreatorGoals;
@@ -1026,6 +1242,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<CreatorGoals>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-channel-guest-star-settings">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ChannelGuestStarSettings>> GetChannelGuestStarSettings(
         long broadcasterId,
         CancellationToken cancellationToken = default)
@@ -1038,6 +1257,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ChannelGuestStarSettings>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-channel-guest-star-settings">API Reference</see>
+    ///</summary>
     public Task<HelixResult> UpdateChannelGuestStarSettings(
         NewGuestStarSettings body,
         CancellationToken cancellationToken = default)
@@ -1051,6 +1273,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-guest-star-session">API Reference</see>
+    ///</summary>
     public Task<HelixResult<GuestStarSession>> GetGuestStarSession(
         long broadcasterId,
         CancellationToken cancellationToken = default)
@@ -1063,6 +1288,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<GuestStarSession>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#create-guest-star-session">API Reference</see>
+    ///</summary>
     public Task<HelixResult<GuestStarSession>> CreateGuestStarSession(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.CreateGuestStarSession;
@@ -1072,6 +1300,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<GuestStarSession>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#end-guest-star-session">API Reference</see>
+    ///</summary>
     public Task<HelixResult<GuestStarSession>> EndGuestStarSession(
         string sessionId,
         CancellationToken cancellationToken = default)
@@ -1084,6 +1315,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<GuestStarSession>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-guest-star-invites">API Reference</see>
+    ///</summary>
     public Task<HelixResult<GuestStarInvites>> GetGuestStarInvites(
         long broadcasterId,
         string sessionId,
@@ -1098,6 +1332,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<GuestStarInvites>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#send-guest-star-invite">API Reference</see>
+    ///</summary>
     public Task<HelixResult> SendGuestStarInvite(
         long broadcasterId,
         string sessionId,
@@ -1113,6 +1350,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#delete-guest-star-invite">API Reference</see>
+    ///</summary>
     public Task<HelixResult> DeleteGuestStarInvite(
         long broadcasterId,
         string sessionId,
@@ -1129,6 +1369,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#assign-guest-star-slot">API Reference</see>
+    ///</summary>
     public Task<HelixResult> AssignGuestStarSlot(
         long broadcasterId,
         string sessionId,
@@ -1147,6 +1390,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-guest-star-slot">API Reference</see>
+    ///</summary>
     public Task<HelixResult> UpdateGuestStarSlot(
         long broadcasterId,
         string sessionId,
@@ -1165,6 +1411,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#delete-guest-star-slot">API Reference</see>
+    ///</summary>
     public Task<HelixResult> DeleteGuestStarSlot(
         long broadcasterId,
         string sessionId,
@@ -1185,6 +1434,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-guest-star-slot-settings">API Reference</see>
+    ///</summary>
     public Task<HelixResult> UpdateGuestStarSlotSettings(
         long broadcasterId,
         string sessionId,
@@ -1209,6 +1461,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-hype-train-events">API Reference</see>
+    ///</summary>
     public Task<HelixResult<HypeTrainEvents>> GetHypeTrainEvents(
         int? first = null,
         CancellationToken cancellationToken = default)
@@ -1221,6 +1476,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<HypeTrainEvents>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#check-automod-status">API Reference</see>
+    ///</summary>
     public Task<HelixResult<AutoModStatus>> CheckAutoModStatus(
         MessageToCheck body,
         CancellationToken cancellationToken = default)
@@ -1233,6 +1491,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<AutoModStatus>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#manage-held-automod-messages">API Reference</see>
+    ///</summary>
     public Task<HelixResult> ManageHeldAutoModMessages(
         string msgId,
         string action,
@@ -1247,6 +1508,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-automod-settings">API Reference</see>
+    ///</summary>
     public Task<HelixResult<AutoModSettings>> GetAutoModSettings(
         long broadcasterId,
         CancellationToken cancellationToken = default)
@@ -1259,6 +1523,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<AutoModSettings>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-automod-settings">API Reference</see>
+    ///</summary>
     public Task<HelixResult<AutoModSettings>> UpdateAutoModSettings(
         long broadcasterId,
         NewAutoModSettings body,
@@ -1273,6 +1540,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<AutoModSettings>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-banned-users">API Reference</see>
+    ///</summary>
     public Task<HelixResult<BannedUsers>> GetBannedUsers(
         long? userId = null,
         int? first = null,
@@ -1287,6 +1557,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<BannedUsers>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-banned-users">API Reference</see>
+    ///</summary>
     public Task<HelixResult<BannedUsers>> GetBannedUsers(
         IEnumerable<long>? userIds = null,
         int? first = null,
@@ -1301,6 +1574,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<BannedUsers>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#ban-user">API Reference</see>
+    ///</summary>
     public Task<HelixResult<BannedUser>> BanUser(
         long broadcasterId,
         UserToBan body,
@@ -1319,6 +1595,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<BannedUser>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#unban-user">API Reference</see>
+    ///</summary>
     public Task<HelixResult> UnbanUser(
         long broadcasterId,
         long userId,
@@ -1333,6 +1612,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-blocked-terms">API Reference</see>
+    ///</summary>
     public Task<HelixResult<BlockedTerms>> GetBlockedTerms(
         long broadcasterId,
         int? first = null,
@@ -1347,6 +1629,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<BlockedTerms>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#add-blocked-term">API Reference</see>
+    ///</summary>
     public Task<HelixResult<BlockedTerms>> AddBlockedTerm(
         long broadcasterId,
         string text,
@@ -1361,6 +1646,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<BlockedTerms>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#remove-blocked-term">API Reference</see>
+    ///</summary>
     public Task<HelixResult> RemoveBlockedTerm(
         long broadcasterId,
         string id,
@@ -1375,6 +1663,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#delete-chat-messages">API Reference</see>
+    ///</summary>
     public Task<HelixResult> DeleteChatMessages(
         long broadcasterId,
         string? messageId = null,
@@ -1389,6 +1680,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-moderators">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Moderators>> GetModerators(
         long? userId = null,
         int? first = null,
@@ -1403,6 +1697,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Moderators>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-moderators">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Moderators>> GetModerators(
         IEnumerable<long>? userIds = null,
         int? first = null,
@@ -1417,6 +1714,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Moderators>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#add-channel-moderator">API Reference</see>
+    ///</summary>
     public Task<HelixResult> AddChannelModerator(
         long userId,
         CancellationToken cancellationToken = default)
@@ -1429,6 +1729,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#remove-channel-moderator">API Reference</see>
+    ///</summary>
     public Task<HelixResult> RemoveChannelModerator(
         long userId,
         CancellationToken cancellationToken = default)
@@ -1441,6 +1744,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-vi-ps">API Reference</see>
+    ///</summary>
     public Task<HelixResult<VIPs>> GetVIPs(
         long? userId = null,
         int? first = null,
@@ -1455,6 +1761,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<VIPs>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-vi-ps">API Reference</see>
+    ///</summary>
     public Task<HelixResult<VIPs>> GetVIPs(
         IEnumerable<long>? userIds = null,
         int? first = null,
@@ -1469,6 +1778,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<VIPs>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#add-channel-vip">API Reference</see>
+    ///</summary>
     public Task<HelixResult> AddChannelVIP(
         long userId,
         CancellationToken cancellationToken = default)
@@ -1481,6 +1793,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#remove-channel-vip">API Reference</see>
+    ///</summary>
     public Task<HelixResult> RemoveChannelVIP(
         long userId,
         CancellationToken cancellationToken = default)
@@ -1493,6 +1808,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-shield-mode-status">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ShieldModeStatus>> UpdateShieldModeStatus(
         long broadcasterId,
         bool isActive,
@@ -1507,6 +1825,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ShieldModeStatus>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-shield-mode-status">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ShieldModeStatus>> GetShieldModeStatus(
         long broadcasterId,
         CancellationToken cancellationToken = default)
@@ -1519,6 +1840,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ShieldModeStatus>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-polls">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Polls>> GetPolls(
         string? id = null,
         int? first = null,
@@ -1533,6 +1857,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Polls>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-polls">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Polls>> GetPolls(
         IEnumerable<string>? ids = null,
         int? first = null,
@@ -1547,6 +1874,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Polls>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#create-poll">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Poll>> CreatePoll(
         NewPoll body,
         CancellationToken cancellationToken = default)
@@ -1560,6 +1890,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Poll>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#end-poll">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Poll>> EndPoll(
         string id,
         string status,
@@ -1574,6 +1907,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Poll>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-predictions">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Predictions>> GetPredictions(
         string? id = null,
         int? first = null,
@@ -1588,6 +1924,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Predictions>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-predictions">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Predictions>> GetPredictions(
         IEnumerable<string>? ids = null,
         int? first = null,
@@ -1602,6 +1941,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Predictions>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#create-prediction">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Prediction>> CreatePrediction(
         NewPrediction body,
         CancellationToken cancellationToken = default)
@@ -1615,6 +1957,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Prediction>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#end-prediction">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Prediction>> EndPrediction(
         PredictionToEnd body,
         CancellationToken cancellationToken = default)
@@ -1628,6 +1973,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Prediction>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#start-a-raid">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Raid>> StartRaid(
         long toBroadcasterId,
         CancellationToken cancellationToken = default)
@@ -1640,6 +1988,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Raid>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#cancel-a-raid">API Reference</see>
+    ///</summary>
     public Task<HelixResult> CancelRaid(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.CancelARaid;
@@ -1649,6 +2000,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-channel-stream-schedule">API Reference</see>
+    ///</summary>
     public Task<HelixResult<StreamSchedule>> GetChannelStreamSchedule(
         long broadcasterId,
         string? id = null,
@@ -1666,6 +2020,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<StreamSchedule>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-channel-stream-schedule">API Reference</see>
+    ///</summary>
     public Task<HelixResult<StreamSchedule>> GetChannelStreamSchedule(
         long broadcasterId,
         IEnumerable<string>? ids = null,
@@ -1683,6 +2040,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<StreamSchedule>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-channel-stream-schedule">API Reference</see>
+    ///</summary>
     public Task<HelixResult> UpdateChannelStreamSchedule(
         bool? isVacationEnabled = null,
         DateTime? vacationStartTime = null,
@@ -1701,6 +2061,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#create-channel-stream-schedule-segment">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ScheduleSegment>> CreateChannelStreamScheduleSegment(
         NewScheduleSegment body,
         CancellationToken cancellationToken = default)
@@ -1714,6 +2077,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ScheduleSegment>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-channel-stream-schedule-segment">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Responses.UpdatedScheduleSegment>> UpdateChannelStreamScheduleSegment(
         string id,
         Requests.UpdatedScheduleSegment Body,
@@ -1730,6 +2096,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Responses.UpdatedScheduleSegment>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#delete-channel-stream-schedule-segment">API Reference</see>
+    ///</summary>
     public Task<HelixResult> DeleteChannelStreamScheduleSegment(
         string id,
         CancellationToken cancellationToken = default)
@@ -1742,6 +2111,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#search-categories">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Categories>> SearchCategories(
         string query,
         int? first = null,
@@ -1755,6 +2127,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Categories>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#search-channels">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Channels>> SearchChannels(
         string query,
         bool? liveOnly = null,
@@ -1770,6 +2145,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Channels>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-stream-key">API Reference</see>
+    ///</summary>
     public Task<HelixResult<StreamKey>> GetStreamKey(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetStreamKey;
@@ -1779,6 +2157,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<StreamKey>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-streams">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Streams>> GetStreams(
         long? userId = null,
         string? userLogin = null,
@@ -1800,6 +2181,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Streams>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-streams">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Streams>> GetStreams(
         IEnumerable<long>? userIds = null,
         IEnumerable<string>? userLogins = null,
@@ -1821,6 +2205,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Streams>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-followed-streams">API Reference</see>
+    ///</summary>
     public Task<HelixResult<FollowedStreams>> GetFollowedStreams(
         int? first = null,
         CancellationToken cancellationToken = default)
@@ -1833,6 +2220,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<FollowedStreams>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#create-stream-marker">API Reference</see>
+    ///</summary>
     public Task<HelixResult<StreamMarker>> CreateStreamMarker(
         string? description = null,
         CancellationToken cancellationToken = default)
@@ -1850,6 +2240,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<StreamMarker>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-stream-markers">API Reference</see>
+    ///</summary>
     public Task<HelixResult<StreamMarkers>> GetStreamMarkers(
         string? videoId,
         int? first = null,
@@ -1864,6 +2257,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<StreamMarkers>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-broadcaster-subscriptions">API Reference</see>
+    ///</summary>
     public Task<HelixResult<BroadcasterSubscriptions>> GetBroadcasterSubscriptions(
         long? userId = null,
         int? first = null,
@@ -1878,6 +2274,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<BroadcasterSubscriptions>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-broadcaster-subscriptions">API Reference</see>
+    ///</summary>
     public Task<HelixResult<BroadcasterSubscriptions>> GetBroadcasterSubscriptions(
         IEnumerable<long>? userIds = null,
         int? first = null,
@@ -1892,6 +2291,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<BroadcasterSubscriptions>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#check-user-subscription">API Reference</see>
+    ///</summary>
     public Task<HelixResult<UserSubscription>> CheckUserSubscription(
         long broadcasterId,
         CancellationToken cancellationToken = default)
@@ -1904,6 +2306,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<UserSubscription>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-channel-teams">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ChannelTeams>> GetChannelTeams(
         long broadcasterId,
         CancellationToken cancellationToken = default)
@@ -1915,6 +2320,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ChannelTeams>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-teams">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Teams>> GetTeams(
         string name,
         string id,
@@ -1928,6 +2336,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Teams>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-users">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Users>> GetUsers(
         long? id = null,
         string? login = null,
@@ -1941,6 +2352,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Users>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-users">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Users>> GetUsers(
         IEnumerable<long>? id = null,
         IEnumerable<string>? login = null,
@@ -1954,6 +2368,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Users>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#update-user">API Reference</see>
+    ///</summary>
     public Task<HelixResult<UpdatedUser>> UpdateUser(
         string? description = null,
         CancellationToken cancellationToken = default)
@@ -1965,6 +2382,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<UpdatedUser>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#block-user">API Reference</see>
+    ///</summary>
     public Task<HelixResult> BlockUser(
         long targetUserId,
         string? sourceContext = null,
@@ -1980,6 +2400,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#unblock-user">API Reference</see>
+    ///</summary>
     public Task<HelixResult> UnblockUser(
         long targetUserId,
         CancellationToken cancellationToken = default)
@@ -1991,6 +2414,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-user-extensions">API Reference</see>
+    ///</summary>
     public Task<HelixResult<UserExtensions>> GetUserExtensions(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetUserExtensions;
@@ -1998,6 +2424,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<UserExtensions>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-user-active-extensions">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ActiveExtensions>> GetUserActiveExtensions(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetUserActiveExtensions;
@@ -2007,6 +2436,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ActiveExtensions>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-videos">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Videos>> GetVideos(
         string? id = null,
         long? userId = null,
@@ -2032,6 +2464,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Videos>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-videos">API Reference</see>
+    ///</summary>
     public Task<HelixResult<Videos>> GetVideos(
         IEnumerable<string>? ids = null,
         long? userId = null,
@@ -2057,6 +2492,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<Videos>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#delete-videos">API Reference</see>
+    ///</summary>
     public Task<HelixResult> DeleteVideos(
         string id,
         CancellationToken cancellationToken = default)
@@ -2068,6 +2506,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#delete-videos">API Reference</see>
+    ///</summary>
     public Task<HelixResult> DeleteVideos(
         IEnumerable<string> ids,
         CancellationToken cancellationToken = default)
@@ -2079,6 +2520,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#send-whisper">API Reference</see>
+    ///</summary>
     public Task<HelixResult> SendWhisper(
         long toUserId,
         string message,
@@ -2098,6 +2542,9 @@ public class HelixWrapper
         return HelixResultFactory.Create(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-ad-schedule">API Reference</see>
+    ///</summary>
     public Task<HelixResult<AdSchedule>> GetAdSchedule(
         long broadcasterId,
         CancellationToken cancellationToken = default)
@@ -2109,6 +2556,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<AdSchedule>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#snooze-next-ad">API Reference</see>
+    ///</summary>
     public Task<HelixResult<SnoozedAd>> SnoozeNextAd(
         long broadcasterId,
         CancellationToken cancellationToken = default)
@@ -2120,6 +2570,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<SnoozedAd>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-global-chat-badges">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ChatBadges>> GetGlobalChatBadges(CancellationToken cancellationToken = default)
     {
         HelixEndpoint endpoint = Endpoints.GetGlobalChatBadges;
@@ -2127,6 +2580,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ChatBadges>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-channel-chat-badges">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ChatBadges>> GetChannelChatBadges(
         long broadcasterId,
         CancellationToken cancellationToken = default)
@@ -2138,6 +2594,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ChatBadges>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-moderated-channels">API Reference</see>
+    ///</summary>
     public Task<HelixResult<ModeratedChannels>> GetModeratedChannels(
         int? first = null,
         CancellationToken cancellationToken = default)
@@ -2150,6 +2609,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<ModeratedChannels>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#send-chat-message">API Reference</see>
+    ///</summary>
     public Task<HelixResult<SentMessage>> SendChatMessage(
         ChatMessage message,
         CancellationToken cancellationToken = default)
@@ -2161,6 +2623,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<SentMessage>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-user-emotes">API Reference</see>
+    ///</summary>
     public Task<HelixResult<UserEmotes>> GetUserEmotes(
         long? broadcasterId = null,
         CancellationToken cancellationToken = default)
@@ -2173,6 +2638,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<UserEmotes>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-unban-requests">API Reference</see>
+    ///</summary>
     public Task<HelixResult<UnbanRequests>> GetUnbanRequests(
         long broadcasterId,
         UnbanRequestStatus status,
@@ -2191,6 +2659,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<UnbanRequests>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#resolve-unban-requests">API Reference</see>
+    ///</summary>
     public Task<HelixResult<UnbanRequests>> ResolveUnbanRequests(
         long broadcasterId,
         string unbanRequestId,
@@ -2209,6 +2680,9 @@ public class HelixWrapper
         return HelixResultFactory.Create<UnbanRequests>(Client, request, endpoint, cancellationToken);
     }
 
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#warn-chat-user">API Reference</see>
+    ///</summary>
     public Task<HelixResult<WarnInfo>> WarnChatUser(
         long broadcasterId,
         long userId,
