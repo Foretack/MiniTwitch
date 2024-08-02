@@ -169,3 +169,42 @@ public class ConduitTransportConverter : JsonConverter<ConduitTransport>
         return null;
     }
 }
+
+/// <summary>
+/// Reads DateTime? from string. Writes DateTime as string. <br/>
+/// NOTE: This does not do any validation.
+/// </summary>
+internal class OptionalDateTimeConverter : JsonConverter<DateTime?>
+{
+    public override DateTime? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (reader.TryGetDateTime(out var dateTime))
+        {
+            return dateTime;
+        }
+
+        if (reader.TokenType == JsonTokenType.Null || reader.ValueSpan.Length == 0)
+        {
+            return null;
+        }
+
+        var str = reader.GetString();
+        if (string.IsNullOrEmpty(str))
+        {
+            return null;
+        }
+
+        throw new JsonException($"Cannot convert value {str} to DateTime?");
+    }
+
+    public override void Write(Utf8JsonWriter writer, DateTime? value, JsonSerializerOptions options)
+    {
+        if (value is null)
+        {
+            writer.WriteNullValue();
+            return;
+        }
+
+        writer.WriteStringValue($"{value:O}");
+    }
+}
