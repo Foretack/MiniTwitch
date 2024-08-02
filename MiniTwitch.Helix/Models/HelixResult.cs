@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Runtime.CompilerServices;
 using MiniTwitch.Helix.Interfaces;
 using MiniTwitch.Helix.Internal;
 using MiniTwitch.Helix.Internal.Models;
@@ -90,6 +91,48 @@ public readonly struct HelixResult<TResult> : IHelixResult
             this.HelixTask.Value.Endpoint,
             cancellationToken
         );
+    }
+
+    /// <summary>
+    /// Fetches the next pages of content and returns them via IAsyncEnumerable
+    /// </summary>
+    public async IAsyncEnumerable<HelixResult<TResult>> PaginateEnumerable(
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
+    {
+        var result = this;
+        while (
+            result.CanPaginate &&
+            await result.Paginate(cancellationToken) is { Success: true } next
+        )
+        {
+            yield return next;
+            result = next;
+        }
+    }
+
+    /// <summary>
+    /// Fetches the next pages of content and returns them via IAsyncEnumerable
+    /// </summary>
+    /// <param name="limit">The maximum amount of pages to fetch before stopping</param>
+    /// <param name="cancellationToken"></param>
+    public async IAsyncEnumerable<HelixResult<TResult>> PaginateEnumerable(
+        int limit,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
+    {
+        int page = 0;
+        var result = this;
+        while (
+            page < limit &&
+            result.CanPaginate &&
+            await result.Paginate(cancellationToken) is { Success: true } next
+        )
+        {
+            yield return next;
+            result = next;
+            page++;
+        }
     }
 
     public static implicit operator TResult(HelixResult<TResult> result) => result.Value;
