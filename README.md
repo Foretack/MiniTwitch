@@ -177,10 +177,7 @@ MiniTwitch.Helix conveniently wraps the Twitch Helix API and exposes them throug
 
 ## Getting Started
 
-This example demonstrates the usage of `HelixWrapper` and `HelixResult<T>.Paginate()`
-
-> [!IMPORTANT]  
-> You may notice that some requests have missing parameters. This is because the user ID is supplied by the library to requests that require the user ID of the provided token
+This example demonstrates the usage of `HelixWrapper` and  pagination through `HelixResult<T>`
 
 ```csharp
 using MiniTwitch.Helix;
@@ -195,49 +192,36 @@ public class Program
 
     static async Task Main()
     {
-        Helix = new HelixWrapper("Access token", 987654321);
+        Helix = new HelixWrapper("wjm4xzd5fxp4ilaykzmmwc3dett9vm", 783267696);
 
-        var chatters = await GetAllChatters(12345678);
+        var emotes = await GetAllMyEmotes();
     }
 
-    private static async Task<List<string>> GetAllChatters(long broadcasterId)
+    private static async Task<List<string>> GetAllMyEmotes()
     {
-        List<string> usernames = [];
-        HelixResult<Chatters> chatters = await Helix.GetChatters(broadcasterId, first: 1000);
-
-        if (!chatters.Success)
+        HelixResult<UserEmotes> emotesResult = await Helix.GetUserEmotes();
+        if (!emotesResult.Success)
         {
             return [];
         }
 
-        foreach (var chatter in chatters.Value.Data)
+        List<string> emoteList = [];
+        foreach (var emote in emotesResult.Value.Data)
         {
-            usernames.Add(chatter.Username);
+            emoteList.Add(emote.Name);
         }
 
-        // No more users - return what we got
-        if (!chatters.CanPaginate)
+        // Fetch the next pages of content.
+        // The code inside will not run if there are no more pages.
+        await foreach (var nextEmotesResult in emotesResult.PaginateEnumerable())
         {
-            return usernames;
-        }
-
-        // Continue paginating if the result is a success
-        while (await chatters.Paginate() is { Success: true } next)
-        {
-            foreach (var chatter in next.Value.Data)
+            foreach (var emote in nextEmotesResult.Value.Data)
             {
-                usernames.Add(chatter.Username);
+                emoteList.Add(emote.Name);
             }
-
-            // Return when pagination is no longer possible
-            if (!next.CanPaginate)
-                return usernames;
-
-            // Assign the new page to the old one so we move forward
-            chatters = next;
         }
 
-        return usernames;
+        return emoteList;
     }
 }
 ```
