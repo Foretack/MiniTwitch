@@ -69,7 +69,8 @@ public readonly struct HelixResult<TResult> : IHelixResult
     /// Whether the request can fetch the next page of content
     /// </summary>
     public bool CanPaginate =>
-        this.Value is IPaginable p
+        this.Success
+        && this.Value is IPaginable p
         && p.Pagination.Cursor is { Length: > 0 }
         && this.HelixTask is not null;
 
