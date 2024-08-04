@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Runtime.CompilerServices;
 using MiniTwitch.Helix.Interfaces;
 using MiniTwitch.Helix.Internal;
 using MiniTwitch.Helix.Internal.Models;
@@ -40,7 +41,7 @@ public readonly struct HelixResult<TResult> : IHelixResult
 {
     /// <summary>
     /// The response's content as <typeparamref name="TResult"/>
-    /// <para>This value should only be used if <see cref="Success"/> is <see langword="true"/></para>
+    /// <para>This value should only be accessed if <see cref="Success"/> is <see langword="true"/></para>
     /// </summary>
     public TResult Value { get; init; }
     /// <summary>
@@ -68,7 +69,8 @@ public readonly struct HelixResult<TResult> : IHelixResult
     /// Whether the request can fetch the next page of content
     /// </summary>
     public bool CanPaginate =>
-        this.Value is IPaginable p
+        this.Success
+        && this.Value is IPaginable p
         && p.Pagination.Cursor is { Length: > 0 }
         && this.HelixTask is not null;
 
@@ -90,6 +92,50 @@ public readonly struct HelixResult<TResult> : IHelixResult
             this.HelixTask.Value.Endpoint,
             cancellationToken
         );
+    }
+
+    /// <summary>
+    /// Fetches the next pages of content and returns them via IAsyncEnumerable
+    /// <para>Does nothing if <see cref="CanPaginate"/> is <see langword="false"/></para>
+    /// </summary>
+    public async IAsyncEnumerable<HelixResult<TResult>> EnumeratePages(
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
+    {
+        var result = this;
+        while (
+            result.CanPaginate &&
+            await result.Paginate(cancellationToken) is { Success: true } next
+        )
+        {
+            yield return next;
+            result = next;
+        }
+    }
+
+    /// <summary>
+    /// Fetches the next pages of content and returns them via IAsyncEnumerable
+    /// <para>Does nothing if <see cref="CanPaginate"/> is <see langword="false"/></para>
+    /// </summary>
+    /// <param name="limit">The maximum amount of pages to fetch before stopping</param>
+    /// <param name="cancellationToken"></param>
+    public async IAsyncEnumerable<HelixResult<TResult>> EnumeratePages(
+        int limit,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default
+    )
+    {
+        int page = 0;
+        var result = this;
+        while (
+            page < limit &&
+            result.CanPaginate &&
+            await result.Paginate(cancellationToken) is { Success: true } next
+        )
+        {
+            yield return next;
+            result = next;
+            page++;
+        }
     }
 
     public static implicit operator TResult(HelixResult<TResult> result) => result.Value;
