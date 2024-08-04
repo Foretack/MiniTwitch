@@ -41,7 +41,7 @@ public readonly struct HelixResult<TResult> : IHelixResult
 {
     /// <summary>
     /// The response's content as <typeparamref name="TResult"/>
-    /// <para>This value should only be used if <see cref="Success"/> is <see langword="true"/></para>
+    /// <para>This value should only be accessed if <see cref="Success"/> is <see langword="true"/></para>
     /// </summary>
     public TResult Value { get; init; }
     /// <summary>
@@ -96,8 +96,9 @@ public readonly struct HelixResult<TResult> : IHelixResult
 
     /// <summary>
     /// Fetches the next pages of content and returns them via IAsyncEnumerable
+    /// <para>Does nothing if <see cref="CanPaginate"/> is <see langword="false"/></para>
     /// </summary>
-    public async IAsyncEnumerable<HelixResult<TResult>> PaginateEnumerable(
+    public async IAsyncEnumerable<HelixResult<TResult>> EnumeratePages(
         [EnumeratorCancellation] CancellationToken cancellationToken = default
     )
     {
@@ -114,10 +115,11 @@ public readonly struct HelixResult<TResult> : IHelixResult
 
     /// <summary>
     /// Fetches the next pages of content and returns them via IAsyncEnumerable
+    /// <para>Does nothing if <see cref="CanPaginate"/> is <see langword="false"/></para>
     /// </summary>
     /// <param name="limit">The maximum amount of pages to fetch before stopping</param>
     /// <param name="cancellationToken"></param>
-    public async IAsyncEnumerable<HelixResult<TResult>> PaginateEnumerable(
+    public async IAsyncEnumerable<HelixResult<TResult>> EnumeratePages(
         int limit,
         [EnumeratorCancellation] CancellationToken cancellationToken = default
     )

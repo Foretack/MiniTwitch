@@ -213,7 +213,7 @@ public class Program
 
         // Fetch the next pages of content.
         // The code inside will not run if there are no more pages.
-        await foreach (var nextEmotesResult in emotesResult.PaginateEnumerable())
+        await foreach (var nextEmotesResult in emotesResult.EnumeratePages())
         {
             foreach (var emote in nextEmotesResult.Value.Data)
             {
