@@ -2,6 +2,16 @@ This changelog is available at: https://github.com/Foretack/MiniTwitch/blob/mast
 
 # MiniTwitch.Helix Changelog
 
+## 0.4.2-prerelease
+
+### Minor Changes
+- Added IAsyncEnumerable pagination API `HelixResult<T>.EnumeratePages()` (#122)
+- Added links to the API reference page for every call (#120)
+
+### Fixes
+- Fixed getting 0 as the ChannelId for followed channels (#123)
+- Fixed deserialization exception in `GetBannedUsers()` (#121)
+
 ## 0.4.1-prerelease
 
 ### Fixes
