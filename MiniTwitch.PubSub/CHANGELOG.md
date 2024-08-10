@@ -1,5 +1,12 @@
 # MiniTwitch.PubSub Changelog
 
+## 1.0.4
+
+### Minor changes
+- `PubSubClient` now has the property `IsConnected` for checking whether the underlying WebSocket is connected
+
+***
+
 ## 1.0.3
 
 ### Minor changes
