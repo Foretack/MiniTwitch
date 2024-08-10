@@ -60,8 +60,16 @@ public sealed class WebSocketClient : IAsyncDisposable
         _uri = uri;
         Log(LogLevel.Trace, "Connecting to {uri} ...", uri);
 
-        // Connect
-        await _client.ConnectAsync(uri, cancellationToken);
+        // Try connecting
+        try
+        {
+            await _client.ConnectAsync(uri, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            LogException(ex, "WebSocket connection failed!");
+            return;
+        }
 
         // Make sure _cts isn't cancelled
         if (_cts.IsCancellationRequested)
