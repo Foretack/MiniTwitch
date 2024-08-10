@@ -2,17 +2,30 @@ This changelog is available at: https://github.com/Foretack/MiniTwitch/blob/mast
 
 # MiniTwitch.Irc Changelog
 
-# 1.2.13
+## 1.2.16
+
+### Minor changes
+- `IrcClient` now has the property `IsConnected` for checking whether the underlying WebSocket is connected
+- Added support for gigantified emote and animated message tags
+- Added `Msg_warned` to `NoticeType` enum
+
+***
+
+## 1.2.13
 
 ### Minor changes
 
 - Added support for `msg-param-community-gift-id` tag for gift usernotice
 
-# 1.2.11
+***
+
+## 1.2.11
 
 ### Minor changes
 
 - Added `CustomRewardId` property to privmsg struct
+
+***
 
 ## 1.2.10
 
