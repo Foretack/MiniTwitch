@@ -28,13 +28,6 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
     /// </summary>
     public MessageReply Reply { get; init; }
     /// <summary>
-    /// HypeChat information about this message
-    /// <para>Note: If <see cref="HypeChat.HasContent"/> is <see langword="false"/>, strings are <see cref="string.Empty"/> and numbers are <see langword="0"/></para>
-    /// <para>WARNING: This property will be removed in a future version. See: <see href="https://twitter.com/TwitchSupport/status/1722675472218141072"/></para>
-    /// </summary>
-    [Obsolete("Hype Chat has been officially removed from Twitch. This property will be removed in a future version.")]
-    public HypeChat HypeChat { get; init; }
-    /// <summary>
     /// The channel where the message was sent
     /// </summary>
     public IBasicChannel Channel { get; init; }
@@ -124,13 +117,6 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
         string replyDisplayName = string.Empty;
         string threadParentMessageid = string.Empty;
         string threadParentUsername = string.Empty;
-
-        //HypeChat
-        int paidAmount = 0;
-        CurrencyCode currency = CurrencyCode.None;
-        int exponent = 0;
-        bool isSystemMessage = false;
-        HypeChatLevel level = HypeChatLevel.None;
 
         // IBasicChannel
         string channelName = message.GetChannel();
@@ -337,14 +323,6 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
             ParentUsername = replyUsername,
             ParentThreadMessageId = threadParentMessageid,
             ParentThreadUsername = threadParentUsername
-        };
-        this.HypeChat = new HypeChat()
-        {
-            PaidAmount = paidAmount,
-            Currency = currency,
-            Exponent = exponent,
-            IsSystemMessage = isSystemMessage,
-            Level = level
         };
         this.Channel = new IrcChannel()
         {
