@@ -84,17 +84,22 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
     /// Whether the emotes in the message are gigantified
     /// </summary>
     public bool IsGigantifiedEmoteMessage { get; init; }
+    /// <summary>
+    /// Source information about the message.
+    /// <para>Only populated if <see cref="MessageSource.HasSource"/> is <see langword="true"/></para>
+    /// </summary>
+    public MessageSource Source { get; init; }
 
     /// <inheritdoc/>
     public long TmiSentTs { get; init; }
     /// <inheritdoc/>
     public DateTimeOffset SentTimestamp => DateTimeOffset.FromUnixTimeMilliseconds(this.TmiSentTs);
 
-    internal IrcClient? Source { get; init; }
+    internal IrcClient? SourceClient { get; init; }
 
     internal Privmsg(ref IrcMessage message, IrcClient? source = null)
     {
-        this.Source = source;
+        this.SourceClient = source;
 
         // MessageAuthor
         string badges = string.Empty;
@@ -132,9 +137,17 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
         bool firstMsg = false;
         bool returningChatter = false;
         string customRewardId = string.Empty;
+
+        // bit stuff
         bool gigantified = false;
         bool animated = false;
         string animation = string.Empty;
+
+        // MessageSource
+        string sourceBadgeInfo = string.Empty;
+        string sourceBadges = string.Empty;
+        string sourceId = string.Empty;
+        long sourceRoomId = 0;
 
         using IrcTags tags = message.ParseTags();
         foreach (IrcTag tag in tags)
@@ -297,6 +310,24 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
                 case (int)Tags.CustomRewardId:
                     customRewardId = TagHelper.GetString(tagValue);
                     break;
+
+                //source-badge-info
+                case (int)Tags.SourceBadgeInfo:
+                    sourceBadgeInfo = TagHelper.GetString(tagValue, intern: true, unescape: true);
+                    break;
+
+                //source-badges
+                case (int)Tags.SourceBadges:
+                    sourceBadges = TagHelper.GetString(tagValue, intern: true);
+                    break;
+
+                case (int)Tags.SourceId:
+                    sourceId = TagHelper.GetString(tagValue);
+                    break;
+
+                case (int)Tags.SourceRoomId:
+                    sourceRoomId = TagHelper.GetLong(tagValue);
+                    break;
             }
         }
 
@@ -344,6 +375,13 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
             IsAnimated = animated,
             AnimationId = animation
         };
+        this.Source = new MessageSource()
+        {
+            BadgeInfo = sourceBadgeInfo,
+            Badges = sourceBadges,
+            ChannelId = sourceRoomId,
+            MessageId = sourceId,
+        };
     }
 
     /// <summary>
@@ -354,7 +392,7 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
     /// <param name="replyInThread">Prefer replying to the target message in the same thread instead of creating a new one</param>
     /// <param name="cancellationToken">A cancellation token to stop further execution of asynchronous actions</param>
     public ValueTask ReplyWith(string reply, bool action = false, bool replyInThread = false, CancellationToken cancellationToken = default) =>
-        this.Source?.ReplyTo(this, reply, action, replyInThread, cancellationToken) ?? ValueTask.CompletedTask;
+        this.SourceClient?.ReplyTo(this, reply, action, replyInThread, cancellationToken) ?? ValueTask.CompletedTask;
 
     /// <summary>
     /// Construct a message from a string. Useful for testing

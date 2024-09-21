@@ -39,7 +39,7 @@ public class PrivmsgTests
         Assert.Equal(11148817, privmsg.Channel.Id);
 
         // No source
-        Assert.Null(privmsg.Source);
+        Assert.Null(privmsg.SourceClient);
         Assert.True(privmsg.ReplyWith(default!, default!).IsCompleted);
 
         Assert.Equal(0, privmsg.Bits);
@@ -88,7 +88,7 @@ public class PrivmsgTests
         Assert.Equal(11148817, privmsg.Channel.Id);
 
         // No source
-        Assert.Null(privmsg.Source);
+        Assert.Null(privmsg.SourceClient);
         Assert.True(privmsg.ReplyWith(default!, default!).IsCompleted);
 
         Assert.Equal(0, privmsg.Bits);
@@ -137,7 +137,7 @@ public class PrivmsgTests
         Assert.Equal(11148817, privmsg.Channel.Id);
 
         // No source
-        Assert.Null(privmsg.Source);
+        Assert.Null(privmsg.SourceClient);
         Assert.True(privmsg.ReplyWith(default!, default!).IsCompleted);
 
         Assert.Equal(0, privmsg.Bits);
@@ -185,7 +185,7 @@ public class PrivmsgTests
         Assert.Equal(11148817, privmsg.Channel.Id);
 
         // No source
-        Assert.Null(privmsg.Source);
+        Assert.Null(privmsg.SourceClient);
         Assert.True(privmsg.ReplyWith(default!, default!).IsCompleted);
 
         Assert.Equal(10, privmsg.Bits);
@@ -233,7 +233,7 @@ public class PrivmsgTests
         Assert.Equal(11148817, privmsg.Channel.Id);
 
         // No source
-        Assert.Null(privmsg.Source);
+        Assert.Null(privmsg.SourceClient);
         Assert.True(privmsg.ReplyWith(default!, default!).IsCompleted);
 
         Assert.Equal(0, privmsg.Bits);
