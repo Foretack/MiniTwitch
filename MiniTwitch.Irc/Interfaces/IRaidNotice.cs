@@ -20,4 +20,6 @@ public interface IRaidNotice : IUsernotice
     /// The amount of viewers joining from the raid
     /// </summary>
     int ViewerCount { get; }
+    /// <inheritdoc cref="Usernotice.Source"/>
+    MessageSource Source { get; }
 }

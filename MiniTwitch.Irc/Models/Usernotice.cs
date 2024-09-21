@@ -69,6 +69,11 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
     public bool ShouldShareStreak { get; init; }
     /// <inheritdoc/>
     public ulong CommunityGiftId { get; init; }
+    /// <summary>
+    /// Source information about the message.
+    /// <para>Only populated if <see cref="MessageSource.HasSource"/> is <see langword="true"/></para>
+    /// </summary>
+    public MessageSource Source { get; init; }
 
     /// <inheritdoc/>
     public long TmiSentTs { get; init; } = default;
@@ -125,6 +130,12 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
         int donationExponent = 0;
         double actualDonationAmount = 0;
         CurrencyCode donationCurrency = CurrencyCode.None;
+
+        // MessageSource
+        string sourceBadgeInfo = string.Empty;
+        string sourceBadges = string.Empty;
+        string sourceId = string.Empty;
+        long sourceRoomId = 0;
 
         using IrcTags tags = message.ParseTags();
         foreach (IrcTag tag in tags)
@@ -323,6 +334,26 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
                 case (int)Tags.MsgParamDonationCurrency:
                     donationCurrency = TagHelper.GetEnum<CurrencyCode>(tagValue);
                     break;
+
+                //source-badge-info
+                case (int)Tags.SourceBadgeInfo:
+                    sourceBadgeInfo = TagHelper.GetString(tagValue, intern: true, unescape: true);
+                    break;
+
+                //source-badges
+                case (int)Tags.SourceBadges:
+                    sourceBadges = TagHelper.GetString(tagValue, intern: true);
+                    break;
+
+                //source-id
+                case (int)Tags.SourceId:
+                    sourceId = TagHelper.GetString(tagValue);
+                    break;
+
+                //source-room-id
+                case (int)Tags.SourceRoomId:
+                    sourceRoomId = TagHelper.GetLong(tagValue);
+                    break;
             }
         }
 
@@ -382,6 +413,13 @@ public readonly struct Usernotice : IGiftSubNoticeIntro, IAnnouncementNotice, IP
         this.DonationAmount = actualDonationAmount;
         this.DonationCurrency = donationCurrency;
         this.CommunityGiftId = communityGiftId;
+        this.Source = new MessageSource()
+        {
+            BadgeInfo = sourceBadgeInfo,
+            Badges = sourceBadges,
+            ChannelId = sourceRoomId,
+            MessageId = sourceId,
+        };
     }
 
     /// <summary>

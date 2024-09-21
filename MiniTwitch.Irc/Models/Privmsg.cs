@@ -321,10 +321,12 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
                     sourceBadges = TagHelper.GetString(tagValue, intern: true);
                     break;
 
+                //source-id
                 case (int)Tags.SourceId:
                     sourceId = TagHelper.GetString(tagValue);
                     break;
 
+                //source-room-id
                 case (int)Tags.SourceRoomId:
                     sourceRoomId = TagHelper.GetLong(tagValue);
                     break;
