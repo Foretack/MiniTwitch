@@ -1,4 +1,5 @@
 ﻿using MiniTwitch.Irc.Enums;
+using MiniTwitch.Irc.Models;
 
 namespace MiniTwitch.Irc.Interfaces;
 
@@ -28,4 +29,6 @@ public interface IGiftSubNoticeIntro : IUsernotice
     /// Id of the gift message to link it with <see cref="IGiftSubNotice"/> messages
     /// </summary>
     ulong CommunityGiftId { get; }
+    /// <inheritdoc cref="Usernotice.Source"/>
+    MessageSource Source { get; }
 }

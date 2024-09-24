@@ -1,4 +1,5 @@
 ﻿using MiniTwitch.Irc.Enums;
+using MiniTwitch.Irc.Models;
 
 namespace MiniTwitch.Irc.Interfaces;
 
@@ -52,4 +53,6 @@ public interface ISubNotice : IUsernotice
     /// <para>Note 2: May be <see cref="string.Empty"/> even for resubscriptions</para>
     /// </summary>
     string Message { get; }
+    /// <inheritdoc cref="Usernotice.Source"/>
+    MessageSource Source { get; }
 }

@@ -1,4 +1,5 @@
 ﻿using MiniTwitch.Irc.Enums;
+using MiniTwitch.Irc.Models;
 
 namespace MiniTwitch.Irc.Interfaces;
 
@@ -16,4 +17,6 @@ public interface IPrimeUpgradeNotice : IUsernotice
     /// The tier of the new subscription
     /// </summary>
     SubPlan SubPlan { get; }
+    /// <inheritdoc cref="Usernotice.Source"/>
+    MessageSource Source { get; }
 }

@@ -1,4 +1,5 @@
 ﻿using MiniTwitch.Irc.Enums;
+using MiniTwitch.Irc.Models;
 
 namespace MiniTwitch.Irc.Interfaces;
 /// <summary>
@@ -25,4 +26,6 @@ public interface IAnnouncementNotice : IUsernotice
     /// <para><see cref="string.Empty"/> if there are none</para>
     /// </summary>
     string Flags { get; }
+    /// <inheritdoc cref="Usernotice.Source"/>
+    MessageSource Source { get; }
 }

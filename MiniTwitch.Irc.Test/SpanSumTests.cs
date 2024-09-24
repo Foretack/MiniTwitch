@@ -72,7 +72,11 @@ public class SpanSumTests
         { (int)Tags.MessageId, "message-id" },
         { (int)Tags.ThreadId, "thread-id" },
         { (int)Tags.CustomRewardId, "custom-reward-id" },
-        { (int)Tags.AnimationId, "animation-id" }
+        { (int)Tags.AnimationId, "animation-id" },
+        { (int)Tags.SourceBadgeInfo, "source-badge-info" },
+        { (int)Tags.SourceBadges, "source-badges" },
+        { (int)Tags.SourceId, "source-id" },
+        { (int)Tags.SourceRoomId, "source-room-id" },
     };
 
     [Fact]

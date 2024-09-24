@@ -1,4 +1,6 @@
-﻿namespace MiniTwitch.Irc.Interfaces;
+﻿using MiniTwitch.Irc.Models;
+
+namespace MiniTwitch.Irc.Interfaces;
 
 /// <summary>
 /// Contains information about a user that continued their gifted subscription
@@ -20,4 +22,6 @@ public interface IPaidUpgradeNotice : IUsernotice
     /// <para>Note: Value is <see cref="string.Empty"/> if the previous subscription's gifter was anonymous</para>
     /// </summary>
     string GifterDisplayName { get; }
+    /// <inheritdoc cref="Usernotice.Source"/>
+    MessageSource Source { get; }
 }

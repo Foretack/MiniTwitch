@@ -65,4 +65,12 @@ internal enum Tags
     MessageId = 108019,
     ThreadId = 102312,
     CustomRewardId = 159093,
+    //privmsg: source-badge-info
+    SourceBadgeInfo = 192510,
+    //privmsg: source-badges
+    SourceBadges = 151340,
+    //privmsg: source-id
+    SourceId = 104305,
+    //privmsg: source-room-id
+    SourceRoomId = 160655,
 }
