@@ -2701,4 +2701,18 @@ public class HelixWrapper
 
         return HelixResultFactory.Create<WarnInfo>(Client, request, endpoint, cancellationToken);
     }
+
+    ///<summary>
+    ///<see href="https://dev.twitch.tv/docs/api/reference/#get-shared-chat-session">API Reference</see>
+    ///</summary>
+    public Task<HelixResult<SharedChatSession>> GetSharedChatSession(
+        long broadcasterId,
+        CancellationToken cancellationToken = default)
+    {
+        HelixEndpoint endpoint = Endpoints.GetSharedChatSession;
+        RequestData request = new RequestData(_baseUrl, endpoint)
+            .AddParam(QueryParams.BroadcasterId, broadcasterId);
+
+        return HelixResultFactory.Create<SharedChatSession>(Client, request, endpoint, cancellationToken);
+    }
 }

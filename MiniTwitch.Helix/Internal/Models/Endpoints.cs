@@ -855,4 +855,10 @@ internal static class Endpoints
         Method = HttpMethod.Post,
         Route = "/moderation/warnings",
     };
+
+    public static readonly HelixEndpoint GetSharedChatSession = new()
+    {
+        Method = HttpMethod.Get,
+        Route = "/shared_chat/session"
+    };
 }
