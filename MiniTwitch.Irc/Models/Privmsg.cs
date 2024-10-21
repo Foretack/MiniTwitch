@@ -77,6 +77,10 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
     /// </summary>
     public string CustomRewardId { get; init; }
     /// <summary>
+    /// Whether the message is highlighted.
+    /// </summary>
+    public bool IsHighlighted { get; init; }
+    /// <summary>
     /// Information about the message animation.
     /// </summary>
     public MessageAnimation Animation { get; init; }
@@ -136,6 +140,7 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
         long tmiSentTs = 0;
         bool firstMsg = false;
         bool returningChatter = false;
+        bool highlighted = false;
         string customRewardId = string.Empty;
 
         // bit stuff
@@ -223,6 +228,10 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
                     {
                         case 2516:
                             gigantified = true;
+                            break;
+
+                        case 1939:
+                            highlighted = true;
                             break;
 
                         case 1621:
@@ -371,6 +380,7 @@ public readonly struct Privmsg : IUnixTimestamped, IHelixMessageTarget, IEquatab
         this.IsFirstMessage = firstMsg;
         this.IsReturningChatter = returningChatter;
         this.CustomRewardId = customRewardId;
+        this.IsHighlighted = highlighted;
         this.IsGigantifiedEmoteMessage = gigantified;
         this.Animation = new MessageAnimation()
         {
