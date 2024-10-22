@@ -1,6 +1,15 @@
-This changelog is available at: https://github.com/Foretack/MiniTwitch/blob/master/MiniTwitch.Irc/CHANGELOG.md
+# MiniTwitch.Irc changelog
 
-# MiniTwitch.Irc Changelog
+## 1.3.0
+
+### Breaking changes
+- Hype Chat has been removed
+
+### Minor changes
+- Added a boolean for point-redeemed highlighted messages `Privmsg.IsHighlighted` (#135)
+- Added shared chat tags `Privmsg.Source` (#128)
+
+***
 
 ## 1.2.16
 

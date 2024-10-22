@@ -5,8 +5,8 @@
     <PackageId>MiniTwitch.Irc</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageVersion>1.2.16</PackageVersion>
-    <Version>1.2.16</Version>
+    <PackageVersion>1.3.0</PackageVersion>
+    <Version>1.3.0</Version>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>MiniTwitch.Irc</Title>
@@ -15,7 +15,7 @@
     <RepositoryUrl>https://github.com/Foretack/MiniTwitch</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>IRC;Twitch;Bots;Client;Events;Chat</PackageTags>
-    <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/CHANGELOG.md"))</PackageReleaseNotes>
+    <PackageReleaseNotes>Changelog is available at: https://github.com/Foretack/MiniTwitch/blob/master/MiniTwitch.Irc/CHANGELOG.md</PackageReleaseNotes>
     <license>MIT</license>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>icon256.png</PackageIcon>
