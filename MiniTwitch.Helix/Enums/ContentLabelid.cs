@@ -2,9 +2,11 @@
 
 public enum ContentLabelId
 {
+    DebatedSocialIssuesAndPolitics,
     DrugsIntoxication,
+    Gambling,
+    MatureGame,
+    ProfanityVulgarity,
     SexualThemes,
     ViolentGraphic,
-    Gambling,
-    ProfanityVulgarity
 }
