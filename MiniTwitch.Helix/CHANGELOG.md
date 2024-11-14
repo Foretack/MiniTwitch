@@ -1,6 +1,11 @@
-This changelog is available at: https://github.com/Foretack/MiniTwitch/blob/master/MiniTwitch.Helix/CHANGELOG.md
-
 # MiniTwitch.Helix Changelog
+
+## 1.0.0
+- No longer in pre-release!
+- Added some missing content classification ids (#136)
+
+This release marks the removal of .NET 6 and .NET 7 as target frameworks, as both versions are out-of-support by now.
+***
 
 ## 0.4.2-prerelease
 

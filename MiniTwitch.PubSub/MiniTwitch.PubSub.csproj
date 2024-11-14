@@ -1,20 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>1.0.4</PackageVersion>
-    <Version>1.0.4</Version>
+    <PackageVersion>2.0.0</PackageVersion>
+    <Version>2.0.0</Version>
     <PackageId>MiniTwitch.PubSub</PackageId>
     <Title>MiniTwitch.Irc</Title>
     <Description>Fast and easy to use async library for Twitch's PubSub service</Description>
-    <Authors>Foretack</Authors>
+    <Authors>occluder</Authors>
     <PackageTags>PubSub;Twitch;Bots;Client;Events</PackageTags>
-    <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/CHANGELOG.md"))</PackageReleaseNotes>
-    <RepositoryUrl>https://github.com/Foretack/MiniTwitch</RepositoryUrl>
+    <PackageReleaseNotes>Changelog available at: https://github.com/occluder/MiniTwitch/blob/master/MiniTwitch.PubSub/CHANGELOG.md</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/occluder/MiniTwitch</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <license>MIT</license>
     <PackageReadmeFile>README.md</PackageReadmeFile>

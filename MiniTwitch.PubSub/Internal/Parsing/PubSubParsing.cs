@@ -57,7 +57,7 @@ internal static class PubSubParsing
         {
             string json = Encoding.UTF8.GetString(unescaped[..endIndex]);
             logger?.LogError("Failed to deserialize JSON.\nmessage: ({ExceptionType}) {ExceptionMessage}\n{StackTrace}\nJSON string: {JsonString}\nIf you see this error, " +
-                "please open an issue! Include the JSON string and the exception. https://github.com/Foretack/MiniTwitch/issues",
+                "please open an issue! Include the JSON string and the exception. https://github.com/occluder/MiniTwitch/issues",
                 ex.GetType().Name, ex.Message, ex.StackTrace, json);
 
             return default;
@@ -80,7 +80,7 @@ internal static class PubSubParsing
         {
             string json = Encoding.UTF8.GetString(unescaped[..endIndex]);
             return $"Failed to deserialize JSON.\nmessage: ({ex.GetType().Name}) {ex.Message}\n{ex.StackTrace}\nJSON string: {Encoding.UTF8.GetString(span)}\nIf you see this error, " +
-                "please open an issue! Include the JSON string and the exception. https://github.com/Foretack/MiniTwitch/issues";
+                "please open an issue! Include the JSON string and the exception. https://github.com/occluder/MiniTwitch/issues";
         }
 
         return val;

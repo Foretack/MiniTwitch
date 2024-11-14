@@ -1,5 +1,9 @@
 # MiniTwitch.PubSub Changelog
 
+## 2.0.0
+This release marks the removal of .NET 6 and .NET 7 as target frameworks, as both versions are out-of-support by now.
+***
+
 ## 1.0.4
 
 ### Minor changes
