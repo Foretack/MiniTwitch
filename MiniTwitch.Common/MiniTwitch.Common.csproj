@@ -17,6 +17,7 @@
       <license>MIT</license>
       <PackageLicenseFile>LICENSE</PackageLicenseFile>
       <PackageIcon>icon256.png</PackageIcon>
+    <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
 
   <ItemGroup>
