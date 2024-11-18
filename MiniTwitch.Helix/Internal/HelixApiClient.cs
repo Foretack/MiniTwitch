@@ -164,6 +164,7 @@ public sealed class HelixApiClient
             if (_tokenInfo is null)
                 throw new InvalidTokenException(null, "Validating access token failed");
 
+            _httpClient.DefaultRequestHeaders.Remove("Client-Id");
             _httpClient.DefaultRequestHeaders.Add("Client-Id", $"{_tokenInfo.ClientId}");
             _tokenInfo.ReceivedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             if (_tokenInfo.IsPermaToken)
