@@ -5,7 +5,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 using MiniTwitch.Common;
-using MiniTwitch.Helix.Internal.Json;
 using MiniTwitch.Helix.Internal.Models;
 using MiniTwitch.Helix.Models;
 
@@ -18,7 +17,7 @@ public sealed class HelixApiClient
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         NumberHandling = JsonNumberHandling.AllowReadingFromString,
-        PropertyNamingPolicy = new SnakeCaseNamingPolicy()
+        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
     };
     internal long UserId { get; private set; }
 
