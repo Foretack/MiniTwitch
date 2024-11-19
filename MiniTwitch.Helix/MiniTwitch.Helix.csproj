@@ -1,23 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-      <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+      <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
       <PackageId>MiniTwitch.Helix</PackageId>
-      <PackageVersion>0.4.2-prerelease</PackageVersion>
-      <Version>0.4.2-prerelease</Version>
+      <PackageVersion>1.0.0</PackageVersion>
+      <Version>1.0.0</Version>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
       <Title>MiniTwitch.Helix</Title>
       <Description>Convenient wrapper classes for Twitch's Helix API</Description>
-      <Authors>Foretack</Authors>
-      <RepositoryUrl>https://github.com/Foretack/MiniTwitch</RepositoryUrl>
+      <Authors>occluder</Authors>
+      <RepositoryUrl>https://github.com/occluder/MiniTwitch</RepositoryUrl>
       <RepositoryType>git</RepositoryType>
       <PackageTags>Twitch;Bots;Helix;API;Wrapper</PackageTags>
       <license>MIT</license>
       <PackageLicenseFile>LICENSE</PackageLicenseFile>
       <PackageReadmeFile>README.md</PackageReadmeFile>
       <PackageIcon>icon256.png</PackageIcon>
-      <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/CHANGELOG.md"))</PackageReleaseNotes>
+      <PackageReleaseNotes>Changelog available at: https://github.com/occluder/MiniTwitch/blob/master/MiniTwitch.Helix/CHANGELOG.md</PackageReleaseNotes>
       <ImplicitUsings>enable</ImplicitUsings>
       <Nullable>enable</Nullable>
       <NoWarn>CS8618,IDE0058,CS1591</NoWarn>

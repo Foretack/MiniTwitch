@@ -5,7 +5,7 @@
 /// </summary>
 /// <typeparam name="TEnum">The enum type to operate on</typeparam>
 public class AsyncEventCoordinator<TEnum> : IDisposable
-    where TEnum : struct
+    where TEnum : struct, System.Enum
 {
     private readonly Dictionary<int, SemaphoreSlim> _locks;
 
@@ -19,7 +19,7 @@ public class AsyncEventCoordinator<TEnum> : IDisposable
         if (!typeof(TEnum).IsEnum)
             throw new NotSupportedException($"The type {typeof(TEnum)} is not an enum");
 
-        TEnum[] values = (TEnum[])Enum.GetValues(typeof(TEnum));
+        TEnum[] values = Enum.GetValues<TEnum>();
         _locks = new(values.Length);
         for (int i = 0; i < values.Length; i++)
         {
