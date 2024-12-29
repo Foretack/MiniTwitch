@@ -14,6 +14,8 @@ public class ChannelsInformation : BaseResponse<ChannelsInformation.Information>
         string GameId,
         string Title,
         int Delay,
-        IReadOnlyList<string> Tags
+        IReadOnlyList<string> Tags,
+        IReadOnlyList<ContentClassificationLabel> ContentClassificationLabels,
+        bool IsBrandedContent
     );
 }
