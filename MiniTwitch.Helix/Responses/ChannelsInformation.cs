@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using MiniTwitch.Helix.Enums;
 using MiniTwitch.Helix.Models;
 
 namespace MiniTwitch.Helix.Responses;
@@ -15,7 +16,7 @@ public class ChannelsInformation : BaseResponse<ChannelsInformation.Information>
         string Title,
         int Delay,
         IReadOnlyList<string> Tags,
-        IReadOnlyList<ContentClassificationLabel> ContentClassificationLabels,
+        IReadOnlyList<ContentLabelId> ContentClassificationLabels,
         bool IsBrandedContent
     );
 }
