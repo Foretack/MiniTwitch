@@ -10,7 +10,7 @@ public class ChannelsInformation : BaseResponse<ChannelsInformation.Information>
         long Id,
         [property: JsonPropertyName("broadcaster_login")] string Name,
         [property: JsonPropertyName("broadcaster_name")] string DisplayName,
-        string Language,
+        [property: JsonPropertyName("broadcaster_language")] string Language,
         string GameName,
         string GameId,
         string Title,
