@@ -34,6 +34,7 @@ public sealed class HelixApiClient
         _tokenValidationUrl = tokenValidationUrl;
         _logger = logger;
         this.UserId = userId;
+        GetLogger().BeginScope($"Helix-UserId={this.UserId}");
     }
 
     public void ChangeToken(string newToken, long newUserId)
@@ -202,6 +203,6 @@ public sealed class HelixApiClient
         }
     }
 
-    private void Log(LogLevel level, string template, params object[] properties) => GetLogger().Log(level, "[MiniTwitch.Helix] " + template, properties);
+    private void Log(LogLevel level, string template, params object[] properties) => GetLogger().Log(level, template, properties);
     private ILogger GetLogger() => _logger ?? this.Logger;
 }

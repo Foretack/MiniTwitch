@@ -276,13 +276,13 @@ public sealed class PubSubClient : IAsyncDisposable
     private readonly AsyncEventCoordinator<WaitableEvents> _coordinator = new();
     private readonly HashSet<Topic> _topics = new(10);
     private readonly MessageTemplates _templates;
-    private readonly string _loggingHeader = "[MiniTwitch.PubSub]";
     private readonly WebSocketClient _ws;
     private readonly ILogger? _logger;
     private CancellationTokenSource _pingerToken = new();
     private ListenResponse _response = default!;
     private Uri _targetUrl = default!;
     private Task _pinger = default!;
+    IDisposable? _loggingScope;
     #endregion
 
     #region Init
@@ -291,11 +291,13 @@ public sealed class PubSubClient : IAsyncDisposable
     /// </summary>
     /// <param name="authToken">The default authentication token to use in listen/unlisten requests</param>
     /// <param name="logger">The destination for logs. If none is provided then <see cref="DefaultLogger"/> is used</param>
-    public PubSubClient(string authToken, ILogger? logger = null)
+    /// <param name="identifier">A string used to identify this instance in logging</param>
+    public PubSubClient(string authToken, ILogger? logger = null, string? identifier = null)
     {
         _ws = new(TimeSpan.FromMinutes(1));
         _logger = logger;
         _templates = new(authToken);
+        _loggingScope = GetLogger().BeginScope(identifier is null ? "PubSub" : $"PubSub-Id={identifier}");
 
         _ws.OnData += ReceiveData;
         _ws.OnConnect += OnWsConnect;
@@ -504,9 +506,9 @@ public sealed class PubSubClient : IAsyncDisposable
 
     private void LogEventException(Exception ex) => LogException(ex, "🚨 Exception caught in an event:");
 
-    private void Log(LogLevel level, string template, params object[] properties) => GetLogger().Log(level, $"{_loggingHeader} {template}", properties);
+    private void Log(LogLevel level, string template, params object[] properties) => GetLogger().Log(level, template, properties);
 
-    private void LogException(Exception ex, string template, params object[] properties) => GetLogger().LogError(ex, $"{_loggingHeader} {template}", properties);
+    private void LogException(Exception ex, string template, params object[] properties) => GetLogger().LogError(ex, template, properties);
     #endregion
 
     #region Parsing

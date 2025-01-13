@@ -58,7 +58,7 @@ public sealed class WebSocketClient : IAsyncDisposable
 
         // Set URI for reconnects
         _uri = uri;
-        Log(LogLevel.Trace, "Connecting to {uri} ...", uri);
+        Log(LogLevel.Trace, "Connecting to {Uri} ...", uri);
 
         // Try connecting
         try
@@ -120,7 +120,7 @@ public sealed class WebSocketClient : IAsyncDisposable
 
         _reconnecting = true;
 
-        Log(LogLevel.Critical, "The WebSocket client is restarting in {delay}", delay);
+        Log(LogLevel.Critical, "The WebSocket client is restarting in {Delay}", delay);
         // Attempt to disconnect
         await Disconnect(cancellationToken);
 
@@ -167,7 +167,7 @@ public sealed class WebSocketClient : IAsyncDisposable
             }
             catch (WebSocketException wse)
             {
-                Log(LogLevel.Critical, "An error occurred while receiving data from the WebSocket connection: {msg}",
+                Log(LogLevel.Critical, "An error occurred while receiving data from the WebSocket connection: {Message}",
                     wse.Message);
                 break;
             }
@@ -251,6 +251,6 @@ public sealed class WebSocketClient : IAsyncDisposable
         }
 
         await OnDisconnect.Invoke();
-        Log(LogLevel.Debug, "Disposed {name}", nameof(WebSocketClient));
+        Log(LogLevel.Debug, "Disposed {Name}", nameof(WebSocketClient));
     }
 }
