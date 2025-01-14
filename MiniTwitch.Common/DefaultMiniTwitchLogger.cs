@@ -6,8 +6,9 @@ public class DefaultMiniTwitchLogger<T> : ILogger<T>, ILogger
 {
     public bool Enabled { get; set; } = true;
     public LogLevel MinimumLevel { get; set; } = LogLevel.Information;
+    public string LoggingHeader { get; set; } = string.Empty;
 
-    private static readonly object _lock = new();
+    static readonly object _lock = new();
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
@@ -17,6 +18,9 @@ public class DefaultMiniTwitchLogger<T> : ILogger<T>, ILogger
         lock (_lock)
         {
             Console.Write($"[{DateTimeOffset.Now:HH:mm:ss} ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write(LoggingHeader);
+            Console.Write(' ');
             Console.ForegroundColor = logLevel switch
             {
                 LogLevel.Trace => ConsoleColor.Gray,
@@ -48,5 +52,18 @@ public class DefaultMiniTwitchLogger<T> : ILogger<T>, ILogger
         }
     }
     public bool IsEnabled(LogLevel logLevel) => this.Enabled && logLevel >= this.MinimumLevel;
-    public IDisposable? BeginScope<TState>(TState state) where TState : notnull => throw new NotImplementedException();
+    public IDisposable? BeginScope<TState>(TState state) where TState : notnull
+    {
+        this.LoggingHeader = state.ToString() ?? "<BAD STATE>";
+        return new NoopDisposable(this);
+    }
+
+    class NoopDisposable(DefaultMiniTwitchLogger<T> logger) : IDisposable
+    {
+        readonly DefaultMiniTwitchLogger<T> _logger = logger;
+        public void Dispose()
+        {
+            _logger.LoggingHeader = string.Empty;
+        }
+    }
 }

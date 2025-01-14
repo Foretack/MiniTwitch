@@ -165,6 +165,7 @@ public sealed class IrcClient : IAsyncDisposable
     private Uri _targetUrl = default!;
     private string _loggingHeader = "[MiniTwitch:Irc-default!]";
     private bool _connectInvoked;
+    IDisposable? _loggingScope;
     #endregion
 
     #region Init
@@ -187,13 +188,14 @@ public sealed class IrcClient : IAsyncDisposable
         this.Options.CheckCredentials();
 
         this.ExceptionHandler ??= LogEventException;
-        _loggingHeader = "[MiniTwitch:Irc-Anonymous]";
+        _loggingHeader = "Irc-User=Anonymous";
         if (!this.Options.Anonymous)
         {
             this.Options.OAuth = Utils.CheckToken(this.Options.OAuth);
-            _loggingHeader = $"[MiniTwitch:Irc-{this.Options.Username}]";
+            _loggingHeader = $"Irc-User={this.Options.Username}";
         }
 
+        _loggingScope = GetLogger().BeginScope(_loggingHeader);
         OnPing += Ping;
         _ws.OnDisconnect += OnWsDisconnect;
         _ws.OnReconnect += OnWsReconnect;
@@ -266,7 +268,7 @@ public sealed class IrcClient : IAsyncDisposable
         foreach (string channel in this.JoinedChannels.Select(c => c.Name))
         {
             bool res = await JoinChannel(channel);
-            Log(LogLevel.Information, $"{(res ? "Rejoined" : "Failed to rejoin")} channel: #{{channel}}", channel);
+            Log(LogLevel.Information, $"{(res ? "Rejoined" : "Failed to rejoin")} channel: #{{Channel}}", channel);
             await Task.Delay(joinInterval);
         }
     }
@@ -288,7 +290,7 @@ public sealed class IrcClient : IAsyncDisposable
     {
         if (!_ws.IsConnected)
         {
-            Log(LogLevel.Error, "Failed to send raw message {message}: Not connected.", message);
+            Log(LogLevel.Error, "Failed to send raw message {Message}: Not connected.", message);
             return;
         }
 
@@ -307,27 +309,27 @@ public sealed class IrcClient : IAsyncDisposable
     {
         if (!_ws.IsConnected)
         {
-            Log(LogLevel.Error, "Failed to send message {message}: Not connected.", message);
+            Log(LogLevel.Error, "Failed to send message {Message}: Not connected.", message);
             return;
         }
         else if (this.Options.Anonymous)
         {
-            Log(LogLevel.Error, "Failed to send message {message}: Cannot send message with anonymous account.", message);
+            Log(LogLevel.Error, "Failed to send message {Message}: Cannot send message with anonymous account.", message);
             return;
         }
 
         if (nonce is not null && nonce.Contains(' '))
         {
-            Log(LogLevel.Error, "Failed to send message {message}: Nonce cannot contain spaces.", message);
+            Log(LogLevel.Error, "Failed to send message {Message}: Nonce cannot contain spaces.", message);
             return;
         }
 
         if (!_manager.CanSend(channel, _moderated.Contains(channel)))
         {
             var delay = TimeSpan.FromSeconds(90 / this.Options.MessageRateLimit);
-            Log(LogLevel.Debug, "Cannot send message to #{channel}: Rate limit of {count} hit. Retrying in {delay}s",
+            Log(LogLevel.Debug, "Cannot send message to #{Channel}: Rate limit of {Count} hit. Retrying in {Delay}s",
                 channel, this.Options.ModMessageRateLimit, delay.TotalSeconds);
-            Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
+            Log(LogLevel.Warning, "#{Channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {Normal}/30s, mod: {Mod}/30s)",
                 channel, this.Options.MessageRateLimit, this.Options.ModMessageRateLimit);
             await Task.Delay(delay, cancellationToken);
             await SendMessage(channel, message, action, nonce, cancellationToken);
@@ -351,12 +353,12 @@ public sealed class IrcClient : IAsyncDisposable
     {
         if (!_ws.IsConnected)
         {
-            Log(LogLevel.Error, "Failed to send reply {message}: Not connected.", message);
+            Log(LogLevel.Error, "Failed to send reply {Message}: Not connected.", message);
             return;
         }
         else if (this.Options.Anonymous)
         {
-            Log(LogLevel.Error, "Failed to send reply {message}: Cannot send message with anonymous account.", message);
+            Log(LogLevel.Error, "Failed to send reply {Message}: Cannot send message with anonymous account.", message);
             return;
         }
 
@@ -364,9 +366,9 @@ public sealed class IrcClient : IAsyncDisposable
         if (!_manager.CanSend(channel, _moderated.Contains(channel)))
         {
             var delay = TimeSpan.FromSeconds(90 / this.Options.MessageRateLimit);
-            Log(LogLevel.Debug, "Cannot send message to #{channel}: Rate limit of {count} hit. Retrying in {delay}s",
+            Log(LogLevel.Debug, "Cannot send message to #{Channel}: Rate limit of {Count} hit. Retrying in {Delay}s",
                 channel, this.Options.ModMessageRateLimit, delay.TotalSeconds);
-            Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
+            Log(LogLevel.Warning, "#{Channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {Normal}/30s, mod: {Mod}/30s)",
                 channel, this.Options.MessageRateLimit, this.Options.ModMessageRateLimit);
 
             await Task.Delay(delay, cancellationToken);
@@ -397,21 +399,21 @@ public sealed class IrcClient : IAsyncDisposable
         const string act = ".me ";
         if (!_ws.IsConnected)
         {
-            Log(LogLevel.Error, "Failed to send reply {message}: Not connected.", messageId);
+            Log(LogLevel.Error, "Failed to send reply {Message}: Not connected.", messageId);
             return;
         }
         else if (this.Options.Anonymous)
         {
-            Log(LogLevel.Error, "Failed to send reply {message}: Cannot send message with anonymous account.", messageId);
+            Log(LogLevel.Error, "Failed to send reply {Message}: Cannot send message with anonymous account.", messageId);
             return;
         }
 
         if (!_manager.CanSend(channel, _moderated.Contains(channel)))
         {
             var delay = TimeSpan.FromSeconds(90 / this.Options.MessageRateLimit);
-            Log(LogLevel.Debug, "Cannot send message to #{channel}: Rate limit of {count} hit. Retrying in {delay}s",
+            Log(LogLevel.Debug, "Cannot send message to #{Channel}: Rate limit of {Count} hit. Retrying in {Delay}s",
                 channel, this.Options.ModMessageRateLimit, delay.TotalSeconds);
-            Log(LogLevel.Warning, "#{channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {normal}/30s, mod: {mod}/30s)",
+            Log(LogLevel.Warning, "#{Channel}: Your message was not sent yet due to the configured messaging ratelimit (normal: {Normal}/30s, mod: {Mod}/30s)",
                 channel, this.Options.MessageRateLimit, this.Options.ModMessageRateLimit);
             await Task.Delay(delay, cancellationToken);
             await ReplyTo(messageId, channel, reply, action, cancellationToken);
@@ -467,13 +469,13 @@ public sealed class IrcClient : IAsyncDisposable
     {
         if (!_ws.IsConnected)
         {
-            Log(LogLevel.Error, "Failed to join channel #{channel}:  Not connected.", channel);
+            Log(LogLevel.Error, "Failed to join channel #{Channel}:  Not connected.", channel);
             return false;
         }
 
         if (!_manager.CanJoin())
         {
-            Log(LogLevel.Warning, "Waiting to join #{channel}: Configured ratelimit of {rate} joins/10s is hit", channel, this.Options.JoinRateLimit);
+            Log(LogLevel.Warning, "Waiting to join #{Channel}: Configured ratelimit of {Rate} joins/10s is hit", channel, this.Options.JoinRateLimit);
             await Task.Delay(TimeSpan.FromSeconds(30 / this.Options.JoinRateLimit), cancellationToken);
             return await JoinChannel(channel, cancellationToken);
         }
@@ -486,7 +488,7 @@ public sealed class IrcClient : IAsyncDisposable
         }
         catch
         {
-            Log(LogLevel.Error, "Failed to join channel #{channel}: Timed out. (Channel may have been renamed or deleted)", channel);
+            Log(LogLevel.Error, "Failed to join channel #{Channel}: Timed out. (Channel may have been renamed or deleted)", channel);
             return false;
         }
     }
@@ -501,7 +503,7 @@ public sealed class IrcClient : IAsyncDisposable
     {
         if (!_ws.IsConnected)
         {
-            Log(LogLevel.Error, "Failed to join channels {channels}:  Not connected.", string.Join(',', channels));
+            Log(LogLevel.Error, "Failed to join channels {Channels}:  Not connected.", string.Join(',', channels));
             return false;
         }
 
@@ -524,7 +526,7 @@ public sealed class IrcClient : IAsyncDisposable
     {
         if (!_ws.IsConnected)
         {
-            Log(LogLevel.Error, "Failed to part channel #{channel}: Not connected.", channel);
+            Log(LogLevel.Error, "Failed to part channel #{Channel}: Not connected.", channel);
             return Task.CompletedTask;
         }
 
@@ -659,8 +661,8 @@ public sealed class IrcClient : IAsyncDisposable
                     if (!this.JoinedChannels.Contains(ircChannel))
                     {
                         this.JoinedChannels.Add(ircChannel);
-                        Log(LogLevel.Information, "Joined #{channel}", ircChannel.Name);
-                        Log(LogLevel.Debug, "Added #{channel} to joined channels list.", ircChannel.Name);
+                        Log(LogLevel.Information, "Joined #{Channel}", ircChannel.Name);
+                        Log(LogLevel.Debug, "Added #{Channel} to joined channels list.", ircChannel.Name);
                     }
 
                     OnChannelJoin?.Invoke(ircChannel).StepOver(this.ExceptionHandler);
@@ -696,8 +698,8 @@ public sealed class IrcClient : IAsyncDisposable
                 IrcChannel channel = new(ref message);
                 if (this.JoinedChannels.Remove(channel))
                 {
-                    Log(LogLevel.Information, "Parted #{channel}", channel.Name);
-                    Log(LogLevel.Debug, "Removed #{channel} from joined channels list.", channel.Name);
+                    Log(LogLevel.Information, "Parted #{Channel}", channel.Name);
+                    Log(LogLevel.Debug, "Removed #{Channel} from joined channels list.", channel.Name);
 
                 }
 
@@ -708,12 +710,12 @@ public sealed class IrcClient : IAsyncDisposable
                 Notice notice = new(ref message);
                 if (notice.Type == NoticeType.Msg_channel_suspended)
                 {
-                    Log(LogLevel.Error, "Failed to join #{channel}: Channel does not exist anymore.", notice.Channel.Name);
+                    Log(LogLevel.Error, "Failed to join #{Channel}: Channel does not exist anymore.", notice.Channel.Name);
                     _coordinator.ReleaseIfLocked(WaitableEvents.ChannelSuspended);
                 }
                 else if (notice.Type == NoticeType.Bad_auth)
                 {
-                    Log(LogLevel.Critical, "Authentication failed: {message}", notice.SystemMessage);
+                    Log(LogLevel.Critical, "Authentication failed: {Message}", notice.SystemMessage);
                 }
 
                 OnNotice?.Invoke(notice).StepOver(this.ExceptionHandler);
@@ -740,9 +742,9 @@ public sealed class IrcClient : IAsyncDisposable
 
     private void LogEventException(Exception ex) => LogException(ex, "🚨 Exception caught in an event:");
 
-    private void Log(LogLevel level, string template, params object[] properties) => GetLogger().Log(level, $"{_loggingHeader} " + template, properties);
+    private void Log(LogLevel level, string template, params object[] properties) => GetLogger().Log(level, template, properties);
 
-    private void LogException(Exception ex, string template, params object[] properties) => GetLogger().LogError(ex, $"{_loggingHeader} " + template, properties);
+    private void LogException(Exception ex, string template, params object[] properties) => GetLogger().LogError(ex, template, properties);
     #endregion
 
     /// <inheritdoc/>
@@ -752,5 +754,6 @@ public sealed class IrcClient : IAsyncDisposable
         this.JoinedChannels.Clear();
         _coordinator.Dispose();
         _moderated.Clear();
+        _loggingScope?.Dispose();
     }
 }

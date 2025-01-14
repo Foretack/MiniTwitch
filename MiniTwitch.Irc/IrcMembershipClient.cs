@@ -179,13 +179,13 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     {
         if (!_ws.IsConnected)
         {
-            Log(LogLevel.Error, "Failed to join channel {channel}:  Not connected.", channel);
+            Log(LogLevel.Error, "Failed to join channel {Channel}:  Not connected.", channel);
             return;
         }
 
         if (!_manager.CanJoin())
         {
-            Log(LogLevel.Warning, "Waiting to join #{channel}: Configured ratelimit of {rate} joins/10s is hit", channel, _options.JoinRateLimit);
+            Log(LogLevel.Warning, "Waiting to join #{Channel}: Configured ratelimit of {Rate} joins/10s is hit", channel, _options.JoinRateLimit);
             await Task.Delay(TimeSpan.FromSeconds(30 / _options.JoinRateLimit), cancellationToken);
             await JoinChannel(channel, cancellationToken);
             return;
@@ -205,7 +205,7 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     {
         if (!_ws.IsConnected)
         {
-            Log(LogLevel.Error, "Failed to join channels {channels}:  Not connected.", string.Join(',', channels));
+            Log(LogLevel.Error, "Failed to join channels {Channels}:  Not connected.", string.Join(',', channels));
             return;
         }
 
@@ -224,12 +224,12 @@ public sealed class IrcMembershipClient : IAsyncDisposable
     {
         if (!_ws.IsConnected)
         {
-            Log(LogLevel.Error, "Failed to part channel {channel}: Not connected.", channel);
+            Log(LogLevel.Error, "Failed to part channel {Channel}: Not connected.", channel);
             return Task.CompletedTask;
         }
 
         if (_joinedChannels.Remove(channel))
-            Log(LogLevel.Debug, "Removed #{channel} from joined channels list.", channel);
+            Log(LogLevel.Debug, "Removed #{Channel} from joined channels list.", channel);
 
         return _ws.SendAsync($"PART #{channel}", cancellationToken: cancellationToken).AsTask();
     }
